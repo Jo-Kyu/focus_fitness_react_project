@@ -208,9 +208,9 @@
 
 .product-main-img {
   background-image: url("../images/product_details_page/Rectangle_58.jpg");
-  background-size: cover; /* 建議加上 */
-  background-position: center; /* 建議加上 */
-  background-repeat: no-repeat; /* 建議加上 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 // blur
@@ -270,6 +270,39 @@ input.placeholder-lg::placeholder {
 
 .bottom--8 {
   bottom: -30px;
+}
+
+// 光暈
+.bg-glow {
+  position: absolute;
+  z-index: -100;
+
+  &.top-right {
+    top: -600px;
+    right: -800px;
+  }
+
+  &.bottom-left {
+    bottom: -600px;
+    left: -800px;
+  }
+}
+
+// z-inde
+.z-100 {
+  z-index: 100;
+}
+
+// 移除 <input type="number"> 右邊的上下箭頭
+.remove-spin::-webkit-inner-spin-button,
+.remove-spin::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.remove-spin {
+  appearance: textfield;
+  -moz-appearance: textfield;
 }
 
 // 斷點
