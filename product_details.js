@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateButtons() {
       const maxScroll = Math.max(
         0,
-        container.scrollWidth - container.clientWidth - 1
+        container.scrollWidth - container.clientWidth - 1,
       );
       if (btnPrev) btnPrev.disabled = container.scrollLeft <= 0;
       if (btnNext) btnNext.disabled = container.scrollLeft >= maxScroll;
