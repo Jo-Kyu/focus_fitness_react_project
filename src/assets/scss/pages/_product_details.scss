@@ -121,6 +121,10 @@
   height: 7px;
 }
 
+.h-210 {
+  height: 210px;
+}
+
 // min-width
 
 .min-w-111 {
@@ -139,6 +143,12 @@
 .hover-effect:hover,  // border+outline
 .hover-effect:focus,  // border
 .hover-effect:active {
+  border-color: $primary-400 !important;
+  outline: 2px solid $primary-900;
+}
+
+.selected,
+.selected-size {
   border-color: $primary-400 !important;
   outline: 2px solid $primary-900;
 }

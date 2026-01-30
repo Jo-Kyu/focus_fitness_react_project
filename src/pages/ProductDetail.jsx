@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import axios from "axios";
@@ -6,6 +6,7 @@ import customer1 from "../assets/images/icons/customer_1.svg";
 import customer2 from "../assets/images/icons/customer_2.svg";
 import customer3 from "../assets/images/icons/customer_3.svg";
 import customer4 from "../assets/images/icons/customer_4.svg";
+import Ellipse_2 from "../assets/images/index_page/光暈/Ellipse_2.svg";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -47,38 +48,79 @@ function ProductDetail() {
       content:
         " 我最近購買的健身器材讓我非常滿意！質量超出預期，感覺耐用。出貨速度快，幾乎是下單後就收到了。客服回應迅速，專業且用心。總之，這次購物體驗愉快，強烈推薦！",
     },
+    {
+      id: 5,
+      img: customer4,
+      name: "Benson Tsai",
+      content:
+        " 我最近購買的健身器材讓我非常滿意！質量超出預期，感覺耐用。出貨速度快，幾乎是下單後就收到了。客服回應迅速，專業且用心。總之，這次購物體驗愉快，強烈推薦！",
+    },
   ];
   // 顯示圖片
   const [activeImg, setActiveImg] = useState([]);
-  // 儲存商品細節的商品數量增減值
+  // 儲存商品細節的商品preQty增減值
   const [productQty, setProductQty] = useState(1);
-  // 蒐藏商品
+  // 蒐藏商品按鈕
   const [isfavorite, setFavorite] = useState(false);
+  // 儲存全部商品資料
+  const [allProducts, setallProducts] = useState([]);
+  // 被選中的顏色
+  const [selectedColor, setSelectedColor] = useState(null);
+  // 被選中的尺寸
+  const [selectedSize, setSelectedSize] = useState(null);
 
+  // 呼叫取得所有商品、呼叫取得特定商品
   useEffect(() => {
     getSpecificProduct();
+    getAllProducts();
   }, []);
 
+  // 預設選中第一個顏色 / 尺寸
+  useEffect(() => {
+    if (specificProduct.category !== "課程") {
+      if (specificProduct.color?.length)
+        setSelectedColor(specificProduct.color[0]);
+      if (specificProduct.size?.length)
+        setSelectedSize(specificProduct.size[0]);
+    }
+  }, [specificProduct]);
+
+  // 預設第一章圖片為展示圖片
   useEffect(() => {
     if (specificProduct.imagesUrl?.length) {
       setActiveImg(specificProduct.imagesUrl[0]);
     }
   }, [specificProduct]);
 
-  // 取得定商品(get網路請求)
+  // 取得特定商品(get網路請求)
   function getSpecificProduct() {
-    const dataId = ["-Oj8zbzOFeq2yU1DgNVF"];
+    const dataId = ["-Oj8zc-5dcvXGxq_Hvm9"];
 
     axios
       .get(`${baseUrl}/v2/api/${path}/product/${dataId}`)
       .then((res) => {
         setGetSpecificProduct(res.data.product);
-        console.log(res.data.product);
         console.log("取得特定商品成功");
         console.log(res);
       })
       .catch((err) => {
         console.log("取得特定商品失敗");
+        console.dir(err);
+      });
+  }
+
+  // 取得全部商品(get網路請求)
+  function getAllProducts() {
+    axios
+      .get(`${baseUrl}/v2/api/${path}/products/all`)
+      .then((res) => {
+        setallProducts(res.data.products);
+        console.log(res.data.products);
+        console.log("取得全部商品成功");
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("取得全部商品失敗");
         console.dir(err);
       });
   }
@@ -108,19 +150,136 @@ function ProductDetail() {
     setFavorite(!isfavorite);
   };
 
+  // 加入購物車事件處理函式(網路請求API)
+  function handleAddToCart(specificProductId, productQty) {
+    const productAddtoCart = {
+      data: {
+        product_id: specificProductId,
+        qty: productQty,
+        ...(specificProduct.category !== "課程" && {
+          color: selectedColor,
+          size: selectedSize,
+        }),
+      },
+    };
+    axios
+      .post(`${baseUrl}/v2/api/${path}/cart`, productAddtoCart)
+      .then((res) => {
+        console.log("商品加入購物車成功");
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("商品加入購物車失敗");
+        console.dir(err);
+      });
+  }
+
+  // 你可能會喜歡卡片元件
+  function MaybeLikeCard({ product }) {
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    return (
+      <a className="rounded-3 position-relative" href="#">
+        {/* 卡片圖片 */}
+        <div>
+          <div className="overflow-hidden">
+            <img
+              src={product.imageUrl}
+              className="card-img-top h-210"
+              alt={product.title}
+            />
+          </div>
+
+          <div className="d-flex justify-content-between position-absolute top-0 w-100">
+            {/* 優惠標籤 */}
+            <div className="pt-6 ps-6">
+              {product.is_hot && (
+                <span className="badge py-1 px-6 bg-danger-normal fs-8 text-white fw-bold me-2">
+                  熱銷
+                </span>
+              )}
+              {product.is_new && (
+                <span className="badge py-1 px-6 bg-primary-400 fs-8 text-blue-900 fw-bold">
+                  最新上市
+                </span>
+              )}
+            </div>
+
+            {/* 收藏按鈕*/}
+            <button
+              type="button"
+              className="p-2 color-primary-400 bg-gray-900-20 blur-30 rounded-2 border-top-left-radius-0 border-bottom-right-radius-0 ms-auto z-100 border-0"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsFavorite((prev) => !prev);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="31"
+                fill={isFavorite ? "#e1ff00" : "none"}
+                stroke="#e1ff00"
+                className="bi bi-bookmark-fill"
+                viewBox="0 0 16 20"
+              >
+                <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* 商品資訊 */}
+        <div className="card-body py-md-6 p-2 h-100">
+          <div className="mb-2">
+            <h5 className="card-title mb-0 fs-8 fs-md-6 text-gray-950 fw-bold">
+              {product.title}
+            </h5>
+          </div>
+
+          <div className="d-flex">
+            <div>
+              <p className="card-text fs-8 fs-md-6 text-gray-950 fw-bold">
+                <span className="me-1">{product.price}</span>
+                <span className="fs-8 text-gray-500 fw-bold text-decoration-line-through">
+                  {product.origin_price}
+                </span>
+              </p>
+            </div>
+
+            <span className="badge fs-9 fs-md-8 text-warning-normal fw-bold border rounded-3 border-warning-normal ms-auto">
+              {Math.round((product.price / product.origin_price) * 100)}折
+            </span>
+          </div>
+        </div>
+      </a>
+    );
+  }
+
   return (
     <>
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
         <img
-          className="bg-glow top-right"
-          src="../assets/images/index_page/光暈/Ellipse 2.svg"
+          style={{
+            position: "absolute",
+            top: "-600px",
+            right: "-800px",
+            zIndex: "-100",
+          }}
+          src={Ellipse_2}
           alt="光暈"
         />
         <img
-          className="bg-glow top-right"
-          src="../assets/images/index_page/光暈/Ellipse 2.svg"
+          style={{
+            position: "absolute",
+            bottom: "-600px",
+            left: "-800px",
+            zIndex: "-100",
+          }}
+          src={Ellipse_2}
           alt="光暈"
         />
         {/* 分頁麵包屑 */}
@@ -277,6 +436,7 @@ function ProductDetail() {
             </ol>
           </nav>
         </section>
+
         {/* 商品詳情 */}
         <section className="p-0 mb-8 mb-md-11 container max-w-1296">
           {/* 格線系統  */}
@@ -641,25 +801,11 @@ function ProductDetail() {
                         height="31"
                         fill={isfavorite ? "white" : ""}
                         stroke="white"
-                        class="bi bi-bookmark-fill"
+                        className="bi bi-bookmark-fill"
                         viewBox="0 0 16 20"
                       >
                         <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
                       </svg>
-                      {/* <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 36 37"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M9.28592 33.2821C8.54171 33.8176 7.50391 33.2856 7.50391 32.3688V9.875C7.50391 7.18261 9.68651 5 12.3789 5H23.6265C26.3188 5 28.5015 7.18261 28.5015 9.875V32.3688C28.5015 33.2856 27.4636 33.8176 26.7195 33.2821L18.0027 27.0107L9.28592 33.2821ZM26.2515 9.875C26.2515 8.42525 25.0762 7.25 23.6265 7.25H12.3789C10.9292 7.25 9.75391 8.42525 9.75391 9.875V30.1736L17.3457 24.7115C17.7382 24.4292 18.2673 24.4292 18.6597 24.7115L26.2515 30.1736V9.875Z"
-                          fill={isfavorite ? "white" : "red"}
-                          stroke="white"
-                          strokeWidth="0.5"
-                        />
-                      </svg> */}
                     </button>
                   </div>
                 </div>
@@ -679,7 +825,11 @@ function ProductDetail() {
                     <ul className="mb-0 list-unstyled d-flex flex-wrap">
                       {specificProduct.color?.map((color) => (
                         <li key={color} className="me-6">
-                          <button className="btn btn-lg mb-6 mb-md-0 bg-blue-900 rounded-3 text-gray-950 hover-effect">
+                          <button
+                            type="button"
+                            className={`btn btn-lg mb-6 mb-md-0 rounded-3 ${selectedColor === color ? "selected" : "bg-blue-900"} text-gray-950 hover-effect`}
+                            onClick={() => setSelectedColor(color)}
+                          >
                             {color}
                           </button>
                         </li>
@@ -693,17 +843,20 @@ function ProductDetail() {
                 {/* 尺寸 */}
                 {specificProduct.category !== "課程" ? (
                   <div className="mb-4 mb-md-8">
-                    {/* 顏色標題 */}
+                    {/* 尺寸標題 */}
                     <div className="mb-6">
                       <h3 className="mb-0 fs-6 text-gray-200 fw-medium">
                         尺寸
                       </h3>
                     </div>
-                    {/* 顏色按鈕 */}
+                    {/* 尺寸按鈕 */}
                     <ul className="mb-0 list-unstyled d-flex">
                       {specificProduct.size?.map((size) => (
                         <li key={size} className="me-6">
-                          <button className="btn btn-lg mb-6 mb-md-0 bg-blue-900 rounded-3 text-gray-950 hover-effect">
+                          <button
+                            className={`btn btn-lg mb-6 mb-md-0  rounded-3 text-gray-950 hover-effect ${selectedSize === size ? "selected" : "bg-blue-900"}`}
+                            onClick={() => setSelectedSize(size)}
+                          >
                             {size}
                           </button>
                         </li>
@@ -720,7 +873,7 @@ function ProductDetail() {
                   <div className="mb-6">
                     <h3 className="mb-0 fs-6 text-gray-200 fw-medium">數量</h3>
                   </div>
-                  {/*商品數量增減按鈕*/}
+                  {/*商品preQty增減按鈕*/}
                   <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 my-3">
                     <button
                       className="btn p-2 border-0 text-white fs-2"
@@ -748,7 +901,12 @@ function ProductDetail() {
                 </div>
                 {/* 加入購物車、直接購買按鈕、電腦版收藏按鈕 */}
                 <div className="d-flex flex-column flex-md-row align-items-md-center">
-                  <button className="mb-6 mb-md-0 me-md-6 py-2 py-md-3 fill-btn btn fs-7 fw-bold fill-btn flex-fill border-radius-12">
+                  <button
+                    className="mb-6 mb-md-0 me-md-6 py-2 py-md-3 fill-btn btn fs-7 fw-bold fill-btn flex-fill border-radius-12"
+                    onClick={() =>
+                      handleAddToCart(specificProduct.id, productQty)
+                    }
+                  >
                     加入購物車
                   </button>
                   <button className="me-md-6 py-2 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold fill-btn flex-fill border-radius-12">
@@ -763,29 +921,12 @@ function ProductDetail() {
                         height="37"
                         fill={isfavorite ? "white" : ""}
                         stroke="white"
-                        class="bi bi-bookmark-fill"
+                        className="bi bi-bookmark-fill"
                         viewBox="0 0 16 20"
                       >
                         <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
                       </svg>
                     </button>
-
-                    {/* <button className="btn p-2">
-                      <svg
-                        width="36"
-                        height="37"
-                        viewBox="0 0 36 37"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M9.28592 33.2821C8.54171 33.8176 7.50391 33.2856 7.50391 32.3688V9.875C7.50391 7.18261 9.68651 5 12.3789 5H23.6265C26.3188 5 28.5015 7.18261 28.5015 9.875V32.3688C28.5015 33.2856 27.4636 33.8176 26.7195 33.2821L18.0027 27.0107L9.28592 33.2821ZM26.2515 9.875C26.2515 8.42525 25.0762 7.25 23.6265 7.25H12.3789C10.9292 7.25 9.75391 8.42525 9.75391 9.875V30.1736L17.3457 24.7115C17.7382 24.4292 18.2673 24.4292 18.6597 24.7115L26.2515 30.1736V9.875Z"
-                          fill="white"
-                          stroke="white"
-                          strokeWidth="0.5"
-                        />
-                      </svg>
-                    </button> */}
                   </div>
                 </div>
               </div>
@@ -828,18 +969,18 @@ function ProductDetail() {
                     <div className="mb-7">
                       <div className="mb-1">
                         <h4 className="mb-0 fs-8 text-gray-950 fw-bold">
-                          集護腕、護掌及拉力帶於一體，訓練能量全面解放
+                          {specificProduct?.content_one?.title1}
                         </h4>
                       </div>
                       <ul className="list-unstyled">
                         <li className="fs-8 text-gray-200">
-                          全新尼龍車縫工法，強韌握力輔助、力量表現再提升。
+                          {specificProduct?.content_one?.title1_intro?.intro1}
                         </li>
                         <li className="fs-8 text-gray-200">
-                          手腕處泡綿內襯，有效保護關節、減輕受力不適感。
+                          {specificProduct?.content_one?.title1_intro?.intro2}
                         </li>
                         <li className="fs-8 text-gray-200">
-                          適用於硬舉、划船等動作，讓拉力帶助你一臂之力。
+                          {specificProduct?.content_one?.title1_intro?.intro3}
                         </li>
                       </ul>
                     </div>
@@ -847,18 +988,18 @@ function ProductDetail() {
                     <div className="mb-7">
                       <div className="mb-1">
                         <h4 className="mb-0 fs-8 text-gray-950 fw-bold">
-                          減緩手腕負荷，強化背肌訓練感受
+                          {specificProduct?.content_one?.title2}
                         </h4>
                       </div>
                       <ul className="list-unstyled">
                         <li className="fs-8 text-gray-200">
-                          魔鬼氈扣設計，輕巧方便、快速穿脫。
+                          {specificProduct?.content_one?.title2_intro?.intro1}
                         </li>
                         <li className="fs-8 text-gray-200">
-                          輔助前臂、幫助握力有效控制感受目標肌群。
+                          {specificProduct?.content_one?.title2_intro?.intro2}
                         </li>
                         <li className="fs-8 text-gray-200">
-                          硬舉、划船等拉力訓練皆宜，強韌的訓練夥伴。
+                          {specificProduct?.content_one?.title2_intro?.intro3}
                         </li>
                       </ul>
                     </div>
@@ -870,12 +1011,14 @@ function ProductDetail() {
                         </h4>
                       </div>
                       <ul>
-                        <li className="fs-8 text-gray-200">材質：牛皮 / SBR</li>
                         <li className="fs-8 text-gray-200">
-                          顏色：牛皮棕 / 牛皮黑 / 牛皮紅
+                          {specificProduct?.content_one?.spec?.spec1}
                         </li>
                         <li className="fs-8 text-gray-200">
-                          寬18cm / 長21cm / 綁帶長 35.5cm (男女皆可適用)
+                          {specificProduct?.content_one?.spec?.spec2}
+                        </li>
+                        <li className="fs-8 text-gray-200">
+                          {specificProduct?.content_one?.spec?.spec3}
                         </li>
                       </ul>
                     </div>
@@ -942,7 +1085,12 @@ function ProductDetail() {
                             </h4>
                           </div>
                           <div className="mb-1">
-                            <p className="mb-0 fs-8 text-gray-200">宅配到府</p>
+                            <p className="mb-0 fs-8 text-gray-200">
+                              {
+                                specificProduct?.description_one?.shopping_info
+                                  ?.shipping
+                              }
+                            </p>
                           </div>
                         </div>
                       </li>
@@ -975,7 +1123,10 @@ function ProductDetail() {
                           </div>
                           <div className="mb-1">
                             <p className="mb-0 fs-8 text-gray-200">
-                              信用卡、LinePay、街口支付、Apple Pay、全支付
+                              {
+                                specificProduct?.description_one?.shopping_info
+                                  ?.payment
+                              }
                             </p>
                           </div>
                         </div>
@@ -1039,7 +1190,10 @@ function ProductDetail() {
                         </div>
                         <div>
                           <p className="mb-0 fs-8 text-gray-200">
-                            全館健身裝備品項，滿999免運費。
+                            {
+                              specificProduct?.description_one?.activity
+                                ?.activity1
+                            }
                           </p>
                         </div>
                       </li>
@@ -1061,7 +1215,10 @@ function ProductDetail() {
                         </div>
                         <div>
                           <p className="mb-0 fs-8 text-gray-200">
-                            助力帶系列商品，滿2件，享8折優惠。
+                            {
+                              specificProduct?.description_one?.activity
+                                ?.activity2
+                            }
                           </p>
                         </div>
                       </li>
@@ -1083,7 +1240,10 @@ function ProductDetail() {
                         </div>
                         <div>
                           <p className="mb-0 fs-8 text-gray-200">
-                            開幕慶，7/25~8/31，任一商品，消費滿1999元，送限量健身裝備優惠券。
+                            {
+                              specificProduct?.description_one?.activity
+                                ?.activity3
+                            }
                           </p>
                         </div>
                       </li>
@@ -1191,6 +1351,74 @@ function ProductDetail() {
               <button
                 type="button"
                 className="btn bg-white-opacity-20 p-6 rounded-circle d-flex align-items-center justify-content-center translate-middle-y position-absolute right-lg--70 end-0 hover-effect-3 carousel-next d-none d-lg-flex z-100"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.91009 3.57757C7.23553 3.25214 7.76304 3.25214 8.08848 3.57757L13.9218 9.41091C14.2473 9.73634 14.2473 10.2639 13.9218 10.5893L8.08848 16.4226C7.76304 16.7481 7.23553 16.7481 6.91009 16.4226C6.58466 16.0972 6.58466 15.5697 6.91009 15.2442L12.1542 10.0001L6.91009 4.75596C6.58466 4.43052 6.58466 3.90301 6.91009 3.57757Z"
+                    fill="white"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
+        {/* 你可能也喜歡 */}
+        <section className="p-0 mb-9 mb-md-11 container max-w-1296">
+          {/* 你可能也喜歡標題 */}
+          <div className="mb-3 mb-md-8">
+            <h2 className="mb-0 fs-5 fs-md-10 text-gray-950 fw-bold lh-sm">
+              你可能也喜歡
+            </h2>
+          </div>
+          {/* 你可能也喜歡卡片 */}
+          <div className="position-relative">
+            <Swiper
+              className="d-flex flex-nowrap scroll"
+              modules={[Navigation, Pagination]}
+              slidesPerView="auto"
+              slidesPerGroup={1}
+              navigation={{
+                prevEl: ".maybeLike-carousel-prev",
+                nextEl: ".maybeLike-carousel-next",
+              }}
+            >
+              {allProducts.map((allProduct) => (
+                <SwiperSlide
+                  className="card me-2 me-md-6 rounded-3 bg-blue-600 max-w-210 max-w-md-318 flex-grow-0 flex-shrink-0 hover-effect-3 overflow-hidden"
+                  key={allProduct.id}
+                >
+                  <MaybeLikeCard product={allProduct} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            {/* 輪播按鈕 */}
+            <div className="position-absolute top-lg-50 left--70 bottom--8 d-flex justify-content-between w-100">
+              <button
+                type="button"
+                className="btn bg-white-opacity-20 p-6 rounded-circle d-flex align-items-center justify-content-center translate-middle-y position-absolute left-lg--70 hover-effect-3 maybeLike-carousel-prev d-none d-lg-flex z-100"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9.52794 2.86225C9.78829 2.6019 10.2103 2.6019 10.4707 2.86225C10.731 3.1226 10.731 3.54461 10.4707 3.80496L6.27534 8.00028L10.4707 12.1956C10.731 12.4559 10.731 12.8779 10.4707 13.1383C10.2103 13.3986 9.78829 13.3986 9.52794 13.1383L4.86128 8.47163C4.60093 8.21128 4.60093 7.78927 4.86128 7.52892L9.52794 2.86225Z"
+                    fill="white"
+                  />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className="btn bg-white-opacity-20 p-6 rounded-circle d-flex align-items-center justify-content-center translate-middle-y position-absolute right-lg--70 end-0 hover-effect-3 maybeLike-carousel-next d-none d-lg-flex z-100"
               >
                 <svg
                   width="20"
