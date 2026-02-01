@@ -14,7 +14,7 @@ const path = import.meta.env.VITE_API_PATH;
 function CartStepOne() {
   // 儲存購物車列表資料
   const [cartProducts, setCartProducts] = useState([]);
-  // 儲存篩選出來的需配送商品資料
+  // 儲存篩選出來的須配送商品資料
   const [shippingProducts, setShippingProducts] = useState([]);
   // 儲存篩選出來的免配送商品資料
   const [shippingFreeProducts, setShippingFreeProducts] = useState([]);
@@ -24,8 +24,12 @@ function CartStepOne() {
   const [goodValueProducts, setGoodValueProducts] = useState([]);
   // 儲存全部商品資料
   const [allProducts, setallProducts] = useState([]);
+  // 判斷購物車是否為空
+  const isCartEmpty = cartProducts?.carts?.length === 0;
+  // 判斷複選鈕是否已勾
+  const [isNoticeChecked, setIsNoticeChecked] = useState(false);
 
-  // 呼叫取得購物車列表(網路請求API)
+  // 呼叫取得購物車列表、呼叫取的所有商品
   useEffect(() => {
     getCartProducts();
     getAllProducts();
@@ -115,7 +119,31 @@ function CartStepOne() {
       });
   }
 
-  // 篩選需配送商品
+  // 開始結帳事件處理函式
+  function handleStartCheckout() {
+    // 購物車為空（保險）
+    if (cartProducts?.carts?.length === 0) return;
+
+    // 有免配送商品 + 尚未勾選須知
+    // 有免配送商品 + 尚未勾選
+    if (shippingFreeProducts.length && !isNoticeChecked) {
+      console.log("請勾選須知");
+      // Swal.fire({
+      //   icon: "warning",
+      //   title: "請先確認提醒事項",
+      //   text: "若您有購買健身課程或入場方案，結帳完成後請至實體門市辦理相關手續。",
+      //   confirmButtonText: "我知道了",
+      // });
+      return;
+    }
+
+    console.log("須知已勾選，轉移頁面");
+
+    // 通過檢查，進結帳
+    // navigate("/checkout");
+  }
+
+  // 篩選須配送商品
   useEffect(() => {
     if (cartProducts?.carts?.length) {
       const filteredShippingProducts = cartProducts.carts.filter(
@@ -708,6 +736,7 @@ function CartStepOne() {
               const discount = Math.round(
                 (1 - totalPrice / totalOriginalPrice) * 100,
               );
+              console.log("免配送商品", shippingFreeProducts);
 
               return (
                 <div
@@ -956,8 +985,9 @@ function CartStepOne() {
                   <input
                     className="form-check-input rounded-1 max-w-20 max-h-20 ms-0 mt-0 border-gray-500 border-2 box-shadow-none"
                     type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
+                    id="shippingFreeCheck"
+                    checked={isNoticeChecked}
+                    onChange={(e) => setIsNoticeChecked(e.target.checked)}
                   />
                 </div>
               </div>
@@ -965,16 +995,18 @@ function CartStepOne() {
               <div>
                 <div>
                   <p className="fs-8 fs-md-6 text-gray-950">
-                    若您有購買健身課程相關服務或入場方案(免費配送商品)。
+                    若您有購買健身課程相關服務或入場方案 ( 免配送商品 )。
                   </p>
                 </div>
                 <div>
                   <p className="fs-8 fs-md-6 text-gray-950">
-                    結帳完成後，請務必治實體門市櫃台出示訂單編號，並辦理相關手續
+                    結帳完成後，請務必至實體門市櫃台出示訂單編號，並辦理相關手續
                   </p>
                 </div>
                 <div>
-                  <p className="fs-8 text-gray-300">( 請攜帶身分證、健保卡 )</p>
+                  <p className="fs-8 text-primary-400">
+                    ( 請攜帶身分證、健保卡 )
+                  </p>
                 </div>
               </div>
             </div>
@@ -983,12 +1015,14 @@ function CartStepOne() {
               <button className="mb-6 mb-md-0 me-md-6 px-9 py-2 py-md-3 fill-btn btn fs-7 fw-bold  flex-fill border-radius-12">
                 繼續購物
               </button>
-              <a
+              <button
+                type="button"
                 className="me-md-6 py-2 px-9 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold flex-fill border-radius-12"
-                href="cart_step_two.html"
+                disabled={isCartEmpty}
+                onClick={handleStartCheckout}
               >
                 開始結帳
-              </a>
+              </button>
             </div>
           </div>
         </section>
