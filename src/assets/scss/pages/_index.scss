@@ -368,16 +368,16 @@
   }
 }
 
-/* 教練團隊 */
+/* Swiper教練團隊 */
 
-.coachs{
+.coach{
   padding-top: 100px;
   padding-bottom: 100px;
   background-color: #232733;
 }
 
 @media (max-width: 992px) {
-    .coachs{
+    .coach{
       padding-top: 32px;
       padding-bottom: 68px;
   }
@@ -386,7 +386,7 @@
 // Swiper輪播
 
 .swiper-slide {
-  width: 100%; 
+  width: 50%; 
   flex-shrink: 0;
 }
 
@@ -402,7 +402,7 @@
   }
 }
 
-// 教練名牌
+// Swiper教練名牌
 
 .coach-name{
   display: flex;

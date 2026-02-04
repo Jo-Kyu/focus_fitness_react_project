@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from 'swiper/modules';
 import axios from "axios";
-
+import "swiper/css";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
-function Home() {
   // 光暈資料
   const lightsData = [
     {
@@ -90,6 +91,53 @@ function Home() {
     }
   ];
 
+  // 教練團隊資料
+  const coachData=[
+    {
+      coachId:1,
+      coachName:"Hank",
+      location:"復興店｜運動按摩師",
+      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(1).png?raw=true"
+    },
+    {
+      coachId:2,
+      coachName:"Max",
+      location:"忠孝店｜飛輪教練",
+      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(2).png?raw=true" 
+    },
+    {
+      coachId:3,
+      coachName:"Sam",
+      location:"忠孝店｜有氧教練",
+      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(3).png?raw=true"
+    },
+    {
+      coachId:4,
+      coachName:"Sandy",
+      location:"中山店｜啞鈴教練",
+      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(4).png?raw=true"
+    },
+    {
+      coachId:5,
+      coachName:"Cindy",
+      location:"光復店｜核心訓練師",
+      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(5).png?raw=true"
+    },
+    {
+      coachId:6,
+      coachName:"Tiffany",
+      location:"忠孝店｜拳擊教練",
+      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(6).png?raw=true" 
+    },
+    {
+      coachId:7,
+      coachName:"Mandy",
+      location:"忠孝店｜瑜伽平衡教練",
+      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%EF%BC%887%EF%BC%89.png?raw=true" 
+    }
+  ];
+
+function Home() {
   const [hotCourse, setHotCourse]=useState([]);
   const [hotEquip, setHotEquip]=useState([]);
 
@@ -98,7 +146,7 @@ function Home() {
       try{
         const res=await axios.get(`${baseUrl}/v2/api/${path}/products/all`);
         console.log(res?.data?.products);
-        const hotCourseData = res?.data?.products?.filter(product=>product.category==="課程")?.slice(2,5);
+        const hotCourseData = res?.data?.products?.filter(product=>product.category==="課程")?.slice(0,3);
         const hotEquipData = res?.data?.products?.filter(product=>product.category!=="課程" && product.is_hot===true);
         setHotCourse(hotCourseData);
         setHotEquip(hotEquipData);
@@ -108,11 +156,10 @@ function Home() {
     };
     getProducts();
   },[])
-
     
   return (
   <>
-   {/* 背景輪播區塊   */}
+   {/* header輪播區塊   */}
     <header id="carouselExampleCaptions" className="carousel slide">
         <div className="carousel-indicators">
           <div className="container d-flex justify-content-center justify-content-lg-start">
@@ -121,7 +168,7 @@ function Home() {
             <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
           </div>
         </div>
-        {/* 背景圖片 */}
+        {/* header背景圖片 */}
         <div className="carousel-inner">
             <div className="carousel-item active">
                 <div className="carousel-caption img-slide1">
@@ -215,14 +262,15 @@ function Home() {
         </div>
       </section>
 
-      {/* 卡片區 */}
+      {/* 全方位專注健身服務卡片 */}
       <section className="service-cards">
         <div className="container card-gap">
           {
             serviceCardsData.map((serviceCard,index)=>{
               const isReverse = index % 2 === 0;
 
-              return (<div className="card d-flex flex-column flex-lg-row justify-content-between bg-transparent border-0" key={serviceCard.cardNumber}>
+              return (
+                      <div className="card d-flex flex-column flex-lg-row justify-content-between bg-transparent border-0" key={serviceCard.cardNumber}>
                         <div className={`card-body order-1 order-lg-${isReverse ? "0" : "1"} p-0`}>
                           <h5 className="card-title fs-5 fs-lg-10 fw-bold text-primary-400 mb-6 mb-lg-8">{serviceCard.title}</h5>
                           <p className="card-text fs-8 fs-lg-5 fw-normal text-gray-950 mb-6 mb-lg-8">{serviceCard.description}</p>
@@ -232,7 +280,8 @@ function Home() {
                           <img className="card-img-top card-img-service" src={serviceCard.imgUrl} alt={serviceCard.title}/>
                           <div className="number-cube position-absolute top-0 start-0">{serviceCard.cardNumber}</div>
                         </div>
-                      </div>);
+                      </div>
+                      );
             })
           }          
         </div>
@@ -257,19 +306,23 @@ function Home() {
               {/* 熱門課程卡片 */}
               {
                 hotCourse.map((course)=>{
-                  return (<div className="col-10 col-lg-4" key={course.id}>
+                  return (
+                          <div className="col-10 col-lg-4" key={course.id}>
                             <a href="#" className="d-block h-100 text-decoration-none">
                               <div className="card bg-blue-600 h-100 border-0">
                                 <img src={course.imageUrl} className="card-img-top" alt={course.title}/>
                                 <div className="card-body p-7 d-flex flex-column">
                                   <h5 className="card-title fs-5 fs-lg-4 fw-bold text-gray-950 mb-6">{course.title}</h5>
                                   <p className="card-text fs-5 fs-lg-4 fw-bold text-gray-950 mt-auto">{`$${course.price}${course.unit}`}
-                                    <span className="fs-7 fw-bold ms-6 text-gray-500 text-decoration-line-through">{`$${course.origin_price}`}</span>
+                                    <span className="fs-7 fw-bold ms-6 text-gray-500 text-decoration-line-through">
+                                      {`$${course.origin_price}`}
+                                    </span>
                                   </p>
                                 </div>
                               </div>
                             </a>
-                          </div>);
+                          </div>
+                          );
                 })
               }
             </div>
@@ -286,7 +339,8 @@ function Home() {
               {/* 熱門裝備卡片 */}
               {
                 hotEquip.map((equip)=>{
-                  return (<div className="col-10 col-lg-4" key={equip.id}>
+                  return (
+                          <div className="col-10 col-lg-4" key={equip.id}>
                             <a href="#" className="d-block h-100 text-decoration-none">
                               <div className="card bg-blue-600 h-100 border-0">
                                 <img src={equip.imageUrl} className="card-img-top" alt={equip.title}/>
@@ -296,12 +350,15 @@ function Home() {
                                     <p className="card-text fs-5 fs-lg-4 fw-bold text-gray-950 mt-auto">{`$${equip.price}`}
                                       <span className="fs-7 fw-bold ms-6 text-gray-500 text-decoration-line-through">{`$${equip.origin_price}`}</span>
                                     </p>
-                                    <span className="badge fs-9 fs-md-8 text-warning-normal fw-bold border rounded-3 border-warning-normal">{`${Math.round((equip.price / equip.origin_price * 100))}折`}</span>
+                                    <span className="badge fs-9 fs-md-8 text-warning-normal fw-bold border rounded-3 border-warning-normal">
+                                      {`${Math.round((equip.price / equip.origin_price * 100))}折`}
+                                    </span>
                                   </div>
                                 </div>
                               </div>
                             </a>
-                          </div>);
+                          </div>
+                          );
                 })
               }
             </div>
@@ -310,70 +367,54 @@ function Home() {
       </section>
 
       {/* 教練團隊 */}
-      {/* <section className="coachs">
+      <section className="coach">
         <div className="container">
           <div className="d-flex flex-column justify-content-center align-items-center text-center mb-4 mb-lg-11">
             <p className="sub-topics mb-6 mb-lg-3">/  Team  /</p>
             <h3 className="fs-3 fs-lg-1 text-gray-950 fw-bold">教練團隊</h3>
           </div>
-        </div> */}
-          {/* Slider main container */}
-          {/* <div className="swiper"> */}
-            {/* Additional required wrapper */}
-            {/* <div className="swiper-wrapper"> */}
-              {/* Slides */}
-              {/* <div className="swiper-slide">
-                <img src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(1).png?raw=true" alt="教練1"/>
-                <div className="coach-name p-2 p-lg-6">
-                  <p className="fs-lg-8 fw-bold text-gray-950 mb-1">復興店｜運動按摩師</p>
-                  <h5 className="fs-3 fw-bold text-primary-400">Hank</h5>
-                </div>
-              </div>
-              <div className="swiper-slide">
-                <img src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(2).png?raw=true" alt="教練2"/>
-                <div className="coach-name p-2 p-lg-6">
-                  <p className="fs-lg-8 fw-bold text-gray-950 mb-1">忠孝店｜飛輪教練</p>
-                  <h5 className="fs-3 fw-bold text-primary-400">Max</h5>
-                </div>
-              </div>
-              <div className="swiper-slide">
-                <img src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(3).png?raw=true" alt="教練3"/>
-                <div className="coach-name p-2 p-lg-6">
-                  <p className="fs-lg-8 fw-bold text-gray-950 mb-1">忠孝店｜有氧教練</p>
-                  <h5 className="fs-3 fw-bold text-primary-400">Sam</h5>
-                </div>
-              </div>
-              <div className="swiper-slide">
-                <img src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(4).png?raw=true" alt="教練4"/>
-                <div className="coach-name p-2 p-lg-6">
-                  <p className="fs-lg-8 fw-bold text-gray-950 mb-1">中山店｜啞鈴教練</p>
-                  <h5 className="fs-3 fw-bold text-primary-400">Sandy</h5>
-                </div>
-              </div>
-              <div className="swiper-slide">
-                <img src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(5).png?raw=true" alt="教練5"/>
-                <div className="coach-name p-2 p-lg-6">
-                  <p className="fs-lg-8 fw-bold text-gray-950 mb-1">光復店｜核心訓練師</p>
-                  <h5 className="fs-3 fw-bold text-primary-400">Cindy</h5>
-                </div>
-              </div>
-              <div className="swiper-slide">
-                <img src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(6).png?raw=true" alt="教練6"/>
-                <div className="coach-name p-2 p-lg-6">
-                  <p className="fs-lg-8 fw-bold text-gray-950 mb-1">忠孝店｜拳擊教練</p>
-                  <h5 className="fs-3 fw-bold text-primary-400">Tiffany</h5>
-                </div>
-              </div>
-              <div className="swiper-slide">
-                <img src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%EF%BC%887%EF%BC%89.png?raw=true" alt="教練7"/>
-                <div className="coach-name p-2 p-lg-6">
-                  <p className="fs-lg-8 fw-bold text-gray-950 mb-1">忠孝店｜瑜伽平衡教練</p>
-                  <h5 className="fs-3 fw-bold text-primary-400">Mandy</h5>
-                </div>
-              </div>
-            </div>
-          </div>
-      </section> */}
+        </div>
+        {/* 教練團隊SwiperSlider */}
+        <Swiper
+          modules={[Autoplay]}
+          loop={true}
+          slidesPerView={2}
+          spaceBetween={10}
+          breakpoints={{
+            375: {
+              slidesPerView: "auto", // 自動根據 slide 寬度
+              spaceBetween: -120
+            },
+            576: {
+              slidesPerView: "auto",
+              spaceBetween: -150
+            },
+            992: {
+              slidesPerView: "auto",
+              spaceBetween: -200
+            }
+          }}
+          autoplay={{
+            delay: 3000, // 每 3 秒切換
+            disableOnInteraction: false, // 使用者滑動後仍繼續自動播放
+            pauseOnMouseEnter: true
+          }}
+        >
+          {
+            coachData.map((coach)=>{
+              return (
+                      <SwiperSlide className="swiper-slide" key={coach.coachId}>
+                          <img src={coach.imgUrl} alt={coach.coachName}/>
+                          <div className="coach-name p-2 p-lg-6">
+                            <p className="fs-lg-8 fw-bold text-gray-950 mb-1">{coach.location}</p>
+                            <h5 className="fs-3 fw-bold text-primary-400">{coach.coachName}</h5>
+                          </div>
+                      </SwiperSlide>
+                      );
+            })
+          } 
+        </Swiper>
+      </section>
 
       {/* 聯絡資訊 */}
       <section className="info-about">
