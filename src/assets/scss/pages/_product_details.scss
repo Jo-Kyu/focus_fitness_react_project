@@ -310,9 +310,46 @@ input.placeholder-lg::placeholder {
   margin: 0;
 }
 
+// 移除數字上下鍵
 .remove-spin {
   appearance: textfield;
   -moz-appearance: textfield;
+}
+
+// handleAddToCart的吐司樣式
+.handleAddToCartToast {
+  background: #31374d;
+  font-size: 18px;
+  padding: 20px 30px;
+  border-radius: 12px;
+  border: solid 3px #e1ff00;
+  min-width: 300px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: bold;
+}
+
+.confirmButton {
+  background: #ff514f;
+}
+
+.confirmButton:hover,
+.confirmButton:focus {
+  background: #b7273e;
+}
+
+.cancelButton {
+  background: #e1ff00;
+  color: #000000;
+}
+
+.cancelButton:hover,
+.cancelButton:focus {
+  background: #ffc107;
+}
+
+.handleAddToCartToast .swal2-icon {
+  border: none;
 }
 
 // 斷點
@@ -324,6 +361,10 @@ input.placeholder-lg::placeholder {
 
   .max-w-md-822 {
     max-width: 822px;
+  }
+
+  .max-w-md-210 {
+    max-width: 210px;
   }
 
   .max-w-md-318 {
