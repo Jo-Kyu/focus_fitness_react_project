@@ -1,12 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
-import axios from "axios";
 import Ellipse_2 from "../assets/images/index_page/光暈/Ellipse_2.svg";
 
+// 套件
+import axios from "axios";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
@@ -28,6 +31,21 @@ function CartStepOne() {
   const isCartEmpty = cartProducts?.carts?.length === 0;
   // 判斷複選鈕是否已勾
   const [isNoticeChecked, setIsNoticeChecked] = useState(false);
+  const cartIcon = (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 36 36"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="mx-auto"
+    >
+      <path
+        d="M9 30C9 28.3431 10.3431 27 12 27C13.6569 27 15 28.3431 15 30C15 31.6569 13.6569 33 12 33C10.3431 33 9 31.6569 9 30ZM24 30C24 28.3431 25.3431 27 27 27C28.6569 27 30 28.3431 30 30C30 31.6569 28.6569 33 27 33C25.3431 33 24 31.6569 24 30ZM4.90283 3C5.23578 3 5.5677 2.99933 5.85059 3.02051C6.07676 3.03745 6.33035 3.07158 6.59619 3.15528L6.86572 3.25635L7.05469 3.34717C7.42358 3.5422 7.74694 3.81262 8.00537 4.13965L8.12988 4.30811L8.27783 4.5542C8.40826 4.80001 8.48822 5.04272 8.5459 5.26172C8.618 5.53562 8.67754 5.86261 8.73779 6.18897L8.97949 7.5H28.4824C28.9703 7.5 29.4353 7.49845 29.8184 7.53223C30.2137 7.56711 30.6936 7.65056 31.1543 7.92627C31.7739 8.29729 32.245 8.88168 32.4697 9.57715C32.6349 10.0884 32.6066 10.5749 32.5518 10.9673C32.4985 11.3482 32.3932 11.8007 32.2837 12.2754V12.2769L29.9297 22.4766L29.9253 22.4971L29.9238 22.5015C29.854 22.8043 29.7845 23.1075 29.7056 23.3628C29.6193 23.6416 29.494 23.958 29.269 24.2666C28.9526 24.7006 28.5247 25.0461 28.0239 25.2598C27.672 25.4099 27.3338 25.4597 27.0425 25.481C26.9061 25.4909 26.7581 25.4963 26.6045 25.4985L26.1328 25.5H10.5C9.77665 25.5 9.15625 24.9838 9.0249 24.2725L5.7876 6.73389C5.71928 6.36381 5.6809 6.16642 5.64404 6.02637C5.64282 6.02173 5.64079 6.01739 5.63965 6.01319C5.63548 6.01284 5.63103 6.01206 5.62647 6.01172C5.48138 6.00087 5.28015 6 4.90283 6H4.5C3.67157 6 3 5.32843 3 4.5C3 3.67158 3.67157 3 4.5 3H4.90283ZM11.748 22.5H26.1328C26.4943 22.5 26.6861 22.4984 26.8242 22.4883C26.8278 22.488 26.8312 22.4871 26.8345 22.4868C26.8355 22.4834 26.8377 22.4802 26.8389 22.4766C26.8796 22.3449 26.9233 22.1587 27.0044 21.8071L27.0059 21.7998L29.3599 11.603V11.6001C29.4816 11.0728 29.5503 10.7722 29.5811 10.5527C29.5825 10.5427 29.5814 10.5324 29.5825 10.5234C29.5738 10.5226 29.5645 10.5214 29.5547 10.5205C29.3342 10.5011 29.0251 10.5 28.4824 10.5H9.5332L11.748 22.5Z"
+        fill="#e1ff00"
+      />
+    </svg>
+  );
 
   // 呼叫取得購物車列表、呼叫取的所有商品
   useEffect(() => {
@@ -91,33 +109,110 @@ function CartStepOne() {
 
   // 刪除購物車單一商品事件處理函式(網路請求API)
   function handleDelProduct(delProductId) {
-    axios
-      .delete(`${baseUrl}/v2/api/${path}/cart/${delProductId}`)
-      .then((res) => {
-        getCartProducts();
-        console.log("刪除特定商品成功");
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log("刪除特定商品失敗");
-        console.dir(err);
-      });
+    Swal.fire({
+      title: "你確定要刪除這個商品嗎？",
+      text: "刪除後無法恢復！",
+      iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+</svg>`,
+      showCancelButton: true, // 顯示取消按鈕
+      confirmButtonText: "刪除！",
+      cancelButtonText: "取消！",
+
+      customClass: {
+        popup: "handleAddToCartToast",
+        confirmButton: "confirmButton",
+        cancelButton: "cancelButton",
+      },
+    }).then((res) => {
+      if (res.isConfirmed) {
+        axios
+          .delete(`${baseUrl}/v2/api/${path}/cart/${delProductId}`)
+          .then((res) => {
+            getCartProducts();
+            Swal.fire({
+              title: "刪除成功 !",
+              text: "已刪除商品 !",
+              iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+              <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/>
+            </svg>`,
+              showConfirmButton: false,
+              timer: 800,
+              customClass: {
+                popup: "handleAddToCartToast",
+              },
+            });
+            console.log("刪除特定商品成功");
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log("刪除特定商品失敗");
+            console.dir(err);
+          });
+      }
+    });
   }
 
   // 刪除購物車全部商品事件處理函式(網路請求API)
   function handleDelAllProducts() {
-    axios
-      .delete(`${baseUrl}/v2/api/${path}/carts`)
-      .then((res) => {
-        getCartProducts();
-        console.log("刪除全部商品成功");
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log("刪除全部商品失敗");
-        console.dir(err);
-      });
+    Swal.fire({
+      title: "你確定要刪除這個商品嗎？",
+      text: "刪除後無法恢復！",
+      iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+</svg>`,
+      showCancelButton: true, // 顯示取消按鈕
+      confirmButtonText: "刪除！",
+      cancelButtonText: "取消！",
+
+      customClass: {
+        popup: "handleAddToCartToast",
+        confirmButton: "confirmButton",
+        cancelButton: "cancelButton",
+      },
+    }).then((res) => {
+      if (res.isConfirmed) {
+        axios
+          .delete(`${baseUrl}/v2/api/${path}/carts`)
+          .then((res) => {
+            getCartProducts();
+            Swal.fire({
+              title: "刪除成功 !",
+              text: "已刪除商品 !",
+              iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+              <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/>
+            </svg>`,
+              showConfirmButton: false,
+              timer: 800,
+              customClass: {
+                popup: "handleAddToCartToast",
+              },
+            });
+            console.log("刪除全部商品成功");
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log("刪除全部商品失敗");
+            console.dir(err);
+          });
+      }
+    });
   }
+
+  // 刪除購物車全部商品事件處理函式(網路請求API)
+  // function handleDelAllProducts() {
+  //   axios
+  //     .delete(`${baseUrl}/v2/api/${path}/carts`)
+  //     .then((res) => {
+  //       getCartProducts();
+  //       console.log("刪除全部商品成功");
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log("刪除全部商品失敗");
+  //       console.dir(err);
+  //     });
+  // }
 
   // 開始結帳事件處理函式
   function handleStartCheckout() {
@@ -227,7 +322,41 @@ function CartStepOne() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setIsFavorite((prev) => !prev);
+                const newFavorite = !isFavorite;
+                setIsFavorite(newFavorite);
+                if (newFavorite) {
+                  toast.success("已加入收藏", {
+                    className: "handleAddToCartToast",
+                    icon: (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="36"
+                        height="37"
+                        fill="#e1ff00"
+                        stroke="#e1ff00"
+                        viewBox="0 0 16 20"
+                      >
+                        <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                      </svg>
+                    ),
+                  });
+                } else {
+                  toast.error("已取消收藏", {
+                    className: "handleAddToCartToast",
+                    icon: (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="36"
+                        height="36"
+                        fill="#ff514f"
+                        class="bi bi-x-square-fill"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708" />
+                      </svg>
+                    ),
+                  });
+                }
               }}
             >
               <svg
@@ -312,7 +441,29 @@ function CartStepOne() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setIsFavorite((prev) => !prev);
+                const newFavorite = !isFavorite;
+                setIsFavorite(newFavorite);
+                if (newFavorite) {
+                  toast.success("已加入收藏", {
+                    className: "handleAddToCartToast",
+                    icon: (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="36"
+                        height="37"
+                        fill="#e1ff00"
+                        stroke="#e1ff00"
+                        viewBox="0 0 16 20"
+                      >
+                        <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                      </svg>
+                    ),
+                  });
+                } else {
+                  toast.error("已取消收藏", {
+                    className: "handleAddToCartToast",
+                  });
+                }
               }}
             >
               <svg
@@ -577,13 +728,17 @@ function CartStepOne() {
                         <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 my-3">
                           <button
                             className="btn p-2 border-0 text-white fs-2"
-                            onClick={() =>
+                            onClick={() => {
                               handleCartProductNum(
                                 cartProduct?.id,
                                 cartProduct?.product_id,
                                 cartProduct?.qty - 1,
-                              )
-                            }
+                              );
+                              toast.success(`商品數量已減少 1`, {
+                                className: "handleAddToCartToast",
+                                icon: cartIcon,
+                              });
+                            }}
                           >
                             -
                           </button>
@@ -595,13 +750,17 @@ function CartStepOne() {
                           />
                           <button
                             className="btn p-2 border-0 text-white fs-2"
-                            onClick={() =>
+                            onClick={() => {
                               handleCartProductNum(
                                 cartProduct?.id,
                                 cartProduct?.product_id,
                                 cartProduct?.qty + 1,
-                              )
-                            }
+                              );
+                              toast.success(`商品數量已增加 1`, {
+                                className: "handleAddToCartToast",
+                                icon: cartIcon,
+                              });
+                            }}
                           >
                             +
                           </button>
@@ -789,13 +948,17 @@ function CartStepOne() {
                         <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 my-3">
                           <button
                             className="btn p-2 border-0 text-white fs-2"
-                            onClick={() =>
+                            onClick={() => {
                               handleCartProductNum(
                                 cartProduct?.id,
                                 cartProduct?.product_id,
                                 cartProduct?.qty - 1,
-                              )
-                            }
+                              );
+                              toast.success(`商品數量已減少 1`, {
+                                className: "handleAddToCartToast",
+                                icon: cartIcon,
+                              });
+                            }}
                           >
                             -
                           </button>
@@ -807,13 +970,17 @@ function CartStepOne() {
                           />
                           <button
                             className="btn p-2 border-0 text-white fs-2"
-                            onClick={() =>
+                            onClick={() => {
                               handleCartProductNum(
                                 cartProduct?.id,
                                 cartProduct?.product_id,
                                 cartProduct?.qty + 1,
-                              )
-                            }
+                              );
+                              toast.success(`商品數量已增加 1`, {
+                                className: "handleAddToCartToast",
+                                icon: cartIcon,
+                              });
+                            }}
                           >
                             +
                           </button>
@@ -987,7 +1154,42 @@ function CartStepOne() {
                     type="checkbox"
                     id="shippingFreeCheck"
                     checked={isNoticeChecked}
-                    onChange={(e) => setIsNoticeChecked(e.target.checked)}
+                    onChange={(e) => {
+                      setIsNoticeChecked(e.target.checked);
+                      if (!isNoticeChecked) {
+                        toast.success("已勾選購物須知 !", {
+                          className: "handleAddToCartToast",
+                          icon: (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="36"
+                              height="36"
+                              fill="#e1ff00"
+                              class="bi bi-check-square-fill"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
+                            </svg>
+                          ),
+                        });
+                      } else {
+                        toast.error("已取消勾選購物須知", {
+                          className: "handleAddToCartToast",
+                          icon: (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="36"
+                              height="36"
+                              fill="#ff514f"
+                              class="bi bi-x-square-fill"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708" />
+                            </svg>
+                          ),
+                        });
+                      }
+                    }}
                   />
                 </div>
               </div>
