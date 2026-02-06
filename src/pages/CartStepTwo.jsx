@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import Ellipse_2 from "../assets/images/index_page/光暈/Ellipse_2.svg";
+import Glow from "../components/Glow.jsx";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -146,26 +146,8 @@ function CartStepTwo() {
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
-        <img
-          style={{
-            position: "absolute",
-            top: "-600px",
-            right: "-800px",
-            zIndex: "-100",
-          }}
-          src={Ellipse_2}
-          alt="光暈"
-        />
-        <img
-          style={{
-            position: "absolute",
-            bottom: "-600px",
-            left: "-800px",
-            zIndex: "-100",
-          }}
-          src={Ellipse_2}
-          alt="光暈"
-        />
+        <Glow position="top-right" />
+        <Glow position="bottom-left" />
         {/* 購物車步驟 */}
         <section className="mb-4 mb-md-5 container py-0 px-0 max-w-md-822 max-w-346">
           <ul className="ps-0 mb-0 d-flex justify-content-lg-between justify-content-center">
