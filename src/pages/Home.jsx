@@ -83,10 +83,12 @@ function Home() {
     const getProducts=async()=>{
       try{
         const res=await axios.get(`${baseUrl}/v2/api/${path}/products/all`);
-        console.log(res?.data?.products);
+
+        // 取出熱門課程
         const hotCourseData = res?.data?.products?.filter(product=>product.category==="課程")?.slice(0,3);
-        const hotEquipData = res?.data?.products?.filter(product=>product.category!=="課程" && product.is_hot===true);
         setHotCourse(hotCourseData);
+        // 取出熱門5裝備
+        const hotEquipData = res?.data?.products?.filter(product=>product.category!=="課程" && product.is_hot===true);
         setHotEquip(hotEquipData);
       }catch(error){
         console.log("error:",error.response);
