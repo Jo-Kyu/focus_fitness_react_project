@@ -303,6 +303,10 @@ input.placeholder-lg::placeholder {
   z-index: 100;
 }
 
+.z-n100 {
+  z-index: -100;
+}
+
 // 移除 <input type="number"> 右邊的上下箭頭
 .remove-spin::-webkit-inner-spin-button,
 .remove-spin::-webkit-outer-spin-button {

@@ -3,12 +3,13 @@ import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 
 import App from "./App";
+import CartStepTwo from "./pages/CartStepTwo";
 import "./assets/scss/all.scss";
 import "bootstrap";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     {/* 全域 Toast 掛載 */}
     <Toaster position="top-right" />
-    <App />
+    <CartStepTwo />
   </StrictMode>,
 );
