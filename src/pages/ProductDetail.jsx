@@ -1,16 +1,15 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import Glow from "../components/Glow.jsx";
 import axios from "axios";
-import customer1 from "../assets/images/icons/customer_1.svg";
-import customer2 from "../assets/images/icons/customer_2.svg";
-import customer3 from "../assets/images/icons/customer_3.svg";
-import customer4 from "../assets/images/icons/customer_4.svg";
-import Ellipse_2 from "../assets/images/index_page/光暈/Ellipse_2.svg";
+
+import evaluateCustomerPics from "../data/evaluateCustomerPics";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import toast from "react-hot-toast";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
@@ -18,44 +17,7 @@ const path = import.meta.env.VITE_API_PATH;
 function ProductDetail() {
   // 儲存特定商品資料
   const [specificProduct, setGetSpecificProduct] = useState([]);
-  // 評價卡片資料
-  const evaluateCustomerPics = [
-    {
-      id: 1,
-      img: customer1,
-      name: "Alex Lee",
-      content:
-        " 收到覺得品質非常好，質量好，使用感覺專業，而且出貨速度我覺得算蠻快的，售後服務也蠻好的，老闆很有耐心，客服耐心解答疑問，售後服務到位。總體而言很推！",
-    },
-    {
-      id: 2,
-      img: customer2,
-      name: "Hank Shiau",
-      content:
-        " 我對這次購買的健身器材非常滿意！質量好，使用感覺專業。出貨速度快，讓我能迅速開始健身。客服耐心解答疑問，售後服務到位。總之，這是一個值得推薦的品牌！",
-    },
-    {
-      id: 3,
-      img: customer3,
-      name: "Andy Hsu",
-      content:
-        " 在FOCUS商城購買的健身產品讓我驚喜！質量一流，使用舒適，完全符合需求。出貨速度快，客服友善，耐心解答問題。總的來說，這是一個值得信賴的品牌，會再回購！",
-    },
-    {
-      id: 4,
-      img: customer4,
-      name: "Benson Tsai",
-      content:
-        " 我最近購買的健身器材讓我非常滿意！質量超出預期，感覺耐用。出貨速度快，幾乎是下單後就收到了。客服回應迅速，專業且用心。總之，這次購物體驗愉快，強烈推薦！",
-    },
-    {
-      id: 5,
-      img: customer4,
-      name: "Benson Tsai",
-      content:
-        " 我最近購買的健身器材讓我非常滿意！質量超出預期，感覺耐用。出貨速度快，幾乎是下單後就收到了。客服回應迅速，專業且用心。總之，這次購物體驗愉快，強烈推薦！",
-    },
-  ];
+
   // 顯示圖片
   const [activeImg, setActiveImg] = useState([]);
   // 儲存商品細節的商品preQty增減值
@@ -68,6 +30,27 @@ function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(null);
   // 被選中的尺寸
   const [selectedSize, setSelectedSize] = useState(null);
+  const cartIcon = (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 36 36"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="mx-auto"
+    >
+      <path
+        d="M9 30C9 28.3431 10.3431 27 12 27C13.6569 27 15 28.3431 15 30C15 31.6569 13.6569 33 12 33C10.3431 33 9 31.6569 9 30ZM24 30C24 28.3431 25.3431 27 27 27C28.6569 27 30 28.3431 30 30C30 31.6569 28.6569 33 27 33C25.3431 33 24 31.6569 24 30ZM4.90283 3C5.23578 3 5.5677 2.99933 5.85059 3.02051C6.07676 3.03745 6.33035 3.07158 6.59619 3.15528L6.86572 3.25635L7.05469 3.34717C7.42358 3.5422 7.74694 3.81262 8.00537 4.13965L8.12988 4.30811L8.27783 4.5542C8.40826 4.80001 8.48822 5.04272 8.5459 5.26172C8.618 5.53562 8.67754 5.86261 8.73779 6.18897L8.97949 7.5H28.4824C28.9703 7.5 29.4353 7.49845 29.8184 7.53223C30.2137 7.56711 30.6936 7.65056 31.1543 7.92627C31.7739 8.29729 32.245 8.88168 32.4697 9.57715C32.6349 10.0884 32.6066 10.5749 32.5518 10.9673C32.4985 11.3482 32.3932 11.8007 32.2837 12.2754V12.2769L29.9297 22.4766L29.9253 22.4971L29.9238 22.5015C29.854 22.8043 29.7845 23.1075 29.7056 23.3628C29.6193 23.6416 29.494 23.958 29.269 24.2666C28.9526 24.7006 28.5247 25.0461 28.0239 25.2598C27.672 25.4099 27.3338 25.4597 27.0425 25.481C26.9061 25.4909 26.7581 25.4963 26.6045 25.4985L26.1328 25.5H10.5C9.77665 25.5 9.15625 24.9838 9.0249 24.2725L5.7876 6.73389C5.71928 6.36381 5.6809 6.16642 5.64404 6.02637C5.64282 6.02173 5.64079 6.01739 5.63965 6.01319C5.63548 6.01284 5.63103 6.01206 5.62647 6.01172C5.48138 6.00087 5.28015 6 4.90283 6H4.5C3.67157 6 3 5.32843 3 4.5C3 3.67158 3.67157 3 4.5 3H4.90283ZM11.748 22.5H26.1328C26.4943 22.5 26.6861 22.4984 26.8242 22.4883C26.8278 22.488 26.8312 22.4871 26.8345 22.4868C26.8355 22.4834 26.8377 22.4802 26.8389 22.4766C26.8796 22.3449 26.9233 22.1587 27.0044 21.8071L27.0059 21.7998L29.3599 11.603V11.6001C29.4816 11.0728 29.5503 10.7722 29.5811 10.5527C29.5825 10.5427 29.5814 10.5324 29.5825 10.5234C29.5738 10.5226 29.5645 10.5214 29.5547 10.5205C29.3342 10.5011 29.0251 10.5 28.4824 10.5H9.5332L11.748 22.5Z"
+        fill="#e1ff00"
+      />
+    </svg>
+  );
+  const relatedProducts = allProducts.filter((allProduct) => {
+    return (
+      allProduct.category === specificProduct.category &&
+      allProduct.id !== specificProduct.id
+    );
+  });
 
   // 呼叫取得所有商品、呼叫取得特定商品
   useEffect(() => {
@@ -85,7 +68,7 @@ function ProductDetail() {
     }
   }, [specificProduct]);
 
-  // 預設第一章圖片為展示圖片
+  // 預設第一張圖片為展示圖片
   useEffect(() => {
     if (specificProduct.imagesUrl?.length) {
       setActiveImg(specificProduct.imagesUrl[0]);
@@ -94,7 +77,7 @@ function ProductDetail() {
 
   // 取得特定商品(get網路請求)
   function getSpecificProduct() {
-    const dataId = ["-Oj8zc-5dcvXGxq_Hvm9"];
+    const dataId = ["-OkZiYf3HWry18AEw1W5"];
 
     axios
       .get(`${baseUrl}/v2/api/${path}/product/${dataId}`)
@@ -147,7 +130,43 @@ function ProductDetail() {
 
   // 收藏事件處理涵式
   const handleFavorite = () => {
-    setFavorite(!isfavorite);
+    const newFavorite = !isfavorite;
+
+    setFavorite(newFavorite);
+
+    if (newFavorite) {
+      toast.success("收藏商品成功！", {
+        className: "handleAddToCartToast",
+        icon: (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="36"
+            height="37"
+            fill="#e1ff00"
+            stroke="#e1ff00"
+            viewBox="0 0 16 20"
+          >
+            <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+          </svg>
+        ),
+      });
+    } else {
+      toast.error("已取消收藏", {
+        className: "handleAddToCartToast",
+        icon: (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="36"
+            height="36"
+            fill="#ff514f"
+            class="bi bi-x-square-fill"
+            viewBox="0 0 16 16"
+          >
+            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708" />
+          </svg>
+        ),
+      });
+    }
   };
 
   // 加入購物車事件處理函式(網路請求API)
@@ -162,14 +181,38 @@ function ProductDetail() {
         }),
       },
     };
-    axios
+    return axios
       .post(`${baseUrl}/v2/api/${path}/cart`, productAddtoCart)
       .then((res) => {
+        toast.success("加入購物車成功！", {
+          className: "handleAddToCartToast",
+          icon: cartIcon,
+        });
         console.log("商品加入購物車成功");
+        console.log(res);
+        return res;
+      })
+      .catch((err) => {
+        toast.error("加入購物車失敗！", {
+          className: "handleAddToCartToast",
+        });
+        console.log("商品加入購物車失敗");
+        console.dir(err);
+        throw err;
+      });
+  }
+
+  // 直接購買事件處理函式(網路請求API)
+  function handleDirectBuy() {
+    handleAddToCart(specificProduct.id, productQty)
+      .then((res) => {
+        // 加入購物車成功後跳轉
+        // navigate("/cart/step1");
+        console.log("商品直接加入購物車成功");
         console.log(res);
       })
       .catch((err) => {
-        console.log("商品加入購物車失敗");
+        console.log("商品直接加入購物車失敗");
         console.dir(err);
       });
   }
@@ -212,7 +255,41 @@ function ProductDetail() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setIsFavorite((prev) => !prev);
+                const newFavorite = !isFavorite;
+                setIsFavorite(newFavorite);
+                if (newFavorite) {
+                  toast.success("已加入收藏", {
+                    className: "handleAddToCartToast",
+                    icon: (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="36"
+                        height="37"
+                        fill="#e1ff00"
+                        stroke="#e1ff00"
+                        viewBox="0 0 16 20"
+                      >
+                        <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                      </svg>
+                    ),
+                  });
+                } else {
+                  toast.error("已取消收藏", {
+                    className: "handleAddToCartToast",
+                    icon: (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="36"
+                        height="36"
+                        fill="#ff514f"
+                        class="bi bi-x-square-fill"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708" />
+                      </svg>
+                    ),
+                  });
+                }
               }}
             >
               <svg
@@ -262,26 +339,8 @@ function ProductDetail() {
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
-        <img
-          style={{
-            position: "absolute",
-            top: "-600px",
-            right: "-800px",
-            zIndex: "-100",
-          }}
-          src={Ellipse_2}
-          alt="光暈"
-        />
-        <img
-          style={{
-            position: "absolute",
-            bottom: "-600px",
-            left: "-800px",
-            zIndex: "-100",
-          }}
-          src={Ellipse_2}
-          alt="光暈"
-        />
+        <Glow position="top-right" />
+        <Glow position="bottom-left" />
         {/* 分頁麵包屑 */}
         <section className="p-0 mb-6 mb-md-7 container max-w-1296">
           {/* 導覽列 */}
@@ -564,63 +623,16 @@ function ProductDetail() {
               {/* 商品小圖片，手機板出現 */}
               <div className="mb d-lg-none scroll">
                 <ul className="mb-0 d-flex justify-content-between list-unstyled thumb-list">
-                  <li className="me-6 max-w-111 min-w-111">
-                    <button
-                      className="btn p-0 hover-effect-2 rounded-3 overflow-hidden product-pic-thumb-btn product-pic-img-change-btn carousel-inner"
-                      aria-label="Slide 1"
-                    >
-                      <img
-                        className="max-h-100"
-                        src="../assets/images/product_details_page/Rectangle_58.jpg"
-                        alt=""
-                      />
-                    </button>
-                  </li>
-                  <li className="me-6 max-w-111 min-w-111">
-                    <button
-                      className="btn p-0 hover-effect-2 rounded-3 overflow-hidden product-pic-thumb-btn product-pic-img-change-btn carousel-inner"
-                      aria-label="Slide 1"
-                    >
-                      <img
-                        className="max-h-100"
-                        src="../assets/images/product_details_page/Rectangle 59.jpg"
-                        alt=""
-                      />
-                    </button>
-                  </li>
-                  <li className="me-6 max-w-111 min-w-111">
-                    <button
-                      className="btn p-0 hover-effect-2 rounded-3 overflow-hidden product-pic-thumb-btn product-pic-img-change-btn carousel-inner"
-                      aria-label="Slide 1"
-                    >
-                      <img
-                        className="max-h-100"
-                        src="../assets/images/product_details_page/Rectangle 60.jpg"
-                        alt=""
-                      />
-                    </button>
-                  </li>
-                  <li className="me-6 max-w-111 min-w-111">
-                    <button
-                      className="btn p-0 hover-effect-2 rounded-3 overflow-hidden product-pic-thumb-btn product-pic-img-change-btn carousel-inner"
-                      aria-label="Slide 1"
-                    >
-                      <img
-                        className="max-h-100"
-                        src="../assets/images/product_details_page/Rectangle 61.jpg"
-                        alt=""
-                      />
-                    </button>
-                  </li>
-                  <li className="me-6 max-w-111 min-w-111">
-                    <button className="btn p-0 hover-effect-2 rounded-3 overflow-hidden product-pic-thumb-btn product-pic-img-change-btn carousel-inner">
-                      <img
-                        className="max-h-100"
-                        src="../assets/images/product_details_page/Rectangle 62.jpg"
-                        alt=""
-                      />
-                    </button>
-                  </li>
+                  {specificProduct.imagesUrl?.map((img, index) => (
+                    <li key={index} className="me-6 max-w-111 min-w-111">
+                      <button
+                        className={`btn p-0 hover-effect-2 rounded-3 overflow-hidden ${activeImg === img ? "active" : ""}`}
+                        onClick={() => setActiveImg(img)}
+                      >
+                        <img src={img} alt="" />
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               </div>
               {/* 分享圖示，電腦版出現 */}
@@ -874,12 +886,16 @@ function ProductDetail() {
                     <h3 className="mb-0 fs-6 text-gray-200 fw-medium">數量</h3>
                   </div>
                   {/*商品preQty增減按鈕*/}
-                  <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 my-3">
+                  <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-md-210 w-100 my-3">
                     <button
                       className="btn p-2 border-0 text-white fs-2"
-                      onClick={() =>
-                        setProductQty((preQty) => Math.max(1, preQty - 1))
-                      }
+                      onClick={() => {
+                        setProductQty((preQty) => Math.max(1, preQty - 1));
+                        toast.success(`商品數量已減少 1`, {
+                          className: "handleAddToCartToast",
+                          icon: cartIcon,
+                        });
+                      }}
                     >
                       -
                     </button>
@@ -893,7 +909,13 @@ function ProductDetail() {
                     />
                     <button
                       className="btn p-2 border-0 text-white fs-2"
-                      onClick={() => setProductQty((preQty) => preQty + 1)}
+                      onClick={() => {
+                        setProductQty((preQty) => preQty + 1);
+                        toast.success(`商品數量已增加 1`, {
+                          className: "handleAddToCartToast",
+                          icon: cartIcon,
+                        });
+                      }}
                     >
                       +
                     </button>
@@ -909,7 +931,10 @@ function ProductDetail() {
                   >
                     加入購物車
                   </button>
-                  <button className="me-md-6 py-2 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold fill-btn flex-fill border-radius-12">
+                  <button
+                    className="me-md-6 py-2 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold fill-btn flex-fill border-radius-12"
+                    onClick={handleDirectBuy}
+                  >
                     直接購買
                   </button>
                   {/* 收藏按鈕 */}
@@ -1388,12 +1413,12 @@ function ProductDetail() {
                 nextEl: ".maybeLike-carousel-next",
               }}
             >
-              {allProducts.map((allProduct) => (
+              {relatedProducts.map((relatedProduct) => (
                 <SwiperSlide
                   className="card me-2 me-md-6 rounded-3 bg-blue-600 max-w-210 max-w-md-318 flex-grow-0 flex-shrink-0 hover-effect-3 overflow-hidden"
-                  key={allProduct.id}
+                  key={relatedProduct.id}
                 >
-                  <MaybeLikeCard product={allProduct} />
+                  <MaybeLikeCard product={relatedProduct} />
                 </SwiperSlide>
               ))}
             </Swiper>
