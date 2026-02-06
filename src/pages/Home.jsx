@@ -1,143 +1,227 @@
+// React Hooks
 import { useEffect, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from 'swiper/modules';
+// 第三方套件
 import axios from "axios";
+import * as bootstrap from 'bootstrap';
+import { Autoplay } from 'swiper/modules';
+import { Swiper, SwiperSlide } from "swiper/react";
+// 樣式
 import "swiper/css";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
-  // 光暈資料
-  const lightsData = [
-    {
-      style:{
-        position: "absolute",
-        top: "-650px", 
-        left: "-900px", 
-        zIndex: "-100"
-      },
-      lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg",
-      altText:"光暈"
-    },
-    {
-      style:{
-        position: "absolute",
-        top: "-1000px", 
-        right: "-1000px", 
-        zIndex: "-100"
-      },
-      lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%204.svg",
-      altText:"光暈"
-    },
-    {
-      style:{
-        position: "absolute",
-        top: "2000px", 
-        right: "-1000px", 
-        zIndex: "-100"
-      },
-      lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%203.svg",
-      altText:"光暈"
-    },
-    {
-      style:{
-        position: "absolute",
-        top: "5000px", 
-        left: "-900px", 
-        zIndex: "-100"
-      },
-      lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg",
-      altText:"光暈"
-    }
-  ];
+// 輪播資料
+const carouselData=[
+{
+  topic:"你的健身全配站",
+  demand:"訓練與裝備一次到位",
+  slogan:"一站開練，零煩惱",
+  feature:"開啟一場改變大腦思惟與理想體態的奇幻旅程",
+  backgroundImage:"https://github.com/Jo-Kyu/focuss_fitness_project/blob/dev/assets/images/index_page/banner/Home%20Page1.jpg?raw=true"
+},
+{
+  topic:"專屬計畫",
+  demand:"專業教練全程陪練",
+  slogan:"量身打造，科學訓練",
+  feature:"無論新手還是進階，專業團隊助你達標",
+  backgroundImage:"https://github.com/Jo-Kyu/focuss_fitness_project/blob/dev/assets/images/index_page/banner/Home%20Page2.jpg?raw=true"
+},
+{
+  topic:"嚴選健身裝備",
+  demand:"讓訓練事半功倍",
+  slogan:"專業品質，全面提升",
+  feature:"從重訓到瑜珈，配齊你的每一次健身",
+  backgroundImage:"https://github.com/Jo-Kyu/focuss_fitness_project/blob/dev/assets/images/index_page/banner/Home%20Page3.jpg?raw=true"
+}
+];
 
-  // 服務項目卡片資料
-  const serviceCardsData = [
-    {
-      cardNumber: "01",
-      title: "專項功能訓練",
-      description: "專項功能訓練著重提升身體協調性、穩定性與運動表現。透過針對日常動作模式與運動需求設計的課程，強化核心控制、關節靈活度及肌群協作。每一動作皆引導學員專注目標肌群，減少代償，打造深層肌肉記憶，讓身體在各種情境下展現精準與高效的表現。",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E5%B0%88%E9%A0%85%E5%8A%9F%E8%83%BD%E8%A8%93%E7%B7%B4.jpg?raw=true"
+// 光暈資料
+const lightsData = [
+  {
+    style:{
+      position: "absolute",
+      top: "-650px", 
+      left: "-900px", 
+      zIndex: "-100"
     },
-    {
-      cardNumber: "02",
-      title: "自由重量訓練",
-      description: "自由重量訓練使用槓鈴、啞鈴、壺鈴等器材，提升平衡、協調與神經肌肉控制。透過全身多平面動作，幫助學員專注於肌群發力的細節，建立敏銳的神經連結，強化核心穩定性，並減少不必要的代償與受傷風險，實現功能性與美觀兼備的體態。",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E8%87%AA%E7%94%B1%E9%87%8D%E9%87%8F%E8%A8%93%E7%B7%B4.jpg?raw=true"
+    lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg",
+    altText:"光暈"
+  },
+  {
+    style:{
+      position: "absolute",
+      top: "-1000px", 
+      right: "-1000px", 
+      zIndex: "-100"
     },
-    {
-      cardNumber: "03",
-      title: "機械式器材訓練",
-      description: "機械式器材以固定軌道提供穩定支撐，適合初學者掌握正確動作路徑，也利於進階者進行高強度肌肉刺激。每次訓練皆讓身體逐步建立高效、安全的動作模式。",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E6%A9%9F%E6%A2%B0%E5%BC%8F%E5%99%A8%E6%9D%90%E8%A8%93%E7%B7%B4.jpg?raw=true"
+    lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%204.svg",
+    altText:"光暈"
+  },
+  {
+    style:{
+      position: "absolute",
+      top: "2000px", 
+      right: "-1000px", 
+      zIndex: "-100"
     },
-    {
-      cardNumber: "04",
-      title: "私人/團體教練課程",
-      description: "私人與團體教練課程提供個人化訓練規劃與即時動作調整，讓學員在專業指導下熟悉肌肉拉伸與收縮的完整過程。教練結合科學化訓練與覺察力引導，幫助每位健身者逐步進化，從基礎建立到高階挑戰，穩健達成理想體態。",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E5%9C%98%E9%AB%94%E6%95%99%E7%B7%B4%E8%AA%B2%E7%A8%8B.jpg?raw=true"
+    lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%203.svg",
+    altText:"光暈"
+  },
+  {
+    style:{
+      position: "absolute",
+      top: "5000px", 
+      left: "-900px", 
+      zIndex: "-100"
     },
-    {
-      cardNumber: "05",
-      title: "運動深層按摩服務",
-      description: "筋膜放鬆專注於釋放緊繃肌群與恢復肌肉彈性，提升關節活動度與動作效率。透過專業手法與輔助設備，引導學員覺察身體張力變化，減少運動後代償與受傷風險，讓訓練與放鬆達到完美平衡，加速身體與大腦的修復進程。",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E9%81%8B%E5%8B%95%E6%B7%B1%E5%B1%A4%E6%8C%89%E6%91%A9%E6%9C%8D%E5%8B%99.jpg?raw=true"
-    },
-    {
-      cardNumber: "06",
-      title: "多元入場方案",
-      description: "多元入場方案提供彈性化選擇，從單次體驗到包月會員，滿足不同訓練需求。搭配線上線下資源整合，學員可依訓練階段選擇最適合自己的方案，無縫銜接自主訓練與團體鍛鍊，實現沉浸式健身體驗，讓專注成為日常習慣。",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E5%A4%9A%E5%85%83%E5%85%A5%E5%A0%B4%E6%96%B9%E6%A1%88.jpg?raw=true"
-    }
-  ];
+    lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg",
+    altText:"光暈"
+  }
+];
 
-  // 教練團隊資料
-  const coachData=[
-    {
-      coachId:1,
-      coachName:"Hank",
-      location:"復興店｜運動按摩師",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(1).png?raw=true"
-    },
-    {
-      coachId:2,
-      coachName:"Max",
-      location:"忠孝店｜飛輪教練",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(2).png?raw=true" 
-    },
-    {
-      coachId:3,
-      coachName:"Sam",
-      location:"忠孝店｜有氧教練",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(3).png?raw=true"
-    },
-    {
-      coachId:4,
-      coachName:"Sandy",
-      location:"中山店｜啞鈴教練",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(4).png?raw=true"
-    },
-    {
-      coachId:5,
-      coachName:"Cindy",
-      location:"光復店｜核心訓練師",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(5).png?raw=true"
-    },
-    {
-      coachId:6,
-      coachName:"Tiffany",
-      location:"忠孝店｜拳擊教練",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(6).png?raw=true" 
-    },
-    {
-      coachId:7,
-      coachName:"Mandy",
-      location:"忠孝店｜瑜伽平衡教練",
-      imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%EF%BC%887%EF%BC%89.png?raw=true" 
-    }
-  ];
+// 服務項目卡片資料
+const serviceCardsData = [
+  {
+    cardNumber: "01",
+    title: "專項功能訓練",
+    description: "專項功能訓練著重提升身體協調性、穩定性與運動表現。透過針對日常動作模式與運動需求設計的課程，強化核心控制、關節靈活度及肌群協作。每一動作皆引導學員專注目標肌群，減少代償，打造深層肌肉記憶，讓身體在各種情境下展現精準與高效的表現。",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E5%B0%88%E9%A0%85%E5%8A%9F%E8%83%BD%E8%A8%93%E7%B7%B4.jpg?raw=true"
+  },
+  {
+    cardNumber: "02",
+    title: "自由重量訓練",
+    description: "自由重量訓練使用槓鈴、啞鈴、壺鈴等器材，提升平衡、協調與神經肌肉控制。透過全身多平面動作，幫助學員專注於肌群發力的細節，建立敏銳的神經連結，強化核心穩定性，並減少不必要的代償與受傷風險，實現功能性與美觀兼備的體態。",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E8%87%AA%E7%94%B1%E9%87%8D%E9%87%8F%E8%A8%93%E7%B7%B4.jpg?raw=true"
+  },
+  {
+    cardNumber: "03",
+    title: "機械式器材訓練",
+    description: "機械式器材以固定軌道提供穩定支撐，適合初學者掌握正確動作路徑，也利於進階者進行高強度肌肉刺激。每次訓練皆讓身體逐步建立高效、安全的動作模式。",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E6%A9%9F%E6%A2%B0%E5%BC%8F%E5%99%A8%E6%9D%90%E8%A8%93%E7%B7%B4.jpg?raw=true"
+  },
+  {
+    cardNumber: "04",
+    title: "私人/團體教練課程",
+    description: "私人與團體教練課程提供個人化訓練規劃與即時動作調整，讓學員在專業指導下熟悉肌肉拉伸與收縮的完整過程。教練結合科學化訓練與覺察力引導，幫助每位健身者逐步進化，從基礎建立到高階挑戰，穩健達成理想體態。",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E5%9C%98%E9%AB%94%E6%95%99%E7%B7%B4%E8%AA%B2%E7%A8%8B.jpg?raw=true"
+  },
+  {
+    cardNumber: "05",
+    title: "運動深層按摩服務",
+    description: "筋膜放鬆專注於釋放緊繃肌群與恢復肌肉彈性，提升關節活動度與動作效率。透過專業手法與輔助設備，引導學員覺察身體張力變化，減少運動後代償與受傷風險，讓訓練與放鬆達到完美平衡，加速身體與大腦的修復進程。",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E9%81%8B%E5%8B%95%E6%B7%B1%E5%B1%A4%E6%8C%89%E6%91%A9%E6%9C%8D%E5%8B%99.jpg?raw=true"
+  },
+  {
+    cardNumber: "06",
+    title: "多元入場方案",
+    description: "多元入場方案提供彈性化選擇，從單次體驗到包月會員，滿足不同訓練需求。搭配線上線下資源整合，學員可依訓練階段選擇最適合自己的方案，無縫銜接自主訓練與團體鍛鍊，實現沉浸式健身體驗，讓專注成為日常習慣。",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%9C%8D%E5%8B%99%E9%A0%85%E7%9B%AE/%E5%A4%9A%E5%85%83%E5%85%A5%E5%A0%B4%E6%96%B9%E6%A1%88.jpg?raw=true"
+  }
+];
+
+// 教練團隊資料
+const coachData=[
+  {
+    coachId:1,
+    coachName:"Hank",
+    location:"復興店｜運動按摩師",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(1).png?raw=true"
+  },
+  {
+    coachId:2,
+    coachName:"Max",
+    location:"忠孝店｜飛輪教練",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(2).png?raw=true" 
+  },
+  {
+    coachId:3,
+    coachName:"Sam",
+    location:"忠孝店｜有氧教練",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(3).png?raw=true"
+  },
+  {
+    coachId:4,
+    coachName:"Sandy",
+    location:"中山店｜啞鈴教練",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(4).png?raw=true"
+  },
+  {
+    coachId:5,
+    coachName:"Cindy",
+    location:"光復店｜核心訓練師",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(5).png?raw=true"
+  },
+  {
+    coachId:6,
+    coachName:"Tiffany",
+    location:"忠孝店｜拳擊教練",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(6).png?raw=true" 
+  },
+  {
+    coachId:7,
+    coachName:"Mandy",
+    location:"忠孝店｜瑜伽平衡教練",
+    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%EF%BC%887%EF%BC%89.png?raw=true" 
+  }
+];
 
 function Home() {
+
+  // header輪播區塊生成實體
+  const carouselRef = useRef(null);
+  const carouselInstance = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  
+  useEffect(() => {
+    // 保存 DOM 引用
+    const element = carouselRef.current;
+    
+    if (element && !carouselInstance.current) {
+      // 初始化 Bootstrap Carousel 實體
+      carouselInstance.current = new bootstrap.Carousel(element, {
+        interval: false, // 關閉自動播放，避免與手動控制衝突
+        wrap: true,
+        ride: false
+      });
+
+      // 定義事件處理函數
+      const handleSlide = (e) => {
+        setActiveIndex(e.to);
+      };
+
+      // 監聽滑動完成事件
+      element.addEventListener('slid.bs.carousel', handleSlide);
+
+      // 清理函數：組件卸載時執行
+      return () => {
+        // 移除事件監聽器
+        element.removeEventListener('slid.bs.carousel', handleSlide);
+        
+        // 銷毀 Bootstrap 實體
+        if (carouselInstance.current) {
+          carouselInstance.current.dispose();
+          carouselInstance.current = null;
+        }
+      };
+    }
+  }, []); 
+  
+  const handlePrev = (e) => {
+    e.preventDefault();
+    carouselInstance.current?.prev();
+  };
+  
+  const handleNext = (e) => {
+    e.preventDefault();
+    carouselInstance.current?.next();
+  };
+  
+  const handleTo = (index) => {
+    carouselInstance.current?.to(index);
+  };
+
+  // 取得熱門商品資料
   const [hotCourse, setHotCourse]=useState([]);
   const [hotEquip, setHotEquip]=useState([]);
 
@@ -159,79 +243,73 @@ function Home() {
     
   return (
   <>
-   {/* header輪播區塊   */}
-    <header id="carouselExampleCaptions" className="carousel slide">
+    {/* header輪播區塊   */}
+    <header className="carousel slide" ref={carouselRef}>
         <div className="carousel-indicators">
           <div className="container d-flex justify-content-center justify-content-lg-start">
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button 
+              type="button" 
+              onClick={() => handleTo(0)} 
+              className={activeIndex === 0 ? "active" : ""} 
+              aria-current={activeIndex === 0 ? "true" : "false"}
+            ></button>
+            <button 
+              type="button" 
+              onClick={() => handleTo(1)} 
+              className={activeIndex === 1 ? "active" : ""}
+            ></button>
+            <button 
+              type="button" 
+              onClick={() => handleTo(2)} 
+              className={activeIndex === 2 ? "active" : ""}
+            ></button>
           </div>
         </div>
         {/* header背景圖片 */}
         <div className="carousel-inner">
-            <div className="carousel-item active">
-                <div className="carousel-caption img-slide1">
-                  <div className="container">
-                    <div className="d-flex flex-column align-items-start row-gap-6 row-gap-lg-4 mb-6 mb-lg-4">
-                      <h1 className="header-title text-start text-nowrap">你的健身全配站<br/>
-                          訓練與裝備一次到位
-                      </h1>
-                      <h2 className="header-sub-title text-nowrap">一站開練，零煩惱</h2>
-                      <p className="header-notes text-nowrap">開啟一場改變大腦思惟與理想體態的奇幻旅程</p>
-                    </div>
-                    <div className="d-flex flex-column flex-lg-row row-gap-3 column-gap-lg-3">
-                      <a className="btn serve-btn text-nowrap" type="button" href="product_list.html#">立即購物</a>
-                      <a className="btn serve-btn text-nowrap" type="button">預約服務</a>
-                    </div>
-                  </div>
-                </div>
-            </div>
-            <div className="carousel-item">
-                <div className="carousel-caption img-slide2">
-                  <div className="container">
-                    <div className="d-flex flex-column align-items-start row-gap-6 row-gap-lg-4 mb-6 mb-lg-4">
-                      <h1 className="header-title text-start">專屬計畫<br/>
-                          專業教練全程陪練
-                      </h1>
-                      <h2 className="header-sub-title">量身打造，科學訓練</h2>
-                      <p className="header-notes">無論新手還是進階，專業團隊助你達標</p>
-                    </div>
-                    <div className="d-flex flex-column flex-lg-row row-gap-3 column-gap-lg-3">
-                      <a className="btn serve-btn text-nowrap" type="button" href="product_list.html">立即購物</a>
-                      <a className="btn serve-btn" type="button">預約服務</a>
-                    </div>
-                  </div>
-                </div>
-            </div>
-            <div className="carousel-item">
-                <div className="carousel-caption img-slide3">
-                  <div className="container">
-                    <div className="d-flex flex-column align-items-start row-gap-6 row-gap-lg-4 mb-6 mb-lg-4">
-                      <h1 className="header-title text-start">嚴選健身裝備<br/>
-                          讓訓練事半功倍
-                      </h1>
-                      <h2 className="header-sub-title">專業品質，全面提升</h2>
-                      <p className="header-notes">從重訓到瑜珈，配齊你的每一次健身</p>
-                    </div>
-                    <div className="d-flex flex-column flex-lg-row row-gap-3 column-gap-lg-3">
-                      <a className="btn serve-btn text-nowrap" type="button" href="product_list.html">立即購物</a>
-                      <a className="btn serve-btn" type="button">預約服務</a>
-                    </div>
-                  </div>
-                </div>
-            </div>
+          {
+            carouselData.map((carousel,index)=>{
+              return (
+                        <div className={`carousel-item ${index === 0 ? "active" : ""}`} key={index}>
+                            <div  className="carousel-caption img-all" 
+                                  style={{backgroundImage:`url(${carousel.backgroundImage})`}}
+                            >
+                              <div className="container">
+                                <div className="d-flex flex-column align-items-start row-gap-6 row-gap-lg-4 mb-6 mb-lg-4">
+                                  <h1 className="header-title text-start text-nowrap">{carousel.topic}<br/>
+                                      {carousel.demand}
+                                  </h1>
+                                  <h2 className="header-sub-title text-nowrap">{carousel.slogan}</h2>
+                                  <p className="header-notes text-nowrap">{carousel.feature}</p>
+                                </div>
+                                <div className="d-flex flex-column flex-lg-row row-gap-3 column-gap-lg-3">
+                                  <a  className="btn serve-btn text-nowrap" 
+                                      type="button" 
+                                      href="#">立即購物
+                                  </a>
+                                  <a  className="btn serve-btn text-nowrap" 
+                                      type="button"
+                                      href="#">預約服務
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+              );
+            })
+          }
         </div>
-        <button className="d-none d-lg-block carousel-control-prev top-50 translate-middle-y" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <button className="d-none d-lg-block carousel-control-prev top-50 translate-middle-y" type="button" onClick={handlePrev}>
           <span className="carousel-control-prev-icon" aria-hidden="true"></span>
           <span className="visually-hidden">Previous</span>
         </button>
-        <button className="d-none d-lg-block carousel-control-next top-50 translate-middle-y" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <button className="d-none d-lg-block carousel-control-next top-50 translate-middle-y" type="button" onClick={handleNext}>
           <span className="carousel-control-next-icon" aria-hidden="true"></span>
           <span className="visually-hidden">Next</span>
         </button>
     </header>
 
+    {/* main主要內容 */}
     <main className="padding-style position-relative overflow-hidden">
       {/* 光暈 */}
       {
@@ -267,6 +345,7 @@ function Home() {
         <div className="container card-gap">
           {
             serviceCardsData.map((serviceCard,index)=>{
+              
               const isReverse = index % 2 === 0;
 
               return (
