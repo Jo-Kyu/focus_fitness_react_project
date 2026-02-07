@@ -11,5 +11,5 @@ createRoot(document.getElementById("root")).render(
     {/* 全域 Toast 掛載 */}
     <Toaster position="top-right" />
     <App />
-  </StrictMode>,
+  </StrictMode>
 );

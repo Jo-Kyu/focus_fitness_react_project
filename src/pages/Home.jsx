@@ -1,10 +1,13 @@
 // React Hooks
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
 import BGLight from "../components/BGLight.jsx"
 import CoachSwiper from "../components/CoachSwiper.jsx";
+import AboutUs from "../components/AboutUs.jsx";
+import Map from "../components/Map.jsx";
 
 // 第三方套件
 import axios from "axios";
@@ -20,12 +23,18 @@ const path = import.meta.env.VITE_API_PATH;
 
 function Home() {
 
-  // header輪播區塊生成實體
-
+  // 定義header輪播區塊狀態
   const carouselRef = useRef(null);
   const carouselInstance = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // 定義熱門商品狀態
+  const [hotCourse, setHotCourse]=useState([]);
+  const [hotEquip, setHotEquip]=useState([]);
   
+
+  // header輪播區塊生成實體
+
   useEffect(() => {
     // 保存 DOM 引用
     const element = carouselRef.current;
@@ -50,7 +59,6 @@ function Home() {
       return () => {
         // 移除事件監聽器
         element.removeEventListener('slid.bs.carousel', handleSlide);
-        
         // 銷毀 Bootstrap 實體
         if (carouselInstance.current) {
           carouselInstance.current.dispose();
@@ -59,25 +67,24 @@ function Home() {
       };
     }
   }, []); 
-  
+
+  // 切換上一頁
   const handlePrev = (e) => {
     e.preventDefault();
     carouselInstance.current?.prev();
   };
-  
+  // 切換下一頁
   const handleNext = (e) => {
     e.preventDefault();
     carouselInstance.current?.next();
   };
-  
+  // 輪播指標切換
   const handleTo = (index) => {
     carouselInstance.current?.to(index);
   };
 
-  // 取得熱門商品資料
 
-  const [hotCourse, setHotCourse]=useState([]);
-  const [hotEquip, setHotEquip]=useState([]);
+// 取得熱門商品＆渲染
 
   useEffect(()=>{
     const getProducts=async()=>{
@@ -96,6 +103,29 @@ function Home() {
     };
     getProducts();
   },[])
+
+
+// Contact-Us表單
+
+// 定義表單狀態
+const { reset,
+        register,
+        handleSubmit,
+        formState:{errors}
+      }=useForm({
+        defaultValues:{
+          userName:"",
+          userPhone:"", 
+          appointTime:"",
+          appointService:[]
+        },
+        mode:"onTouched"
+      });
+
+const onSubmit=(data)=>{
+  console.log(data);
+  reset();
+};
     
   return (
   <>
@@ -308,37 +338,77 @@ function Home() {
       <section className="info-about">
         <div className="container">
           {/* About-Us */}
-          <div className="about-us p-7 p-lg-9">
-            <div className="about-us-head">
-              <span className="fs-8 fs-lg-7 text-primary-400 mb-6 mb-lg-3">/  About Us  /</span>
-              <h5 className="fs-3 fs-lg-1 text-gray-950 mb-7 mb-lg-8">關於我們</h5>
-            </div>
-            <div className="about-us-body mt-7 mt-lg-8">
-              <p className="fs-7 fs-lg-4 fw-bold  text-gray-950 mb-6">我們是專注健身</p>
-              <p className="fs-7 fs-lg-4 fw-bold  text-gray-950 mb-4">專注目標肌群，感受動作完整過程，強化專屬肌肉記憶。</p>
-              <div>
-                  <p className="mb-2 mb-lg-3">我們期許每一位來到這裡的健身夥伴，在每一次訓練之前，先確認目標肌群，知道自己這個動作，是要用哪一塊肌肉來完成，避免不必要的代償與受傷。</p>
-                  <p className="mb-2 mb-lg-3">我們相信「專注」，是成為資深健身者的關鍵技能。當你能夠把大腦的專注力完全投注在肌肉感受上，就能產生更強的肌肉記憶，讓神經連結變得敏銳而強化，進一步提升動作效率、減少代償、減少受傷風險、達到肌肉深層刺激。</p>
-                  <p>這就是我們品牌所倡導的健身哲學，透過「專注力」，完成身體與大腦的雙向進化。訓練的不只是身體，更是專注力與內在覺察力。」</p>
-              </div>
-            </div>
-          </div>
+          <AboutUs></AboutUs>
           {/* Contact-Us */}
           <div className="contact-us p-7 p-lg-9">
             <div className="contact-us-head">
               <span className="fs-8 fs-lg-7 text-primary-400 mb-6 mb-lg-3">/  Contact Us  /</span>
               <h5 className="fs-3 fs-lg-1 text-gray-950 mb-7 mb-lg-8">聯絡我們</h5>
             </div>
-            <form className="contact-us-body mt-7 mt-lg-8">
+            <form className="contact-us-body mt-7 mt-lg-8" onSubmit={handleSubmit(onSubmit)}>
               {/* 輸入姓名&電話 */}
               <div className="input-info d-flex flex-column flex-lg-row">
                 <div>
-                  <label htmlFor="exampleInputName" className="form-label fs-8 fw-bold text-gray-950">姓名<span className="start-red">*</span></label>
-                  <input type="text" className="form-control" id="exampleInputName" placeholder="請輸入姓名"/>
+                  <label htmlFor="userName" className="form-label fs-8 fw-bold text-gray-950">
+                    姓名
+                    <span className="start-red">*</span>
+                  </label>
+                  <input 
+                    id="userName" 
+                    type="text" 
+                    placeholder="請輸入姓名"
+                    {...register("userName",
+                      {required:{
+                        value:true,
+                        message:"姓名為必填"
+                      },
+                      minLength: {
+                        value: 2,
+                        message: "姓名至少需要 2 個字元"
+                      },
+                      maxLength: {
+                        value: 50,
+                        message: "姓名不可超過 50 個字元"
+                      },
+                      pattern: {
+                        value: /^[\u4E00-\u9FFF\u3040-\u309F\u30A0-\u30FFa-zA-Z\s\-'.]*$/,
+                        message: "姓名不可包含數字和特殊符號"
+                      }
+                    })}
+                    className={`form-control ${errors.userName && "is-invalid"}`} 
+                  />
+                  {errors.userName && (
+                    <div className="invalid-feedback d-block text-primary-400">
+                      {errors?.userName?.message}
+                    </div>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor="exampleInputPhone" className="form-label fs-8 fw-bold text-gray-950">聯絡電話<span className="start-red">*</span></label>
-                  <input type="tel" className="form-control" id="exampleInputPhone" placeholder="請輸入電話號碼"/>
+                  <label htmlFor="userPhone" className="form-label fs-8 fw-bold text-gray-950">
+                    聯絡電話
+                    <span className="start-red">*</span>
+                  </label>
+                  <input 
+                    id="userPhone"
+                    type="tel" 
+                    placeholder="請輸入電話號碼"
+                    {...register("userPhone",
+                      {required:{
+                        value:true,
+                        message:"聯絡電話為必填"
+                      },
+                      pattern: {
+                        value: /^(09\d{8}|\d{8})$/,
+                        message: "請輸入正確的台灣手機或市話號碼"
+                      }
+                    })}
+                    className={`form-control ${errors.userPhone && "is-invalid"}`}  
+                  />
+                  {errors.userPhone && (
+                    <div className="invalid-feedback d-block text-primary-400">
+                      {errors.userPhone.message}
+                    </div>
+                  )}
                 </div>
               </div>
               {/* 選擇時間 */}
@@ -346,57 +416,165 @@ function Home() {
                 <p className="form-label fs-8 fw-bold text-gray-950">方便聯絡時間<span className="start-red">*</span></p>
                 <div className="d-flex flex-column flex-lg-row column-gap-2 mb-lg-2">
                   <div className="form-check m-0 pt-6 pb-6 w-100">
-                    <input className="form-check-input" type="radio" name="time" id="flexRadioDefault1"/>
-                    <label className="form-check-label fs-6 fw-medium text-gray-950 text-nowrap" htmlFor="flexRadioDefault1">
+                    <input 
+                      id="appointTime1"
+                      type="radio" 
+                      name="appointTime"
+                      value="上午10-12點"
+                      {...register("appointTime",
+                        {required:{
+                          value:true,
+                          message:"請選擇方便聯絡時間"
+                        }})
+                      }
+                      className={`form-check-input ${errors.appointTime && "is-invalid"}`} 
+                    />
+                    <label className="form-check-label fs-6 fw-medium text-gray-950 text-nowrap" htmlFor="appointTime1">
                       上午 10 點 ～ 中午 12 點
                     </label>
                   </div>
                   <div className="form-check m-0 pt-6 pb-6 w-100">
-                    <input className="form-check-input" type="radio" name="time" id="flexRadioDefault2"/>
-                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="flexRadioDefault2">
+                    <input 
+                      id="appointTime2"
+                      type="radio" 
+                      name="appointTime"
+                      value="中午12-13點"
+                      {...register("appointTime",
+                        {required:{
+                          value:true,
+                          message:"請選擇方便聯絡時間"
+                        }})
+                      } 
+                      className={`form-check-input ${errors.appointTime && "is-invalid"}`} 
+                    />
+                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="appointTime2">
                       中午 12 點 ～ 下午 1 點
                     </label>
                   </div>
                 </div>
                 <div className="d-flex flex-column flex-lg-row column-gap-2">
                   <div className="form-check m-0 pt-6 pb-6 w-100">
-                    <input className="form-check-input" type="radio" name="time" id="flexRadioDefault3"/>
-                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="flexRadioDefault3">
+                    <input 
+                      id="appointTime3"
+                      type="radio" 
+                      name="appointTime"
+                      value="下午13-14點"
+                      {...register("appointTime",
+                        {required:{
+                          value:true,
+                          message:"請選擇方便聯絡時間"
+                        }})
+                      } 
+                      className={`form-check-input ${errors.appointTime && "is-invalid"}`} 
+                    />
+                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="appointTime3">
                       下午 1 點 ～ 下午 2 點
                     </label>
                   </div>
                   <div className="form-check m-0 pt-6 pb-6 w-100">
-                    <input className="form-check-input" type="radio" name="time" id="flexRadioDefault4"/>
-                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="flexRadioDefault4">
+                    <input 
+                      id="appointTime4"
+                      type="radio"
+                      name="appointTime"
+                      value="傍晚18-21點"
+                      {...register("appointTime",
+                        {required:{
+                          value:true,
+                          message:"請選擇方便聯絡時間"
+                        }})
+                      } 
+                      className={`form-check-input ${errors.appointTime && "is-invalid"}`} 
+                    />
+                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="appointTime4">
                       傍晚 6 點 ～ 傍晚 9 點
                     </label>
                   </div>
                 </div>
+                {errors.appointTime && (
+                  <div className="invalid-feedback d-block text-primary-400 mt-0">
+                    {errors.appointTime.message}
+                  </div>
+                )}
               </div>
               {/* 選擇方案 */}
               <div className="input-plan mb-6 mb-lg-9">
                 <p className="form-label fs-8 fw-bold text-gray-950">諮詢服務<span className="smaller-gray">（可複選）</span></p>
                 <div className="d-flex flex-column flex-lg-row justify-content-between">
                   <div className="form-check m-0 pt-6 pb-6 pe-104">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="exampleCheck1">私人教練</label>
+                    <input 
+                      id="appointService1"
+                      type="checkbox" 
+                      name="appointService"
+                      value="私人教練"
+                      {...register("appointService", 
+                        { validate: (value) => value.length > 0 || "請至少選一個方案"
+                        })
+                      } 
+                      className={`form-check-input ${errors.appointService && "is-invalid"}`}  
+                    />
+                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="appointService1">
+                      私人教練
+                    </label>
                   </div>
                   <div className="form-check m-0 pt-6 pb-6 pe-104">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck2"/>
-                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="exampleCheck2">團體課程</label>
+                    <input 
+                      id="appointService2"
+                      type="checkbox"
+                      name="appointService"
+                      value="團體課程"
+                      {...register("appointService", 
+                        { validate: (value) => value.length > 0 || "請至少選一個方案"
+                        })
+                      }   
+                      className={`form-check-input ${errors.appointService && "is-invalid"}`}  
+                    />
+                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="appointService2">
+                      團體課程
+                    </label>
                   </div>
                   <div className="form-check m-0 pt-6 pb-6 pe-104">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck4"/>
-                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="exampleCheck4">飲食規劃</label>
+                    <input 
+                      id="appointService3"
+                      type="checkbox" 
+                      name="appointService"
+                      value="飲食規劃"
+                      {...register("appointService", 
+                        { validate: (value) => value.length > 0 || "請至少選一個方案"
+                        })
+                      }    
+                      className={`form-check-input ${errors.appointService && "is-invalid"}`} 
+                    />
+                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="appointService3">
+                      飲食規劃
+                    </label>
                   </div>
                   <div className="form-check m-0 pt-6 pb-6 pe-104">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck5"/>
-                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="exampleCheck5">運動按摩</label>
+                    <input 
+                      id="appointService4"
+                      type="checkbox" 
+                      name="appointService"
+                      value="運動按摩"
+                      {...register("appointService", 
+                        { validate: (value) => value.length > 0 || "請至少選一個方案"
+                        })
+                      }    
+                      className={`form-check-input ${errors.appointService && "is-invalid"}`} 
+                  />
+                    <label className="form-check-label fs-6 fw-medium text-gray-950" htmlFor="appointService4">
+                      運動按摩
+                    </label>
                   </div>
                 </div>
+                {errors.appointService && (
+                  <div className="invalid-feedback d-block text-primary-400 mt-0">
+                    {errors.appointService.message}
+                  </div>
+                )}
               </div>
               {/* 送出表單 */}
-              <button type="submit" className="btn plan-btn">送出表單</button>
+              <button type="submit" className="btn plan-btn">
+                送出表單
+              </button>
             </form>
           </div>
         </div>
@@ -405,29 +583,7 @@ function Home() {
       {/* 地圖 */}
       <section className="info-map">
         <div className="container">
-          <div className="map">
-            {/* 地點說明 */}
-            <div className="location p-3 p-lg-9">
-              <div className="mb-7 mb-lg-9">
-                <p className="fs-8 fs-lg-7 fw-bold text-primary-400 mb-6 mb-lg-3">/  Location  /</p>
-                <h5 className="fs-5 fs-lg-1 fw-bold text-gray-950">專注健身｜忠孝店</h5>
-              </div>
-              <div>
-                <p className="fs-8 fs-lg-7 mb-2 mb-lg-6">
-                  <img className="map-icon" src="https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/cfe32d41cf4865ed773ce38aa3184880859dff69/assets/images/icons/ic_Phone.svg" alt="ic_Phone"/>
-                  02-1888-2878 #9
-                </p>
-                <p className="fs-8 fs-lg-7 mb-2 mb-lg-6">
-                  <img className="map-icon" src="https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/cfe32d41cf4865ed773ce38aa3184880859dff69/assets/images/icons/ic_Mail.svg" alt="ic_Mail"/>
-                  FocusFitness@gym.io
-                </p>
-                <p className="fs-8 fs-lg-7">
-                  <img className="map-icon" src="https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/cfe32d41cf4865ed773ce38aa3184880859dff69/assets/images/icons/ic_Map_Pin.svg" alt="ic_Map_Pin"/>
-                  台北市中正區忠孝東路198巷10-2號 B1
-                </p>
-              </div>
-            </div>
-          </div>
+                <Map></Map>
         </div>
       </section>
 
