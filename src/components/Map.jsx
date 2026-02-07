@@ -25,7 +25,7 @@ function Map(){
                 </div>
             </div>
         </div>
-</>);
+    </>);
 }
 
 export default Map;
