@@ -368,34 +368,44 @@
 
 /* Swiper教練團隊 */
 
-.coach{
+.coach {
   padding-top: 100px;
   padding-bottom: 100px;
   background-color: #232733;
 }
 
 @media (max-width: 992px) {
-    .coach{
-      padding-top: 32px;
-      padding-bottom: 68px;
+  .coach {
+    padding-top: 32px;
+    padding-bottom: 68px;
   }
 }
 
-// Swiper輪播
+/* 教練輪播專屬樣式 */
 
-.swiper-slide {
-  width: 50%; 
-  flex-shrink: 0;
+.coach-swiper {
+  .swiper-slide {
+    width: 50%;
+    flex-shrink: 0;
+    position: relative;
+    
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+  }
 }
 
 @media (min-width: 375px) {
-  .swiper-slide {
+  .coach-swiper .swiper-slide {
     width: 395px;
   }
 }
 
 @media (min-width: 992px) {
-  .swiper-slide {
+  .coach-swiper .swiper-slide {
     width: 565px;
   }
 }

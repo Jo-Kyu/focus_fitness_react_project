@@ -57,6 +57,7 @@ function CoachSwiper() {
   return (
   <>
     <Swiper
+            className="coach-swiper" // 專屬樣式覆蓋原生樣式
             modules={[Autoplay]}
             loop={true}
             slidesPerView={2}
@@ -84,7 +85,7 @@ function CoachSwiper() {
             {
                 coachData.map((coach)=>{
                 return (
-                        <SwiperSlide className="swiper-slide" key={coach.coachId}>
+                        <SwiperSlide key={coach.coachId}>
                             <img src={coach.imgUrl} alt={coach.coachName}/>
                             <div className="coach-name p-2 p-lg-6">
                                 <p className="fs-lg-8 fw-bold text-gray-950 mb-1">{coach.location}</p>
