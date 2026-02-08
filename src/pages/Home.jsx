@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
-import BGLight from "../components/BGLight.jsx"
+import HomeGlow from "../components/HomeGlow.jsx"
 import CoachSwiper from "../components/CoachSwiper.jsx";
 import AboutUs from "../components/AboutUs.jsx";
 import Map from "../components/Map.jsx";
@@ -198,7 +198,7 @@ const onSubmit=(data)=>{
     {/* main主要內容 */}
     <main className="padding-style position-relative overflow-hidden">
       {/* 光暈 */}
-      <BGLight></BGLight>    
+      <HomeGlow></HomeGlow>    
 
       {/* 全方位專注健身服務 */}
       <section className="topics">
