@@ -1,4 +1,4 @@
-function PLBGGlow(){
+function ProductListGlow(){
     // 光暈資料
 
     return(
@@ -26,4 +26,4 @@ function PLBGGlow(){
     </>);
 }
 
-export default PLBGGlow;
+export default ProductListGlow;
