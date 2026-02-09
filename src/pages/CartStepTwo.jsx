@@ -1,14 +1,20 @@
-import { useEffect, useState, useRef } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+// 匯入Hook
+import { useEffect, useState } from "react";
+
+// 匯入套件
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import Glow from "../components/Glow.jsx";
-
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { ThreeCircles } from "react-loader-spinner";
 
+// 匯入元件
+import Glow from "../components/Glow.jsx";
+import CartEmpty from "../pages/CartEmpty.jsx";
+import Loading from "../components/Loading.jsx";
+
+// 環境變數
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
@@ -23,6 +29,24 @@ function CartStepTwo() {
   const shippingProductsTotal = calcProductsTotal(shippingProducts);
   // 免配送商品總額
   const shippingFreeProductsTotal = calcProductsTotal(shippingFreeProducts);
+  // 判斷頁面載入
+  const [isAllPageLoading, setAllPageLoading] = useState(true);
+  // 運費判斷
+  const [shippingFee, setShippingFee] = useState(0);
+
+  // 運費判斷
+  function shippingTotal() {
+    if (shippingProducts.length > 0 && shippingProductsTotal >= 499) {
+      setShippingFee(0);
+    } else if (shippingProducts.length > 0 && shippingProductsTotal < 499) {
+      setShippingFee(60);
+    }
+  }
+
+  // 運費判斷
+  useEffect(() => {
+    shippingTotal();
+  }, [shippingProducts, shippingProductsTotal]);
 
   // 呼叫取得購物車列表、呼叫取的所有商品
   useEffect(() => {
@@ -42,6 +66,9 @@ function CartStepTwo() {
       .catch((err) => {
         console.log("取得購物車列表失敗");
         console.dir(err);
+      })
+      .finally(() => {
+        setAllPageLoading(false);
       });
   }
 
@@ -139,6 +166,14 @@ function CartStepTwo() {
 
   // 監聽付款方式
   const paymentMethod = watch("paymentMethod");
+
+  // JSX
+  if (isAllPageLoading) {
+    return <Loading />;
+  }
+
+  // JSX
+  if (cartProducts?.carts?.length === 0) return <CartEmpty />;
 
   // JSX
   return (
@@ -647,168 +682,246 @@ function CartStepTwo() {
                   <div className="py-6 py-sm-4 bg-blue-700 text-center border-radius-12 border-bottom-leftt-radius-0 border-bottom-right-radius-0">
                     <h2 className="fs-7 text-gray-950 fw-bold">訂單內容</h2>
                   </div>
-                  {/* 須配送商品標題 */}
-                  <div className=" py-3 px-106 px-lg-4 border-bottom border-blue-600">
-                    <h3 className="fs-6 text-info-normal fw-regular text-center">
-                      須配送商品
-                    </h3>
-                  </div>
-                  {/* 須配送商品商品清單 */}
-                  {shippingProducts.map((cartProduct) => {
-                    // 原價
-                    const originalPrice = cartProduct?.product?.origin_price;
-                    // 總數量售價
-                    const totalPrice = cartProduct?.total;
-                    // 總數量
-                    const cartProductQty = cartProduct?.qty;
-                    // 總數量原價
-                    const totalOriginalPrice = originalPrice * cartProductQty;
-                    // 折扣
-                    const discount = Math.round(
-                      (1 - totalPrice / totalOriginalPrice) * 100,
-                    );
-                    return (
-                      <div
-                        className="py-6 py-xl-8 px-106 px-xl-4 d-flex justify-content-between border-bottom border-blue-600"
-                        key={cartProduct?.id}
-                      >
-                        {/* 商品圖片、商品資訊 */}
-                        <div className="d-flex  mb-lg-0 mb-3">
-                          {/* 商品圖片 */}
-                          <div className="me-6 me-xl-4 max-w-80 max-w-xl-160">
-                            <img
-                              className="rounded-3 max-h-73 max-h-xl-145"
-                              src={cartProduct?.product?.imageUrl}
-                              alt="Focus耐磨皮格拉力帶"
-                            />
-                          </div>
-                          {/* 商品資訊 */}
-                          <div>
-                            {/* 商品名稱 */}
-                            <div className="mb-2 mb-lg-6">
-                              <h2 className="fs-8 fs-xl-5 fw-bold lh-sm">
-                                {cartProduct?.product?.title}
+                  {/* 須配送商品 */}
+                  {shippingProducts.length > 0 && (
+                    <>
+                      {/* 須配送商品標題 */}
+                      <div className=" py-3 px-106 px-lg-4 border-bottom border-blue-600">
+                        <h3 className="fs-6 text-info-normal fw-regular text-center">
+                          須配送商品
+                        </h3>
+                      </div>
+                      {shippingProducts.length > 0 ? (
+                        <>
+                          {/* 須配送商品商品清單 */}
+                          {shippingProducts.map((cartProduct) => {
+                            // 原價
+                            const originalPrice =
+                              cartProduct?.product?.origin_price;
+                            // 總數量售價
+                            const totalPrice = cartProduct?.total;
+                            // 總數量
+                            const cartProductQty = cartProduct?.qty;
+                            // 總數量原價
+                            const totalOriginalPrice =
+                              originalPrice * cartProductQty;
+                            // 折扣
+                            const discount = Math.round(
+                              (1 - totalPrice / totalOriginalPrice) * 100,
+                            );
+                            return (
+                              <div
+                                className="py-6 py-xl-8 px-106 px-xl-4 d-flex justify-content-between border-bottom border-blue-600"
+                                key={cartProduct?.id}
+                              >
+                                {/* 商品圖片、商品資訊 */}
+                                <div className="d-flex  mb-lg-0 mb-3">
+                                  {/* 商品圖片 */}
+                                  <div className="me-6 me-xl-4 max-w-80 max-w-xl-160">
+                                    <img
+                                      className="rounded-3 max-h-73 max-h-xl-145"
+                                      src={cartProduct?.product?.imageUrl}
+                                      alt="Focus耐磨皮格拉力帶"
+                                    />
+                                  </div>
+                                  {/* 商品資訊 */}
+                                  <div>
+                                    {/* 商品名稱 */}
+                                    <div className="mb-2 mb-lg-6">
+                                      <h2 className="fs-8 fs-xl-5 fw-bold lh-sm">
+                                        {cartProduct?.product?.title}
+                                      </h2>
+                                    </div>
+                                    {/* 商品規格 */}
+                                    <div className="mb-2 mb-lg-6">
+                                      <p className="fs-9 fs-xl-6 text-gray-500">
+                                        顏色：{cartProduct?.color}
+                                      </p>
+                                    </div>
+                                    {/* 商品規格 */}
+                                    <div className="mb-2 mb-xl-6">
+                                      <p className="fs-9 fs-xl-6 text-gray-500">
+                                        尺寸：{cartProduct?.size}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                                {/* 售價、原價、優惠資訊、刪除按鈕 */}
+                                <div className="d-flex align-items-top justify-content-end">
+                                  {/* 售價、原價、優惠資訊 */}
+                                  <div>
+                                    {/* 售價、原價 */}
+                                    <div className="mb-6 d-flex align-items-sm-center align-items-end flex-column flex-sm-row">
+                                      {/* 售價 */}
+                                      <div className="mb-1 mb-sm-0 me-sm-6">
+                                        <h2 className="fs-8 fs-xl-7 text-gray-950 fw-bold lh-sm">
+                                          NT${cartProduct?.total}
+                                        </h2>
+                                      </div>
+                                      {/* 原價 */}
+                                      <div>
+                                        <h3 className="fs-9 fs-xl-6 fw-bold text-gray-500 text-decoration-line-through">
+                                          NT${totalOriginalPrice}
+                                        </h3>
+                                      </div>
+                                    </div>
+                                    {/* 優惠資訊 */}
+                                    <div className="mb-6 text-end ">
+                                      <h3 className="fs-9 fs-xl-7 text-warning-dark fw-regular">
+                                        為您省下{discount}%
+                                      </h3>
+                                    </div>
+                                    {/* 商品數量 */}
+                                    <div>
+                                      <h4 className="fs-9 fs-xl-6 fw-regular text-end text-gray-500">
+                                        數量：{cartProduct?.qty}
+                                      </h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                          {/* 須配送商品金額總計 */}
+                          <div className="py-6 py-lg-8 px-106 px-lg-4">
+                            <div className="mb-106 mb-sm-3 d-flex justify-content-between">
+                              <h3 className="fs-8 text-gray-500 fw-regular">
+                                商品金額 (
+                                <span className="text-primary-500">
+                                  {shippingProducts?.length}
+                                </span>
+                                件商品 )
+                              </h3>
+                              <h2 className="fs-6 fs-lg-5 text-gray-950 fw-bold">
+                                NT${shippingProductsTotal}
                               </h2>
                             </div>
-                            {/* 商品規格 */}
-                            <div className="mb-2 mb-lg-6">
-                              <p className="fs-9 fs-xl-6 text-gray-500">
-                                顏色：{cartProduct?.color}
-                              </p>
-                            </div>
-                            {/* 商品規格 */}
-                            <div className="mb-2 mb-xl-6">
-                              <p className="fs-9 fs-xl-6 text-gray-500">
-                                尺寸：{cartProduct?.size}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        {/* 售價、原價、優惠資訊、刪除按鈕 */}
-                        <div className="d-flex align-items-top justify-content-end">
-                          {/* 售價、原價、優惠資訊 */}
-                          <div>
-                            {/* 售價、原價 */}
-                            <div className="mb-6 d-flex align-items-sm-center align-items-end flex-column flex-sm-row">
-                              {/* 售價 */}
-                              <div className="mb-1 mb-sm-0 me-sm-6">
-                                <h2 className="fs-8 fs-xl-7 text-gray-950 fw-bold lh-sm">
-                                  NT${cartProduct?.total}
-                                </h2>
-                              </div>
-                              {/* 原價 */}
-                              <div>
-                                <h3 className="fs-9 fs-xl-6 fw-bold text-gray-500 text-decoration-line-through">
-                                  NT${totalOriginalPrice}
-                                </h3>
-                              </div>
-                            </div>
-                            {/* 優惠資訊 */}
-                            <div className="mb-6 text-end ">
-                              <h3 className="fs-9 fs-xl-7 text-warning-dark fw-regular">
-                                為您省下{discount}%
+                            <div className="d-flex justify-content-between">
+                              <h3 className="fs-8 text-gray-500 fw-regular">
+                                宅配運費
                               </h3>
-                            </div>
-                            {/* 商品數量 */}
-                            <div>
-                              <h4 className="fs-9 fs-xl-6 fw-regular text-end text-gray-500">
-                                數量：{cartProduct?.qty}
-                              </h4>
+                              <h2 className="fs-8 fs-lg-6 fs-sm-6 text-warning-normal fw-bold">
+                                {shippingProductsTotal > 499 ? "免運" : "NT$60"}
+                              </h2>
                             </div>
                           </div>
+                        </>
+                      ) : (
+                        <div
+                          className="d-flex justify-content-center align-items-center"
+                          style={{ height: "50vh" }}
+                        >
+                          <div>
+                            <ThreeCircles
+                              visible={true}
+                              height={100}
+                              width={100}
+                              color="#e1ff00"
+                              ariaLabel="three-circles-loading"
+                            />
+                            <p className="mt-4">載入中，請稍後...</p>
+                          </div>
                         </div>
+                      )}
+                    </>
+                  )}
+                  {/* 免配送商品 */}
+                  {shippingFreeProducts.length > 0 && (
+                    <>
+                      {/* 免配送商品標題 */}
+                      <div className=" py-3 px-106 px-lg-4 border-top border-bottom border-blue-600">
+                        <h3 className="fs-6 text-info-normal fw-regular text-center">
+                          免配送商品
+                        </h3>
                       </div>
-                    );
-                  })}
-                  {/* 須配送商品金額總計 */}
-                  <div className="py-6 py-lg-8 px-106 px-lg-4">
-                    <div className="mb-106 mb-sm-3 d-flex justify-content-between">
-                      <h3 className="fs-8 text-gray-500 fw-regular">
-                        商品金額 (
-                        <span className="text-primary-500">
-                          {shippingProducts?.length}
-                        </span>
-                        件商品 )
-                      </h3>
-                      <h2 className="fs-6 fs-lg-5 text-gray-950 fw-bold">
-                        NT${shippingProductsTotal}
-                      </h2>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      <h3 className="fs-8 text-gray-500 fw-regular">
-                        宅配運費
-                      </h3>
-                      <h2 className="fs-8 fs-lg-6 fs-sm-6 text-warning-normal fw-bold">
-                        {shippingProductsTotal > 499 ? "免運" : "NT$60"}
-                      </h2>
-                    </div>
-                  </div>
-                  {/* 免配送商品標題 */}
-                  <div className=" py-3 px-106 px-lg-4 border-top border-bottom border-blue-600">
-                    <h3 className="fs-6 text-info-normal fw-regular text-center">
-                      免配送商品
-                    </h3>
-                  </div>
-                  {/* 免配送商品商品清單 */}
-                  {shippingFreeProducts.map((cartProduct) => {
-                    // 原價
-                    const originalPrice = cartProduct?.product?.origin_price;
-                    // 總數量售價
-                    const totalPrice = cartProduct?.total;
-                    // 總數量
-                    const cartProductQty = cartProduct?.qty;
-                    // 總數量原價
-                    const totalOriginalPrice = originalPrice * cartProductQty;
-                    // 折扣
-                    const discount = Math.round(
-                      (1 - totalPrice / totalOriginalPrice) * 100,
-                    );
-                    return (
-                      <div
-                        className="py-6 py-xl-8 px-106 px-xl-4  border-bottom border-blue-600"
-                        key={cartProduct?.id}
-                      >
-                        <div className="d-flex justify-content-between mb-1">
-                          {/* 商品圖片、商品資訊 */}
-                          <div className="d-flex  mb-lg-0 mb-3">
-                            {/* 商品圖片 */}
-                            <div className="me-6 me-xl-4 max-w-80 max-w-xl-160">
-                              <img
-                                className="rounded-3 max-h-73 max-h-xl-145"
-                                src={cartProduct?.product?.imageUrl}
-                                alt="Focus耐磨皮格拉力帶"
-                              />
-                            </div>
-                            {/* 商品資訊 */}
-                            <div>
-                              {/* 商品名稱 */}
-                              <div className="max-w-210">
-                                <div className="mb-6">
-                                  <h2 className="fs-9 fs-sm-8 fs-xl-5 fw-bold lh-sm">
-                                    {cartProduct?.product?.title}
-                                  </h2>
+                      {shippingFreeProducts.length > 0 ? (
+                        <>
+                          {/* 免配送商品商品清單 */}
+                          {shippingFreeProducts.map((cartProduct) => {
+                            // 原價
+                            const originalPrice =
+                              cartProduct?.product?.origin_price;
+                            // 總數量售價
+                            const totalPrice = cartProduct?.total;
+                            // 總數量
+                            const cartProductQty = cartProduct?.qty;
+                            // 總數量原價
+                            const totalOriginalPrice =
+                              originalPrice * cartProductQty;
+                            // 折扣
+                            const discount = Math.round(
+                              (1 - totalPrice / totalOriginalPrice) * 100,
+                            );
+                            return (
+                              <div
+                                className="py-6 py-xl-8 px-106 px-xl-4  border-bottom border-blue-600"
+                                key={cartProduct?.id}
+                              >
+                                <div className="d-flex justify-content-between mb-1">
+                                  {/* 商品圖片、商品資訊 */}
+                                  <div className="d-flex  mb-lg-0 mb-3">
+                                    {/* 商品圖片 */}
+                                    <div className="me-6 me-xl-4 max-w-80 max-w-xl-160">
+                                      <img
+                                        className="rounded-3 max-h-73 max-h-xl-145"
+                                        src={cartProduct?.product?.imageUrl}
+                                        alt="Focus耐磨皮格拉力帶"
+                                      />
+                                    </div>
+                                    {/* 商品資訊 */}
+                                    <div>
+                                      {/* 商品名稱 */}
+                                      <div className="max-w-210">
+                                        <div className="mb-6">
+                                          <h2 className="fs-9 fs-sm-8 fs-xl-5 fw-bold lh-sm">
+                                            {cartProduct?.product?.title}
+                                          </h2>
+                                        </div>
+                                        <div className="d-none d-sm-block">
+                                          <h3 className="fs-9 text-secondary-400 fw-regular">
+                                            (
+                                            請至實體門市櫃台出示訂單編號，並辦理相關手續
+                                            )
+                                          </h3>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {/* 售價、原價、優惠資訊 */}
+                                  <div className="d-flex align-items-top justify-content-end">
+                                    {/* 售價、原價、優惠資訊 */}
+                                    <div>
+                                      {/* 售價、原價 */}
+                                      <div className="mb-6 d-flex align-items-sm-center align-items-end flex-column flex-sm-row">
+                                        {/* 售價 */}
+                                        <div className="mb-1 mb-sm-0 me-sm-6">
+                                          <h2 className="fs-8 fs-xl-7 text-gray-950 fw-bold lh-sm">
+                                            NT${cartProduct?.total}
+                                          </h2>
+                                        </div>
+                                        {/* 原價 */}
+                                        <div>
+                                          <h3 className="fs-9 fs-xl-6 fw-bold text-gray-500 text-decoration-line-through">
+                                            NT${totalOriginalPrice}
+                                          </h3>
+                                        </div>
+                                      </div>
+                                      {/* 優惠資訊 */}
+                                      <div className="mb-6 text-end ">
+                                        <h3 className="fs-9 fs-xl-7 text-warning-dark fw-regular">
+                                          為您省下{discount}%
+                                        </h3>
+                                      </div>
+                                      {/* 商品數量 */}
+                                      <div>
+                                        <h4 className="fs-9 fs-xl-6 fw-regular text-end text-gray-500">
+                                          數量：{cartProduct?.qty}
+                                        </h4>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="d-none d-sm-block">
+                                <div className="d-sm-none text-center">
                                   <h3 className="fs-9 text-secondary-400 fw-regular">
                                     (
                                     請至實體門市櫃台出示訂單編號，並辦理相關手續
@@ -816,74 +929,52 @@ function CartStepTwo() {
                                   </h3>
                                 </div>
                               </div>
+                            );
+                          })}
+                          {/* 免配送商品金額總計
+                           */}
+                          <div className="py-6 py-lg-8 px-106 px-lg-4">
+                            <div className="mb-106 mb-sm-3 d-flex justify-content-between">
+                              <h3 className="fs-8 text-gray-500 fw-regular">
+                                商品金額 (
+                                <span className="text-primary-500">
+                                  {shippingFreeProducts?.length}
+                                </span>
+                                件商品 )
+                              </h3>
+                              <h2 className="fs-6 fs-lg-5 text-gray-950 fw-bold">
+                                NT${shippingFreeProductsTotal}
+                              </h2>
+                            </div>
+                            <div className="d-flex justify-content-between">
+                              <h3 className="fs-8 text-gray-500 fw-regular">
+                                宅配運費
+                              </h3>
+                              <h2 className="fs-8 fs-lg-6 text-warning-normal fw-bold">
+                                免運
+                              </h2>
                             </div>
                           </div>
-                          {/* 售價、原價、優惠資訊 */}
-                          <div className="d-flex align-items-top justify-content-end">
-                            {/* 售價、原價、優惠資訊 */}
-                            <div>
-                              {/* 售價、原價 */}
-                              <div className="mb-6 d-flex align-items-sm-center align-items-end flex-column flex-sm-row">
-                                {/* 售價 */}
-                                <div className="mb-1 mb-sm-0 me-sm-6">
-                                  <h2 className="fs-8 fs-xl-7 text-gray-950 fw-bold lh-sm">
-                                    NT${cartProduct?.total}
-                                  </h2>
-                                </div>
-                                {/* 原價 */}
-                                <div>
-                                  <h3 className="fs-9 fs-xl-6 fw-bold text-gray-500 text-decoration-line-through">
-                                    NT${totalOriginalPrice}
-                                  </h3>
-                                </div>
-                              </div>
-                              {/* 優惠資訊 */}
-                              <div className="mb-6 text-end ">
-                                <h3 className="fs-9 fs-xl-7 text-warning-dark fw-regular">
-                                  為您省下{discount}%
-                                </h3>
-                              </div>
-                              {/* 商品數量 */}
-                              <div>
-                                <h4 className="fs-9 fs-xl-6 fw-regular text-end text-gray-500">
-                                  數量：{cartProduct?.qty}
-                                </h4>
-                              </div>
-                            </div>
+                        </>
+                      ) : (
+                        <div
+                          className="d-flex justify-content-center align-items-center"
+                          style={{ height: "50vh" }}
+                        >
+                          <div>
+                            <ThreeCircles
+                              visible={true}
+                              height={100}
+                              width={100}
+                              color="#e1ff00"
+                              ariaLabel="three-circles-loading"
+                            />
+                            <p className="mt-4">載入中，請稍後...</p>
                           </div>
                         </div>
-                        <div className="d-sm-none text-center">
-                          <h3 className="fs-9 text-secondary-400 fw-regular">
-                            ( 請至實體門市櫃台出示訂單編號，並辦理相關手續 )
-                          </h3>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {/* 免配送商品金額總計
-                   */}
-                  <div className="py-6 py-lg-8 px-106 px-lg-4">
-                    <div className="mb-106 mb-sm-3 d-flex justify-content-between">
-                      <h3 className="fs-8 text-gray-500 fw-regular">
-                        商品金額 (
-                        <span className="text-primary-500">
-                          {shippingFreeProducts?.length}
-                        </span>
-                        件商品 )
-                      </h3>
-                      <h2 className="fs-6 fs-lg-5 text-gray-950 fw-bold">
-                        NT${shippingFreeProductsTotal}
-                      </h2>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      <h3 className="fs-8 text-gray-500 fw-regular">
-                        宅配運費
-                      </h3>
-                      <h2 className="fs-8 fs-lg-6 text-warning-normal fw-bold">
-                        免運
-                      </h2>
-                    </div>
-                  </div>
+                      )}
+                    </>
+                  )}
                 </div>
 
                 {/* 訂單金額總計 */}
@@ -892,24 +983,26 @@ function CartStepTwo() {
                   <div className="py-6 py-sm-4 bg-blue-700 text-center border-radius-12 border-bottom-leftt-radius-0 border-bottom-right-radius-0">
                     <h2 className="fs-7 text-gray-950 fw-bold">訂單金額總計</h2>
                   </div>
-                  {/* 訂單金額總計 */}
-                  <div className="py-6 py-lg-8 px-106 px-lg-4">
-                    <div>
-                      {/* 商品金額 */}
-                      <div className="mb-6 d-flex">
-                        <div className="ms-auto">
-                          <h3 className="fs-6 text-gray-500 fw-regular">
-                            商品金額：
-                          </h3>
-                        </div>
-                        <div className="max-w-120">
-                          <h3 className="fs-6 text-gray-950 fw-bold text-end">
-                            NT${cartProducts.final_total}
-                          </h3>
-                        </div>
-                      </div>
-                      {/* 優惠券折抵 */}
-                      {/* <div className="mb-6 d-flex">
+                  {cartProducts.final_total ? (
+                    <>
+                      {/* 訂單金額總計 */}
+                      <div className="py-6 py-lg-8 px-106 px-lg-4">
+                        <div>
+                          {/* 商品金額 */}
+                          <div className="mb-6 d-flex">
+                            <div className="ms-auto">
+                              <h3 className="fs-6 text-gray-500 fw-regular">
+                                商品金額：
+                              </h3>
+                            </div>
+                            <div className="max-w-120">
+                              <h3 className="fs-6 text-gray-950 fw-bold text-end">
+                                NT${cartProducts.final_total}
+                              </h3>
+                            </div>
+                          </div>
+                          {/* 優惠券折抵 */}
+                          {/* <div className="mb-6 d-flex">
                             <div className="ms-auto">
                                 <h3 className="fs-6 text-gray-500 fw-regular">優惠券折抵：</h3>
                             </div>
@@ -917,37 +1010,50 @@ function CartStepTwo() {
                                 <h3 className="fs-6 text-warning-dark fw-bold text-end">-NT$100</h3>
                             </div>
                         </div> */}
-                      {/* 運費 */}
-                      <div className="mb-6 d-flex">
-                        <div className="ms-auto">
-                          <h3 className="fs-6 text-gray-500 fw-regular">
-                            運費：
-                          </h3>
-                        </div>
-                        <div className="max-w-120">
-                          <h3 className="fs-6 text-gray-950 fw-bold text-end">
-                            {shippingProductsTotal > 499 ? "免運" : "NT$60"}
-                          </h3>
+                          {/* 運費 */}
+                          <div className="mb-6 d-flex">
+                            <div className="ms-auto">
+                              <h3 className="fs-6 text-gray-500 fw-regular">
+                                運費：
+                              </h3>
+                            </div>
+                            <div className="max-w-120">
+                              <h3 className="fs-6 text-gray-950 fw-bold text-end">
+                                NT${shippingFee}
+                              </h3>
+                            </div>
+                          </div>
+                          {/* 結帳總金額 */}
+                          <div className="d-flex">
+                            <div className="ms-auto">
+                              <h3 className="fs-6 text-gray-500 fw-regular">
+                                結帳總金額：
+                              </h3>
+                            </div>
+                            <div className="max-w-120">
+                              <h3 className="fs-6 text-primary-400 fw-bold text-end">
+                                NT$
+                                {cartProducts?.final_total + shippingFee}
+                              </h3>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      {/* 結帳總金額 */}
-                      <div className="d-flex">
-                        <div className="ms-auto">
-                          <h3 className="fs-6 text-gray-500 fw-regular">
-                            結帳總金額：
-                          </h3>
-                        </div>
-                        <div className="max-w-120">
-                          <h3 className="fs-6 text-primary-400 fw-bold text-end">
-                            NT$
-                            {shippingProductsTotal > 499
-                              ? cartProducts?.final_total
-                              : cartProducts?.final_total + 60}
-                          </h3>
-                        </div>
+                    </>
+                  ) : (
+                    <div className="d-flex justify-content-center align-items-center">
+                      <div>
+                        <ThreeCircles
+                          visible={true}
+                          height={100}
+                          width={100}
+                          color="#e1ff00"
+                          ariaLabel="three-circles-loading"
+                        />
+                        <p className="mt-4">載入中，請稍後...</p>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
                 {/* 完成結帳按鈕 */}
                 <div></div>
