@@ -102,7 +102,7 @@ function Home() {
       }
     };
     getProducts();
-  },[])
+  },[]);
 
 
 // Contact-Us表單
@@ -233,7 +233,10 @@ const onSubmit=(data)=>{
                           <a href="#" className="btn card-btn text-nowrap">立即購物</a>
                         </div>
                         <div className={`card-img-wrapper order-0 order-lg-${isReverse ? "1" : "0"} position-relative mb-2 mb-lg-0`}>
-                          <img className="card-img-top card-img-service" src={serviceCard.imgUrl} alt={serviceCard.title}/>
+                          <img  className="card-img-top card-img-service" 
+                                src={serviceCard.imgUrl} 
+                                alt={serviceCard.title}
+                          />
                           <div className="number-cube position-absolute top-0 start-0">{serviceCard.cardNumber}</div>
                         </div>
                       </div>
@@ -266,7 +269,10 @@ const onSubmit=(data)=>{
                           <div className="col-10 col-lg-4" key={course.id}>
                             <a href="#" className="d-block h-100 text-decoration-none">
                               <div className="card bg-blue-600 h-100 border-0">
-                                <img src={course.imageUrl} className="card-img-top" alt={course.title}/>
+                                <img  className="card-img-top"
+                                      src={course.imageUrl}
+                                      alt={course.title}
+                                />
                                 <div className="card-body p-7 d-flex flex-column">
                                   <h5 className="card-title fs-5 fs-lg-4 fw-bold text-gray-950 mb-6">{course.title}</h5>
                                   <p className="card-text fs-5 fs-lg-4 fw-bold text-gray-950 mt-auto">{`$${course.price}${course.unit}`}
@@ -299,7 +305,10 @@ const onSubmit=(data)=>{
                           <div className="col-10 col-lg-4" key={equip.id}>
                             <a href="#" className="d-block h-100 text-decoration-none">
                               <div className="card bg-blue-600 h-100 border-0">
-                                <img src={equip.imageUrl} className="card-img-top" alt={equip.title}/>
+                                <img  className="card-img-top"
+                                      src={equip.imageUrl}
+                                      alt={equip.title}
+                                />
                                 <div className="card-body p-7 d-flex flex-column">
                                   <h5 className="card-title fs-5 fs-lg-4 fw-bold text-gray-950 mb-6">{equip.title}</h5>
                                   <div className="d-flex justify-content-between align-items-center">
