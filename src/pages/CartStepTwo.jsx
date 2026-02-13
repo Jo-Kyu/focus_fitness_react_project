@@ -13,6 +13,12 @@ import { ThreeCircles } from "react-loader-spinner";
 import Glow from "../components/Glow.jsx";
 import CartEmpty from "../pages/CartEmpty.jsx";
 import Loading from "../components/Loading.jsx";
+// header
+import Header from "../components/Header";
+// footer
+import Footer from "../components/Footer";
+// 回到最上方
+import BackTop from "../components/BackTop";
 
 // 環境變數
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -178,6 +184,7 @@ function CartStepTwo() {
   // JSX
   return (
     <>
+      <Header />
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -1076,6 +1083,8 @@ function CartStepTwo() {
           </form>
         </section>
       </main>
+      <Footer />
+      <BackTop />
     </>
   );
 }

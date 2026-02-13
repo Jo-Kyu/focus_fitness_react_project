@@ -5,6 +5,8 @@ import { WishlistProvider } from "./components/WishlistProvider";
 import { LoginAuthProvider } from "./components/LoginAuthProvider";
 
 import App from "./App";
+import CartStepTwo from "./pages/CartStepTwo";
+
 import "./assets/scss/all.scss";
 import "bootstrap";
 
@@ -14,7 +16,7 @@ createRoot(document.getElementById("root")).render(
     <Toaster position="top-right" />
     <LoginAuthProvider>
       <WishlistProvider>
-        <App />
+        <CartStepTwo />
       </WishlistProvider>
     </LoginAuthProvider>
   </StrictMode>,

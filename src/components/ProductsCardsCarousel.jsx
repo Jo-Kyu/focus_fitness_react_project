@@ -9,8 +9,8 @@ import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // 匯入元件
-import ProductsCarouselCards from "../components/ProductsCarouselCards.jsx";
-import EvaluateCarouselCards from "../components/EvaluateCarouselCards.jsx";
+import ProductsCarouselCards from "../components/ProductsCarouselCards";
+import EvaluateCarouselCards from "../components/EvaluateCarouselCards";
 
 function ProductsCardsCarousel({ cardsCarouselProducts }) {
   const prevRef = useRef(null);
