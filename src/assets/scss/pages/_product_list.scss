@@ -145,26 +145,52 @@
     --bs-pagination-bg: rgba(255, 255, 255, 0);
     --bs-pagination-color:#808080;
     --bs-pagination-focus-box-shadow: 0 0 0 0rem rgba(13, 110, 253, 0);
-    
-    .page-item{
-        margin: 0 6px;
+
+    .page-item {
+    margin: 0 6px;
+
+    // 禁用狀態
+    &.disabled .page-link {
+      color: #999;
+      background-color: rgba(255, 255, 255, 0);
+      cursor: not-allowed;
     }
-    
-    .page-link{
-        border: 0px;
 
-        &:hover{
-            color: black;
-            background-color:#E1FF00 ;
+    // 普通狀態
+    .page-link {
+      border: 0px;
+      color: #808080;
+      background-color: rgba(255, 255, 255, 0);
+      cursor: pointer;
+      transition: all 0.2s ease;
 
-            path{
-                fill: black;
-            }
+      // 懸停
+      &:hover {
+        color: black;
+        background-color: #E1FF00;
+
+        path {
+          fill: black;
         }
+      }
 
-        &:focus{
-            color: black;
-            background-color:#E1FF00 ;
+      // 焦點
+      &:focus {
+        color: black;
+        background-color: #E1FF00;
+        box-shadow: none;  // 移除 BS5 的焦點陰影
+      }
+
+      // Active（已點擊）
+      &.active {
+        color: black;
+        background-color: #E1FF00;
+        border-color: #E1FF00;
+
+        path {
+          fill: black;
         }
+      }
     }
+  }
 }

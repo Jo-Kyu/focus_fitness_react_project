@@ -1,5 +1,5 @@
 // React Hooks
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
@@ -7,7 +7,6 @@ import ProductListGlow from "../components/ProductListGlow";
 
 // 第三方套件
 import axios from "axios";
-// import * as bootstrap from 'bootstrap';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
@@ -15,18 +14,20 @@ const ITEMS_PER_PAGE = 12;
 
 
 function ProductList(){
-
     // 定義遠端取得的商品狀態
     const [allProducts, setAllProducts] = useState([]);
     // 定義商品列表狀態
     const [productList, setProductList] = useState([]);
     // 定義排序狀態
     const [sortType, setSortType] = useState("");
+    // 定義臨時排序狀態（手機版offcanvas用）
+    const [tempSortType, setTempSortType] = useState("");
     // 定義當前頁
     const [currentPage, setCurrentPage] = useState(1);
     // 定義總頁數
     const [totalPages, setTotalPages] = useState(0);
-    
+    // 加載狀態
+    const [isLoading, setIsLoading] = useState(false);
     // 定義按鈕顯示
     const sortLabels = {
             hot: "熱銷排行",
@@ -46,7 +47,7 @@ function ProductList(){
                 const products=res.data.products;
                 setAllProducts(products);
                 // 商品排序初始
-                applySort(products, "hot");
+                applySort(products, "price_high");
             }catch(error){
                 console.log("error:",error.response);
             }finally{
@@ -59,42 +60,36 @@ function ProductList(){
     // 第二步：排序函式
 
     const applySort = (products, sort) => {
-        let sortedProducts = [...products];
+        let processedProducts = [...products];
 
         switch (sort) {
             case "hot":
-                // 熱銷排行：is_hot 為 true 的排前面
-                sortedProducts.sort((a, b) => {
-                    if (a.is_hot === b.is_hot) return 0;
-                    return a.is_hot ? -1 : 1;
-                });
+                // 熱銷排行：保留 is_hot
+                processedProducts = processedProducts.filter((p) => p.is_hot === true);
                 break;
 
             case "new":
-                // 最新上市：is_new 為 true 的排前面
-                sortedProducts.sort((a, b) => {
-                    if (a.is_new === b.is_new) return 0;
-                    return a.is_new ? -1 : 1;
-                });
+                // 最新上市：保留 is_new
+                processedProducts = processedProducts.filter((p) => p.is_new === true);
                 break;
 
             case "price_low":
                 // 價格低至高
-                sortedProducts.sort((a, b) => a.price - b.price);
+                processedProducts.sort((a, b) => a.price - b.price);
                 break;
 
             case "price_high":
                 // 價格高至低
-                sortedProducts.sort((a, b) => b.price - a.price);
+                processedProducts.sort((a, b) => b.price - a.price);
                 break;
 
+                // 預設排序
             default:
-            // 預設排序
                 break;
         }
 
         // 計算總頁數
-        const pages = Math.ceil(sortedProducts.length / ITEMS_PER_PAGE);
+        const pages = Math.ceil(processedProducts.length / ITEMS_PER_PAGE);
         setTotalPages(pages);
 
         // 重置到第1頁
@@ -104,7 +99,7 @@ function ProductList(){
         setSortType(sort);
 
         // 顯示第1頁的商品
-        displayPage(sortedProducts, 1);
+        displayPage(processedProducts, 1);
     };
 
     // 第三步：分頁函式
@@ -113,61 +108,91 @@ function ProductList(){
         const pageIndex = pageNum - 1;
         const start = pageIndex * ITEMS_PER_PAGE;
         const end = start + ITEMS_PER_PAGE;
-
         const pageProducts = products.slice(start, end);
         setProductList(pageProducts);
     };
 
     // 第四步：當頁碼改變時，顯示對應頁的商品
+
     useEffect(() => {
         if (allProducts.length === 0) return;
 
         // 根據目前的排序類型重新排序
-        let sortedProducts = [...allProducts];
+        let processedProducts = [...allProducts];
 
         switch (sortType) {
             case "hot":
-                sortedProducts.sort((a, b) => {
-                if (a.is_hot === b.is_hot) return 0;
-                return a.is_hot ? -1 : 1;
-                });
+                processedProducts = processedProducts.filter((p) => p.is_hot === true);
                 break;
 
             case "new":
-                sortedProducts.sort((a, b) => {
-                if (a.is_new === b.is_new) return 0;
-                return a.is_new ? -1 : 1;
-                });
+                processedProducts = processedProducts.filter((p) => p.is_new === true);
                 break;
 
             case "price_low":
-                sortedProducts.sort((a, b) => a.price - b.price);
+                processedProducts.sort((a, b) => a.price - b.price);
                 break;
 
             case "price_high":
-                sortedProducts.sort((a, b) => b.price - a.price);
+                processedProducts.sort((a, b) => b.price - a.price);
                 break;
 
             default:
                 break;
         }
-
-        displayPage(sortedProducts, currentPage);
+        displayPage(processedProducts, currentPage);
     }, [currentPage, sortType, allProducts]);
 
+    // 計算篩選後的商品陣列
+
+    const filteredProducts = useMemo(() => {
+        if (allProducts.length === 0) return [];
+
+            let processed = [...allProducts];
+
+            switch (sortType) {
+                case "hot":
+                    return processed.filter((p) => p.is_hot === true);
+                case "new":
+                    return processed.filter((p) => p.is_new === true);
+                case "price_low":
+                case "price_high":
+                default:
+                    return processed;
+                }
+    }, [allProducts, sortType]);
+
+    // 動態計算顯示的商品數量
+
+    const displayedProductCount = useMemo(() => {
+    // hot 或 new，使用篩選結果的長度
+    if (sortType === "hot" || sortType === "new") {
+        return filteredProducts.length;
+        }
+        // price_low 或 price_high，使用全部商品長度
+        return allProducts.length;
+    }, [sortType, filteredProducts, allProducts]);
+
+
      // 排序按鈕點擊事件
+
     const handleSortClick = (sort) => {
         applySort(allProducts, sort);
     };
 
     // Pagination 點擊事件
+
     const handlePageClick = (pageNum) => {
         if (pageNum >= 1 && pageNum <= totalPages) {
         setCurrentPage(pageNum);
         // 滾動到頁面頂部
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
+
+     if (isLoading) {
+        return <div className="text-center py-5">載入中...</div>;
+    }
 
     return(
     <>
@@ -384,7 +409,12 @@ function ProductList(){
                             {/* 電腦版＆手機版 產品數量+排列選單 */}
                             <div className="row d-flex justify-content-between align-items-center mb-2 mb-md-7">
                                 <div className="col-6">
-                                    <p className="fw-bold text-gray-950 fs-mg-8 fs-9">共有<span className="fs-8 fs-md-7 mx-2">{allProducts.length}</span>樣商品</p>
+                                    <p className="fw-bold text-gray-950 fs-mg-8 fs-9">
+                                        共有<span className="fs-8 fs-md-7 mx-2">
+                                            {displayedProductCount}
+                                            </span>
+                                            樣商品
+                                    </p>
                                 </div>                
 
                                 <div className="col-5 d-flex justify-content-end">
@@ -480,7 +510,7 @@ function ProductList(){
                             {/* 28個產品 */}
                             <div className="row mlr--10 mb-4">
                                 {/* 商品 */}
-                                {
+                                {productList.length>0 ?(
                                     productList.map((product)=>{
                                         return (
                                             <div className="col-6 col-sm-4 plr-10 mb-6 mb-md-7" key={product.id}>
@@ -554,7 +584,11 @@ function ProductList(){
                                                 </div>
                                             </div>);
                                     })
-                                }
+                                ):(
+                                    <div className="col-12 text-center py-5">
+                                        <p className="text-white">沒有符合條件的商品</p>
+                                    </div>
+                                )}
                             </div>
 
                             {/* 換頁Pagination */}
@@ -563,16 +597,18 @@ function ProductList(){
                                     <nav aria-label="Page navigation example">
                                         <ul className="pagination d-flex align-items-center">
                                             <li className={`page-item ${currentPage === 1 ? 'disabled' : ""}`}>
-                                                <button className="page-link"
-                                                        onClick={() => handlePageClick(currentPage - 1)}
-                                                        disabled={currentPage === 1}
+                                                <a  className="page-link"
+                                                    href="#" 
+                                                    aria-label="Previous"
+                                                    onClick={() => handlePageClick(currentPage - 1)}
+                                                    disabled={currentPage === 1}
                                                 >
                                                     <span aria-hidden="true">
                                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{transform:"rotate(180deg)"}}>
                                                         <path d="M6.91009 3.57757C7.23553 3.25214 7.76304 3.25214 8.08848 3.57757L13.9218 9.41091C14.2473 9.73634 14.2473 10.2639 13.9218 10.5893L8.08848 16.4226C7.76304 16.7481 7.23553 16.7481 6.91009 16.4226C6.58466 16.0972 6.58466 15.5697 6.91009 15.2442L12.1542 10.0001L6.91009 4.75596C6.58466 4.43052 6.58466 3.90301 6.91009 3.57757Z" fill="white"/>
                                                         </svg>
                                                     </span>
-                                                </button>
+                                                </a>
                                             </li>
                                             {/* 頁碼 */}
                                             {Array.from({ length: totalPages }, (_, i) => (
@@ -580,32 +616,33 @@ function ProductList(){
                                                 key={i + 1}
                                                 className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}
                                                 >
-                                                <button
-                                                    className="page-link"
+                                                <a  className="page-link"
                                                     onClick={() => handlePageClick(i + 1)}
+                                                    href="#"
                                                 >
                                                     {i + 1}
-                                                </button>
+                                                </a>
                                                 </li>
                                             ))}
                                             <li className={`page-item ${currentPage === totalPages ? 'disabled' : ""}`}>
-                                                <button className="page-link"
-                                                        onClick={() => handlePageClick(currentPage + 1)}
-                                                        disabled={currentPage === totalPages}
+                                                <a  className="page-link"
+                                                    href="#" 
+                                                    aria-label="Next"
+                                                    onClick={() => handlePageClick(currentPage + 1)}
+                                                    disabled={currentPage === totalPages}
                                                 >
                                                     <span aria-hidden="true">
                                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M6.91009 3.57757C7.23553 3.25214 7.76304 3.25214 8.08848 3.57757L13.9218 9.41091C14.2473 9.73634 14.2473 10.2639 13.9218 10.5893L8.08848 16.4226C7.76304 16.7481 7.23553 16.7481 6.91009 16.4226C6.58466 16.0972 6.58466 15.5697 6.91009 15.2442L12.1542 10.0001L6.91009 4.75596C6.58466 4.43052 6.58466 3.90301 6.91009 3.57757Z" fill="white"/>
                                                         </svg>
                                                     </span>
-                                                </button>
+                                                </a>
                                             </li>
                                         </ul>
                                     </nav>
                                 </div>
                             </div>
                         </div>
-
                         {/* 商品顯示區塊 */}
                         <div className="tab-pane fade" id="v-pills-two" role="tabpanel" aria-labelledby="v-pills-two-tab">...</div>
                         <div className="tab-pane fade" id="v-pills-three" role="tabpanel" aria-labelledby="v-pills-three-tab">...</div>
