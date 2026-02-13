@@ -8,16 +8,26 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import toast from "react-hot-toast";
 import { ThreeCircles } from "react-loader-spinner";
+import Swal from "sweetalert2";
 
 // 匯入資料
 import evaluateCustomerPics from "../data/evaluateCustomerPics";
 
 // 匯入元件
 import Star from "../components/Star.jsx";
-import { WishlistContext } from "../components/WishlistProvider";
 import Glow from "../components/Glow.jsx";
-import ProductsCardsCarousel from "../components/ProductsCardsCarousel.jsx";
-import { LoginAuthContext } from "../components/LoginAuthProvider.jsx";
+// 商品卡片輪播
+import ProductsCardsCarousel from "../components/ProductsCardsCarousel";
+// 收藏共用狀態
+import { WishlistContext } from "../components/WishlistProvider";
+// 登入共用狀態
+import { LoginAuthContext } from "../components/LoginAuthProvider";
+// header
+import Header from "../components/Header";
+// footer
+import Footer from "../components/Footer";
+// 回到最上方
+import BackTop from "../components/BackTop";
 
 // 環境變數
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -33,8 +43,10 @@ function ProductDetail() {
   const [productQty, setProductQty] = useState(1);
   // 收藏商品按鈕
   // const [isfavorite, setFavorite] = useState(false);
+  // 收藏共用狀態解構
   const { wishlist, toggleWishlistItem } = useContext(WishlistContext);
   const isFavorite = specificProduct?.id ? wishlist[specificProduct.id] : false;
+  // 登入共用狀態解構
   const { isAuth } = useContext(LoginAuthContext);
   console.log(isAuth);
   // 儲存全部商品資料
@@ -126,11 +138,30 @@ function ProductDetail() {
     // const newFavorite = !isfavorite;
 
     // setFavorite(newFavorite);
+    // 判斷登入狀態
     if (!isAuth) {
+      Swal.fire({
+        title: "您尚未登入帳號",
+        text: "登入帳號後，才可使用收藏功能！",
+        iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+      </svg>`,
+        showCancelButton: true, // 顯示取消按鈕
+        reverseButtons: true, // 按鈕位置對調
+        confirmButtonText: "前往登入！",
+        cancelButtonText: "取消！",
+
+        customClass: {
+          popup: "handleAddToCartToast",
+          confirmButton: "cancelButton",
+          cancelButton: "confirmButton",
+        },
+      });
       console.log(isAuth);
       console.log("未登入");
       return;
     }
+    // 判斷收藏狀態
     toggleWishlistItem(specificProduct.id);
     if (!isFavorite) {
       toast.success("收藏商品成功！", {
@@ -217,6 +248,7 @@ function ProductDetail() {
 
   return (
     <>
+      <Header />
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -1249,6 +1281,8 @@ function ProductDetail() {
           </div>
         </section>
       </main>
+      <Footer />
+      <BackTop />
     </>
   );
 }

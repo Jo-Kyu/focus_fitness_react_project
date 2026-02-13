@@ -1,9 +1,16 @@
+// 匯入元件
 import Ellipse_2 from "../assets/images/index_page/光暈/Ellipse_2.svg";
-
+// header
+import Header from "../components/Header";
+// footer
+import Footer from "../components/Footer";
+// 回到最上方
+import BackTop from "../components/BackTop";
 function CartEmpty() {
   // JSX
   return (
     <>
+      <Header />
       <main className="px-6 position-relative overflow-hidden min-vh-100 ">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -61,6 +68,8 @@ function CartEmpty() {
           </div>
         </section>
       </main>
+      <Footer />
+      <BackTop />
     </>
   );
 }

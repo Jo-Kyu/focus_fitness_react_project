@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
 
-function PageNotFound() {
+function FavoriteEmpty() {
   // JSX
   return (
     <>
@@ -40,14 +40,24 @@ function PageNotFound() {
           <div className="mb-4 mb-sm-8 container px-0 max-w-1296 border border-secondary-600 border-radius-12">
             {/* 空購物車 */}
             <div className="p-6 py-sm-4  bg-blue-700 text-center border-radius-12">
-              <h2 className="fs-sm-1 fs-5 text-gray-950 fw-bold">
-                網址錯誤 ! 我們沒有這個頁面 !
+              <h2 className="fs-sm-1 fs-4 text-gray-950 fw-bold">
+                您的收藏清單還是空的喔!
               </h2>
               <div>
-                <h1 className="display-1 fw-bold text-primary-400">404</h1>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="300"
+                  height="300"
+                  fill="none"
+                  stroke="#e1ff00"
+                  viewBox="0 -2 16 20"
+                  className="mx-auto"
+                >
+                  <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                </svg>
               </div>
 
-              <h2 className="fs-sm-1 fs-5 text-gray-950 fw-bold mb-4">
+              <h2 className="fs-sm-1 fs-4 text-gray-950 fw-bold mb-4">
                 點擊下方按鈕，立即前往購物!
               </h2>
               <button className="mb-6 mb-md-0 me-md-6 py-2 py-md-3 fill-btn btn fs-7 fw-bold fill-btn flex-fill border-radius-12 w-50">
@@ -63,4 +73,4 @@ function PageNotFound() {
   );
 }
 
-export default PageNotFound;
+export default FavoriteEmpty;

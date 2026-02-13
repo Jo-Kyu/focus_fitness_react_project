@@ -1,5 +1,5 @@
 // 匯入Hook
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 // 匯入套件
 import axios from "axios";
@@ -8,13 +8,25 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import { ThreeCircles } from "react-loader-spinner";
 
 // 匯入元件
+// 光輝
 import Glow from "../components/Glow.jsx";
+// 空購物車
 import CartEmpty from "../pages/CartEmpty.jsx";
+// 輪播
 import ProductsCardsCarousel from "../components/ProductsCardsCarousel.jsx";
+// 載入
 import Loading from "../components/Loading.jsx";
-import { ThreeCircles } from "react-loader-spinner";
+// header
+import Header from "../components/Header";
+// footer
+import Footer from "../components/Footer";
+// 回到最上方
+import BackTop from "../components/BackTop";
+// 登入共用狀態
+import { LoginAuthContext } from "../components/LoginAuthProvider";
 
 // 環境變數
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -39,6 +51,8 @@ function CartStepOne() {
   const [isNoticeChecked, setIsNoticeChecked] = useState(false);
   // 判斷頁面載入
   const [isAllPageLoading, setAllPageLoading] = useState(true);
+  // 登入共用狀態解構
+  const { isAuth } = useContext(LoginAuthContext);
   // 符號
   const cartIcon = (
     <svg
@@ -228,6 +242,30 @@ function CartStepOne() {
 
   // 開始結帳事件處理函式
   function handleStartCheckout() {
+    // 判斷登入狀態
+    if (!isAuth) {
+      Swal.fire({
+        title: "您尚未登入帳號",
+        text: "登入帳號後，才可以開始結帳！",
+        iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+      </svg>`,
+        showCancelButton: true, // 顯示取消按鈕
+        reverseButtons: true, // 按鈕位置對調
+        confirmButtonText: "前往登入！",
+        cancelButtonText: "取消！",
+
+        customClass: {
+          popup: "handleAddToCartToast",
+          confirmButton: "cancelButton",
+          cancelButton: "confirmButton",
+        },
+      });
+      console.log(isAuth);
+      console.log("未登入");
+      return;
+    }
+
     // 購物車為空（保險）
     if (cartProducts?.carts?.length === 0) return;
 
@@ -235,12 +273,19 @@ function CartStepOne() {
     // 有免配送商品 + 尚未勾選
     if (shippingFreeProducts.length && !isNoticeChecked) {
       console.log("請勾選須知");
-      // Swal.fire({
-      //   icon: "warning",
-      //   title: "請先確認提醒事項",
-      //   text: "若您有購買健身課程或入場方案，結帳完成後請至實體門市辦理相關手續。",
-      //   confirmButtonText: "我知道了",
-      // });
+      Swal.fire({
+        title: "您尚未勾選左側購物須知",
+        text: "勾選購物須知後，才可以開始結帳！",
+        iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+      </svg>`,
+        confirmButtonText: "關閉！",
+
+        customClass: {
+          popup: "handleAddToCartToast",
+          confirmButton: "cancelButton",
+        },
+      });
       return;
     }
 
@@ -296,6 +341,13 @@ function CartStepOne() {
     }
   }, [allProducts]);
 
+  // 加總須配送商品總額
+  const shippingProductsTotal = shippingProducts.reduce((sum, item) => {
+    return sum + item.total;
+  }, 0);
+
+  const isFreeShipping = shippingProductsTotal >= 499;
+
   // JSX
   if (isAllPageLoading) {
     return <Loading />;
@@ -307,6 +359,7 @@ function CartStepOne() {
   // JSX
   return (
     <>
+      <Header />
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -645,7 +698,7 @@ function CartStepOne() {
                 {/*  已達免運門檻 */}
                 <div>
                   <h2 className="py-6 py-sm-8 ps-sm-105 px-3 fs-8 text-primary-200 fw-regular">
-                    已達宅配免運門檻
+                    {isFreeShipping ? "已達宅配免運門檻" : ""}
                   </h2>
                 </div>
               </div>
@@ -1130,32 +1183,9 @@ function CartStepOne() {
               )}
             </div>
           </section>
-
+          <Footer />
           {/* 回到頂部按鈕 */}
-          <div className="back-top">
-            <a href="#top" className="d-block">
-              <svg
-                className="arrow-up"
-                width="64"
-                height="64"
-                viewBox="0 0 64 64"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  className="back-top-bg"
-                  d="M0 32C0 14.3269 14.3269 0 32 0C49.6731 0 64 14.3269 64 32C64 49.6731 49.6731 64 32 64C14.3269 64 0 49.6731 0 32Z"
-                  fill="white"
-                  fillOpacity="0.2"
-                />
-                <path
-                  className="back-top-arrow"
-                  d="M32 32C32.442 32 32.8658 32.1757 33.1783 32.4883L39.845 39.1549C40.4959 39.8058 40.4959 40.8608 39.845 41.5117C39.1941 42.1626 38.1391 42.1626 37.4882 41.5117L32 36.0234L26.5117 41.5117C25.8608 42.1626 24.8058 42.1626 24.1549 41.5117C23.504 40.8608 23.504 39.8058 24.1549 39.1549L30.8216 32.4883L30.9436 32.3776C31.2402 32.1345 31.6131 32 32 32ZM30.9485 22.3743C31.6031 21.8404 32.5681 21.8781 33.1783 22.4883L39.845 29.1549C40.4959 29.8058 40.4959 30.8608 39.845 31.5117C39.1941 32.1626 38.1391 32.1626 37.4882 31.5117L32 26.0234L26.5117 31.5117C25.8608 32.1626 24.8058 32.1626 24.1549 31.5117C23.504 30.8608 23.504 29.8058 24.1549 29.1549L30.8216 22.4883L30.9485 22.3743Z"
-                  fill="white"
-                />
-              </svg>
-            </a>
-          </div>
+          <BackTop />
         </>
       </main>
     </>
