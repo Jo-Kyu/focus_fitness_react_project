@@ -13,10 +13,10 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     {/* 全域 Toast 掛載 */}
     <Toaster position="top-right" />
-    <LoginAuthProvider>
-      <WishlistProvider>
-        <App />
-      </WishlistProvider>
-    </LoginAuthProvider>
+      <LoginAuthProvider>
+          <WishlistProvider>
+            <App />
+          </WishlistProvider>
+      </LoginAuthProvider>
   </StrictMode>,
 );
