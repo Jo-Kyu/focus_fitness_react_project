@@ -1,5 +1,5 @@
 // React Hooks
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
@@ -20,7 +20,7 @@ function ProductList(){
     const [productList, setProductList] = useState([]);
     // 定義排序狀態
     const [sortType, setSortType] = useState("");
-    // 定義臨時排序狀態（手機版offcanvas用）
+    // 定義手機版offcanvas臨時排序狀態
     const [tempSortType, setTempSortType] = useState("");
     // 定義當前頁
     const [currentPage, setCurrentPage] = useState(1);
@@ -28,6 +28,11 @@ function ProductList(){
     const [totalPages, setTotalPages] = useState(0);
     // 加載狀態
     const [isLoading, setIsLoading] = useState(false);
+
+     // 定義手機offcanvas
+    const offcanvasRef = useRef(null); 
+    const offcanvasInstance = useRef(null);  
+
     // 定義按鈕顯示
     const sortLabels = {
             hot: "熱銷排行",
@@ -56,6 +61,29 @@ function ProductList(){
         };
         getProductList();
     },[]);
+
+    // offcanvas實體創建
+
+    useEffect(() => {
+        const element=offcanvasRef.current;
+
+        // 檢查能否創建實體
+        if (element && window.bootstrap.Offcanvas) {
+            try {
+                offcanvasInstance.current = new window.bootstrap.Offcanvas(element);
+            } catch (error) {
+                // 防止創建失敗而崩潰
+                console.error("實體創建失敗", error);
+            }
+        }
+
+        return () => {
+            if (offcanvasInstance.current) {
+                offcanvasInstance.current.dispose();
+                offcanvasInstance.current = null;
+            }
+        };
+    }, []);
 
     // 第二步：排序函式
 
@@ -155,8 +183,6 @@ function ProductList(){
                     return processed.filter((p) => p.is_hot === true);
                 case "new":
                     return processed.filter((p) => p.is_new === true);
-                case "price_low":
-                case "price_high":
                 default:
                     return processed;
                 }
@@ -165,12 +191,13 @@ function ProductList(){
     // 動態計算顯示的商品數量
 
     const displayedProductCount = useMemo(() => {
-    // hot 或 new，使用篩選結果的長度
-    if (sortType === "hot" || sortType === "new") {
-        return filteredProducts.length;
+        if (sortType === "hot" || sortType === "new") {
+            // hot 或 new，使用篩選結果的長度
+            return filteredProducts.length;
+        }else{
+            // price_low 或 price_high，使用全部商品長度
+            return allProducts.length;
         }
-        // price_low 或 price_high，使用全部商品長度
-        return allProducts.length;
     }, [sortType, filteredProducts, allProducts]);
 
 
@@ -180,13 +207,27 @@ function ProductList(){
         applySort(allProducts, sort);
     };
 
+    // 手機版radio暫時狀態
+
+    const handleRadioChange = (sort) => {
+        setTempSortType(sort);
+    };
+
+    // 手機版套用按鈕
+
+    const handleApply = () => {
+        applySort(allProducts, tempSortType);
+        
+        if (offcanvasInstance.current) {
+            offcanvasInstance.current.hide();
+        }
+    };
+
     // Pagination 點擊事件
 
     const handlePageClick = (pageNum) => {
         if (pageNum >= 1 && pageNum <= totalPages) {
         setCurrentPage(pageNum);
-        // 滾動到頁面頂部
-        // window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -458,32 +499,66 @@ function ProductList(){
                                         <p className="ms-2">排序</p>
                                     </button>
                                     {/* 手機版下方側邊欄 */}
-                                    <div className="offcanvas offcanvas-bottom offcanvas_new bg-blue-900" tabIndex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+                                    <div
+                                        ref={offcanvasRef}
+                                        className="offcanvas offcanvas-bottom offcanvas_new bg-blue-900"
+                                        tabIndex="-1"
+                                        id="offcanvasBottom"
+                                        aria-labelledby="offcanvasBottomLabel"
+                                    >
                                         <div className="offcanvas-header">
                                             <h5 className="offcanvas-title text-white fs-7" id="offcanvasBottomLabel">排序依據</h5>
                                             <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                         </div>
                                         <div className="offcanvas-body small">
                                             <div className="form-check text-white mb-2">
-                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" defaultChecked/>
+                                                <input 
+                                                    className="form-check-input" 
+                                                    type="radio" 
+                                                    name="sortRadio" 
+                                                    id="flexRadioDefault1"
+                                                    checked={tempSortType === "hot"}
+                                                    onChange={() => handleRadioChange("hot")}
+                                                />
                                                 <label className="form-check-label" htmlFor="flexRadioDefault1">
                                                     熱銷排行
                                                 </label>
                                             </div>
                                             <div className="form-check text-white mb-2">
-                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"/>
+                                                <input 
+                                                    className="form-check-input" 
+                                                    type="radio" 
+                                                    name="sortRadio" 
+                                                    id="flexRadioDefault2"
+                                                    checked={tempSortType === "new"}
+                                                    onChange={() => handleRadioChange("new")}
+                                                />
                                                 <label className="form-check-label" htmlFor="flexRadioDefault2">
                                                     最新上市
                                                 </label>
                                             </div>
                                             <div className="form-check text-white mb-2">
-                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4"/>
+                                                <input 
+                                                    className="form-check-input" 
+                                                    type="radio" 
+                                                    name="sortRadio" 
+                                                    id="flexRadioDefault4"
+                                                    checked={tempSortType === "price_high"}
+                                                    onChange={() => handleRadioChange("price_high")}
+                                                />
                                                 <label className="form-check-label" htmlFor="flexRadioDefault4">
                                                     價格高至低
                                                 </label>
                                             </div>
                                             <div className="form-check text-white mb-2">
-                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault5"/>
+                                                 <input 
+                                                    className="form-check-input" 
+                                                    type="radio" 
+                                                    name="sortRadio" 
+                                                    id="flexRadioDefault5"
+                                                    checked={tempSortType === "price_low"}
+                                                    onChange={() => handleRadioChange("price_low")}
+                                                />
                                                 <label className="form-check-label" htmlFor="flexRadioDefault5">
                                                     價格低至高
                                                 </label>
@@ -491,12 +566,8 @@ function ProductList(){
                                             {/* 重設、套用按鈕 */}
                                             <div className="d-flex justify-content-center align-items-center mt-6">
                                                 <button
-                                                className="me-6 py-2 btn fs-6 fw-bold fill-btn border-radius-12 col-6"
-                                                >
-                                                重設
-                                                </button>
-                                                <button
-                                                className="py-2 btn fs-6 fw-bold fill-btn border-radius-12 col-6"
+                                                    className="py-2 btn fs-6 fw-bold fill-btn border-radius-12 col-12"
+                                                    onClick={handleApply}
                                                 >
                                                 套用
                                                 </button>
