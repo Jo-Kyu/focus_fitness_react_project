@@ -73,9 +73,7 @@
   
 }
 
-.img-slide1,
-.img-slide2,
-.img-slide3 {
+.img-all {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -83,18 +81,6 @@
   bottom: 0;
   right: 0;
   left: 0;
-}
-
-.img-slide1 {
-  background-image: url("https://github.com/Jo-Kyu/focuss_fitness_project/blob/dev/assets/images/index_page/banner/Home%20Page1.jpg?raw=true");
-}
-
-.img-slide2 {
-  background-image: url("https://github.com/Jo-Kyu/focuss_fitness_project/blob/dev/assets/images/index_page/banner/Home%20Page2.jpg?raw=true");
-}
-
-.img-slide3 {
-  background-image: url("https://github.com/Jo-Kyu/focuss_fitness_project/blob/dev/assets/images/index_page/banner/Home%20Page3.jpg?raw=true");
 }
 
 // 首頁按鈕
@@ -140,55 +126,67 @@
   }
 }
 
-.carousel-indicators [data-bs-target] {
-    background-color: rgba(128, 128, 128, 1); 
-    width: 20px;
-    height: 8px;
-    transition: all 0.3s ease;
-    background-color: rgba(255, 255, 228); 
+// 容器加gap調整按鈕間距
+.carousel-indicators .container {
+  gap: 12px; 
 }
 
-.carousel-indicators [data-bs-target]:hover {
-    width: 50px; 
-    transition: all 0.3s ease;
+// 指示器按鈕
+.carousel-indicators button {
+  background-color: rgba(255, 255, 228, 0.6); 
+  width: 20px;
+  height: 10px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 4px;
 }
 
-.carousel-indicators .active {
-    width: 30px;      
-    background-color: $primary-400; 
-    }
+.carousel-indicators button:hover {
+  width: 60px;
+  background-color: rgba(255, 255, 228, 0.8);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
 
-// 上下頁箭頭
+.carousel-indicators button.active {
+  width: 60px;
+  background-color: $primary-400;
+  backdrop-filter: blur(10px);
+}
 
-.carousel-control-prev{
+// 左右換頁按鈕
+
+.carousel-control-prev,
+.carousel-control-next {
   width: 48px;
   height: 104px;
   padding: 40px 12px;
   background-color: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(30px);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.carousel-control-prev {
   border-radius: 0 16px 16px 0;
 }
 
-.carousel-control-next{
-  width: 48px;
-  height: 104px;
-  padding: 40px 12px;
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(30px);
+.carousel-control-next {
   border-radius: 16px 0 0 16px;
 }
 
-.carousel-control-prev:hover{
-    color: $gray-900;
-    backdrop-filter: blur(30px);
-    transition: all 0.3s ease;
+// 預設icon颜色
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: brightness(0) invert(1); // 白色 icon
+  transition: filter 0.3s ease;
 }
 
-.carousel-control-next:hover{
-    color: $gray-900;
-    backdrop-filter: blur(30px);
-    transition: all 0.3s ease;
-
+// icon hover颜色
+.carousel-control-prev:hover .carousel-control-prev-icon,
+.carousel-control-next:hover .carousel-control-next-icon {
+  filter: brightness(0) saturate(100%) invert(80%) sepia(98%) saturate(1231%) hue-rotate(10deg) brightness(103%) contrast(106%);
 }
 
 /*-----------------------------------------*/
@@ -368,41 +366,51 @@
   }
 }
 
-/* 教練團隊 */
+/* Swiper教練團隊 */
 
-.coachs{
+.coach {
   padding-top: 100px;
   padding-bottom: 100px;
   background-color: #232733;
 }
 
 @media (max-width: 992px) {
-    .coachs{
-      padding-top: 32px;
-      padding-bottom: 68px;
+  .coach {
+    padding-top: 32px;
+    padding-bottom: 68px;
   }
 }
 
-// Swiper輪播
+/* 教練輪播專屬樣式 */
 
-.swiper-slide {
-  width: 100%; 
-  flex-shrink: 0;
+.coach-swiper {
+  .swiper-slide {
+    width: 50%;
+    flex-shrink: 0;
+    position: relative;
+    
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+  }
 }
 
 @media (min-width: 375px) {
-  .swiper-slide {
+  .coach-swiper .swiper-slide {
     width: 395px;
   }
 }
 
 @media (min-width: 992px) {
-  .swiper-slide {
+  .coach-swiper .swiper-slide {
     width: 565px;
   }
 }
 
-// 教練名牌
+// Swiper教練名牌
 
 .coach-name{
   display: flex;
