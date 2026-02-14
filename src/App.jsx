@@ -5,7 +5,7 @@ import axios from "axios";
 // 內部資源
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-// import "./App.css";
+import "./App.css";
 
 // 測試axios(已測試，可用)
 function App() {
