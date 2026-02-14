@@ -7,6 +7,7 @@ import ProductListGlow from "../components/ProductListGlow";
 
 // 第三方套件
 import axios from "axios";
+import * as bootstrap from 'bootstrap';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
@@ -65,22 +66,24 @@ function ProductList(){
     // offcanvas實體創建
 
     useEffect(() => {
-        const element=offcanvasRef.current;
-
-        // 檢查能否創建實體
-        if (element && window.bootstrap.Offcanvas) {
+        const element = offcanvasRef.current;
+        
+        if (element && !offcanvasInstance.current) {
             try {
-                offcanvasInstance.current = new window.bootstrap.Offcanvas(element);
+                offcanvasInstance.current = new bootstrap.Offcanvas(offcanvasRef.current);
             } catch (error) {
-                // 防止創建失敗而崩潰
-                console.error("實體創建失敗", error);
+                console.error("創建失敗", error);
             }
         }
-
+        
         return () => {
             if (offcanvasInstance.current) {
-                offcanvasInstance.current.dispose();
-                offcanvasInstance.current = null;
+                try {
+                    offcanvasInstance.current.dispose();
+                    offcanvasInstance.current = null;
+                } catch (error) {
+                    console.error("清除失敗", error);
+                }
             }
         };
     }, []);
@@ -88,56 +91,53 @@ function ProductList(){
     // 第二步：排序函式
 
     const applySort = (products, sort) => {
-        let processedProducts = [...products];
-
-        switch (sort) {
-            case "hot":
-                // 熱銷排行：保留 is_hot
-                processedProducts = processedProducts.filter((p) => p.is_hot === true);
-                break;
-
-            case "new":
-                // 最新上市：保留 is_new
-                processedProducts = processedProducts.filter((p) => p.is_new === true);
-                break;
-
-            case "price_low":
-                // 價格低至高
-                processedProducts.sort((a, b) => a.price - b.price);
-                break;
-
-            case "price_high":
-                // 價格高至低
-                processedProducts.sort((a, b) => b.price - a.price);
-                break;
-
-                // 預設排序
-            default:
-                break;
-        }
-
-        // 計算總頁數
-        const pages = Math.ceil(processedProducts.length / ITEMS_PER_PAGE);
-        setTotalPages(pages);
-
-        // 重置到第1頁
-        setCurrentPage(1);
-
-        // 更新排序類型
-        setSortType(sort);
-
-        // 顯示第1頁的商品
-        displayPage(processedProducts, 1);
-    };
+                let processedProducts = [...products];
+        
+                switch (sort) {
+                    case "hot":
+                        // 熱銷排行：保留 is_hot
+                        processedProducts = processedProducts.filter((p) => p.is_hot === true);
+                        break;
+        
+                    case "new":
+                        // 最新上市：保留 is_new
+                        processedProducts = processedProducts.filter((p) => p.is_new === true);
+                        break;
+        
+                    case "price_low":
+                        // 價格低至高
+                        processedProducts.sort((a, b) => a.price - b.price);
+                        break;
+        
+                    case "price_high":
+                        // 價格高至低
+                        processedProducts.sort((a, b) => b.price - a.price);
+                        break;
+        
+                        // 預設排序
+                    default:
+                        break;
+                }
+        
+                // 計算總頁數
+                const pages = Math.ceil(processedProducts.length / ITEMS_PER_PAGE);
+                setTotalPages(pages);
+                // 重置到第1頁
+                setCurrentPage(1);
+                // 更新排序類型
+                setSortType(sort);
+                // 顯示第1頁的商品
+                displayPage(processedProducts, 1);
+            };
 
     // 第三步：分頁函式
 
     const displayPage = (products, pageNum) => {
-        const pageIndex = pageNum - 1;
-        const start = pageIndex * ITEMS_PER_PAGE;
-        const end = start + ITEMS_PER_PAGE;
-        const pageProducts = products.slice(start, end);
-        setProductList(pageProducts);
+    const pageIndex = pageNum - 1;
+    const start = pageIndex * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const pageProducts = products.slice(start, end);
+    setProductList(pageProducts); 
     };
 
     // 第四步：當頁碼改變時，顯示對應頁的商品
@@ -508,7 +508,6 @@ function ProductList(){
                                     >
                                         <div className="offcanvas-header">
                                             <h5 className="offcanvas-title text-white fs-7" id="offcanvasBottomLabel">排序依據</h5>
-                                            <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                         </div>
                                         <div className="offcanvas-body small">
                                             <div className="form-check text-white mb-2">
