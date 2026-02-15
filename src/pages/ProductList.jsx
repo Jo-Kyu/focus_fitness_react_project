@@ -1,5 +1,5 @@
 // React Hooks
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
@@ -8,6 +8,9 @@ import ProductListGlow from "../components/ProductListGlow";
 // 第三方套件
 import axios from "axios";
 import * as bootstrap from 'bootstrap';
+
+// 定義按鈕顯示資料
+import sortLabels from "../data/sortLabels.js";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
@@ -34,16 +37,7 @@ function ProductList(){
     const offcanvasRef = useRef(null); 
     const offcanvasInstance = useRef(null);  
 
-    // 定義按鈕顯示
-    const sortLabels = {
-            hot: "熱銷排行",
-            new: "最新上市",
-            price_low: "價格低至高",
-            price_high: "價格高至低"
-        };
-
-
-    // 第一步：取得所有遠端商品
+    // 取得所有遠端商品
 
     useEffect(()=>{
         const getProductList=async()=>{
@@ -53,7 +47,10 @@ function ProductList(){
                 const products=res.data.products;
                 setAllProducts(products);
                 // 商品排序初始
-                applySort(products, "price_high");
+                setSortType("price_high");
+                setCurrentPage(1);
+                const pages = Math.ceil(products.length / ITEMS_PER_PAGE);
+                setTotalPages(pages);
             }catch(error){
                 console.log("error:",error.response);
             }finally{
@@ -88,59 +85,17 @@ function ProductList(){
         };
     }, []);
 
-    // 第二步：排序函式
+    // 分頁函式
 
-    const applySort = (products, sort) => {
-                let processedProducts = [...products];
-        
-                switch (sort) {
-                    case "hot":
-                        // 熱銷排行：保留 is_hot
-                        processedProducts = processedProducts.filter((p) => p.is_hot === true);
-                        break;
-        
-                    case "new":
-                        // 最新上市：保留 is_new
-                        processedProducts = processedProducts.filter((p) => p.is_new === true);
-                        break;
-        
-                    case "price_low":
-                        // 價格低至高
-                        processedProducts.sort((a, b) => a.price - b.price);
-                        break;
-        
-                    case "price_high":
-                        // 價格高至低
-                        processedProducts.sort((a, b) => b.price - a.price);
-                        break;
-        
-                        // 預設排序
-                    default:
-                        break;
-                }
-        
-                // 計算總頁數
-                const pages = Math.ceil(processedProducts.length / ITEMS_PER_PAGE);
-                setTotalPages(pages);
-                // 重置到第1頁
-                setCurrentPage(1);
-                // 更新排序類型
-                setSortType(sort);
-                // 顯示第1頁的商品
-                displayPage(processedProducts, 1);
-            };
+    const displayPage = useCallback((products, pageNum) => {
+        const pageIndex = pageNum - 1;
+        const start = pageIndex * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        const pageProducts = products.slice(start, end);
+        setProductList(pageProducts); 
+    },[]);
 
-    // 第三步：分頁函式
-
-    const displayPage = (products, pageNum) => {
-    const pageIndex = pageNum - 1;
-    const start = pageIndex * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    const pageProducts = products.slice(start, end);
-    setProductList(pageProducts); 
-    };
-
-    // 第四步：當頁碼改變時，顯示對應頁的商品
+    // 當頁碼改變時，顯示對應頁的商品
 
     useEffect(() => {
         if (allProducts.length === 0) return;
@@ -169,7 +124,7 @@ function ProductList(){
                 break;
         }
         displayPage(processedProducts, currentPage);
-    }, [currentPage, sortType, allProducts]);
+    }, [currentPage, sortType, allProducts, displayPage]);
 
     // 計算篩選後的商品陣列
 
@@ -203,33 +158,87 @@ function ProductList(){
 
      // 排序按鈕點擊事件
 
-    const handleSortClick = (sort) => {
-        applySort(allProducts, sort);
-    };
+    const handleSortClick = useCallback((sort) => {
+        // 根據目前的排序類型重新排序
+        let processedProducts = [...allProducts];
+
+        switch (sort) {
+            case "hot":
+                processedProducts = processedProducts.filter((p) => p.is_hot === true);
+                break;
+
+            case "new":
+                processedProducts = processedProducts.filter((p) => p.is_new === true);
+                break;
+
+            case "price_low":
+                processedProducts.sort((a, b) => a.price - b.price);
+                break;
+
+            case "price_high":
+                processedProducts.sort((a, b) => b.price - a.price);
+                break;
+
+            default:
+                break;
+        }
+
+        const pages = Math.ceil(processedProducts.length / ITEMS_PER_PAGE);
+        setTotalPages(pages);
+        setCurrentPage(1);
+        setSortType(sort);
+    }, [allProducts]);
 
     // 手機版radio暫時狀態
 
-    const handleRadioChange = (sort) => {
+    const handleRadioChange = useCallback((sort) => {
         setTempSortType(sort);
-    };
+    },[]);
 
     // 手機版套用按鈕
 
-    const handleApply = () => {
-        applySort(allProducts, tempSortType);
+    const handleApply = useCallback(() => {
+        // 直接改變狀態，讓 useEffect 處理排序邏輯
+        let processedProducts = [...allProducts];
+
+        switch (tempSortType) {
+            case "hot":
+                processedProducts = processedProducts.filter((p) => p.is_hot === true);
+                break;
+
+            case "new":
+                processedProducts = processedProducts.filter((p) => p.is_new === true);
+                break;
+
+            case "price_low":
+                processedProducts.sort((a, b) => a.price - b.price);
+                break;
+
+            case "price_high":
+                processedProducts.sort((a, b) => b.price - a.price);
+                break;
+
+            default:
+                break;
+        }
+
+        const pages = Math.ceil(processedProducts.length / ITEMS_PER_PAGE);
+        setTotalPages(pages);
+        setCurrentPage(1);
+        setSortType(tempSortType);
         
         if (offcanvasInstance.current) {
             offcanvasInstance.current.hide();
         }
-    };
+    }, [allProducts, tempSortType]);
 
     // Pagination 點擊事件
 
-    const handlePageClick = (pageNum) => {
+    const handlePageClick = useCallback((pageNum) => {
         if (pageNum >= 1 && pageNum <= totalPages) {
         setCurrentPage(pageNum);
         }
-    };
+    },[totalPages]);
 
      if (isLoading) {
         return <div className="text-center py-5">載入中...</div>;
