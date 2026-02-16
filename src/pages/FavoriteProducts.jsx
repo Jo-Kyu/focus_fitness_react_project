@@ -6,23 +6,21 @@ import axios from "axios";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import toast from "react-hot-toast";
-import Swal from "sweetalert2";
 
 // 匯入元件
 import Glow from "../components/Glow.jsx";
 import CartEmpty from "../pages/CartEmpty.jsx";
-import ProductsCardsCarousel from "../components/ProductsCardsCarousel.jsx";
+import FavoriteEmpty from "./FavoriteEmpty.jsx";
 import Loading from "../components/Loading.jsx";
 import { ThreeCircles } from "react-loader-spinner";
+
 // header
 import Header from "../components/Header";
 // footer
 import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
-import { WishlistContext } from "../components/WishlistProvider";
-import ProductsCarouselCards from "../components/ProductsCarouselCards";
+import { WishlistContext } from "../context/WishlistContext.js";
 import FavoriteProductCards from "../components/FavoriteProductCards.jsx";
 
 // 環境變數
@@ -32,8 +30,11 @@ const path = import.meta.env.VITE_API_PATH;
 function FavoriteProducts() {
   // 儲存全部商品資料
   const [allProducts, setallProducts] = useState([]);
+  // 全頁載入動畫
+  const [isAllPageLoading, setAllPageLoading] = useState(true);
+
   // 收藏共用狀態解構
-  const { wishlist, toggleWishlistItem } = useContext(WishlistContext);
+  const { wishlist } = useContext(WishlistContext);
   //   const isFavorite = wishlist[favoriteProducts.id];
 
   // 取得被收藏的商品id
@@ -46,11 +47,6 @@ function FavoriteProducts() {
   );
 
   console.log(favoriteProducts);
-
-  // 呼叫取得購物車列表、呼叫取的所有商品
-  useEffect(() => {
-    getAllProducts();
-  }, []);
 
   // 取得全部商品(get網路請求)
   function getAllProducts() {
@@ -65,8 +61,24 @@ function FavoriteProducts() {
       .catch((err) => {
         console.log("取得全部商品失敗");
         console.dir(err);
+      })
+      .finally(() => {
+        setAllPageLoading(false);
       });
   }
+
+  // 呼叫取得購物車列表、呼叫取的所有商品
+  useEffect(() => {
+    getAllProducts();
+  }, []);
+
+  // JSX
+  if (isAllPageLoading) {
+    return <Loading />;
+  }
+
+  // JSX
+  if (favoriteProducts?.length === 0) return <FavoriteEmpty />;
 
   // JSX
   return (

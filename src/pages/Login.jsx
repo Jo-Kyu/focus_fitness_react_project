@@ -1,8 +1,9 @@
 // 匯入Hook
-import { useState, useRef, useEffect, useContext } from "react";
+import { useContext } from "react";
 
 // 匯入元件
-import { LoginAuthContext } from "../components/LoginAuthProvider";
+import { LoginAuthContext } from "../context/LoginAuthContext.js";
+
 // header
 import Header from "../components/Header";
 // footer
@@ -12,9 +13,7 @@ import BackTop from "../components/BackTop";
 import Glow from "../components/Glow.jsx";
 
 // 匯入套件
-import axios from "axios";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { ThreeCircles } from "react-loader-spinner";
 
 // 內部資源
@@ -26,7 +25,7 @@ function Login() {
 
   const handleLoginSubmit = (data) => {
     Login(data)
-      .then((res) => {
+      .then(() => {
         console.log("登入成功");
       })
       .catch((err) => {
@@ -41,7 +40,6 @@ function Login() {
     handleSubmit,
     reset,
     formState: { errors },
-    setError,
   } = useForm({
     mode: "onTouched",
   });

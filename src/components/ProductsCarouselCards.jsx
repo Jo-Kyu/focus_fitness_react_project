@@ -2,16 +2,15 @@ import { useContext } from "react";
 
 // 匯入元件
 // 收藏共用狀態
-import { WishlistContext } from "./WishlistProvider";
+import { WishlistContext } from "../context/WishlistContext.js";
 // 登入共用狀態
-import { LoginAuthContext } from "../components/LoginAuthProvider";
+import { LoginAuthContext } from "../context/LoginAuthContext.js";
 // 吐司
 import toast from "react-hot-toast";
 // 提示框
 import Swal from "sweetalert2";
 
 function ProductsCarouselCards({ product }) {
-  // const [isFavorite, setIsFavorite] = useState(false);
   // 收藏商品按鈕
   // 收藏共用狀態解構
   const { wishlist, toggleWishlistItem } = useContext(WishlistContext);
@@ -76,9 +75,6 @@ function ProductsCarouselCards({ product }) {
                 console.log("未登入");
                 return;
               }
-
-              // const newFavorite = !isFavorite;
-              // setIsFavorite(newFavorite);
               toggleWishlistItem(product.id);
               if (!isFavorite) {
                 toast.success("已加入收藏", {
