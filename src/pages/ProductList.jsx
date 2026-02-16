@@ -1,5 +1,5 @@
 // React Hooks
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
@@ -7,20 +7,78 @@ import ProductListGlow from "../components/ProductListGlow";
 
 // 第三方套件
 import axios from "axios";
+import * as bootstrap from 'bootstrap';
+
+// 定義按鈕顯示資料
+import sortLabels from "../data/sortLabels.js";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 const ITEMS_PER_PAGE = 12;
 
+// 分類配置
+// 使用英文 key，通過映射至中文 category 值
+
+const CATEGORIES_CONFIG = {
+  equipment: {                        // 內部標示
+    displayName: "健身裝備",           // 顯示名稱
+    categoryValue: "裝備",            // 對應大類別 category
+    subCategories: [
+      { id: "重量訓練", name: "重量訓練專區" },
+      { id: "瑜珈伸展", name: "瑜伽伸展專區" },// 瑜伽改成「瑜珈」
+      { id: "核心訓練", name: "核心訓練專區" },
+      { id: "有氧訓練", name: "有氧訓練專區" },
+      { id: "按摩放鬆", name: "按摩放鬆專區" },
+      { id: "輔助訓練專區", name: "輔助訓練專區" }// 輔助訓練改「輔助訓練專區」
+    ]
+  },
+  course: {
+    displayName: "健身課程",
+    categoryValue: "課程",
+    subCategories: [
+      { id: "重量訓練", name: "重量訓練" },
+      { id: "瑜珈", name: "瑜珈" },
+      { id: "有氧", name: "有氧" },
+      { id: "筋膜放鬆", name: "筋膜放鬆" },
+      { id: "知識講座", name: "知識講座" }
+    ]
+  },
+  membership: {
+    displayName: "入場方案",
+    categoryValue: "課程",
+    subCategories: [
+      { id: "單次入場", name: "單次入場" },
+      { id: "單月入場", name: "單月入場" }
+    ]
+  }
+};
+
+// 創建中文 category 值到配置的對應
+// const CATEGORY_VALUE_MAP = Object.entries(CATEGORIES_CONFIG).reduce((map, [key, config]) => {
+//   map[config.categoryValue] = key;
+//   return map;
+// }, {});
+// { "裝備": "equipment", "課程": "course", "入場方案": "membership" }
+
+// 取得大分類列表
+// const MAIN_CATEGORIES = Object.entries(CATEGORIES_CONFIG).map(([categoryName, config]) => ({
+//   id: categoryName,
+//   name: config.name,
+//   config: config
+// }));
 
 function ProductList(){
     // 定義遠端取得的商品狀態
     const [allProducts, setAllProducts] = useState([]);
     // 定義商品列表狀態
     const [productList, setProductList] = useState([]);
+    // 定義當前選擇的大分類（使用英文 key）
+    const [selectedMainCategory, setSelectedMainCategory] = useState("equipment");
+    // 定義當前選擇的小分類
+    const [selectedSubCategory, setSelectedSubCategory] = useState("重量訓練");
     // 定義排序狀態
-    const [sortType, setSortType] = useState("");
-    // 定義臨時排序狀態（手機版offcanvas用）
+    const [sortType, setSortType] = useState("price_high");
+    // 定義手機版offcanvas臨時排序狀態
     const [tempSortType, setTempSortType] = useState("");
     // 定義當前頁
     const [currentPage, setCurrentPage] = useState(1);
@@ -28,16 +86,12 @@ function ProductList(){
     const [totalPages, setTotalPages] = useState(0);
     // 加載狀態
     const [isLoading, setIsLoading] = useState(false);
-    // 定義按鈕顯示
-    const sortLabels = {
-            hot: "熱銷排行",
-            new: "最新上市",
-            price_low: "價格低至高",
-            price_high: "價格高至低"
-        };
 
+     // 定義手機offcanvas
+    const offcanvasRef = useRef(null); 
+    const offcanvasInstance = useRef(null);  
 
-    // 第一步：取得所有遠端商品
+    // ============ 取得所有遠端商品 ============
 
     useEffect(()=>{
         const getProductList=async()=>{
@@ -45,9 +99,11 @@ function ProductList(){
                 const res=await axios.get(`${baseUrl}/v2/api/${path}/products/all`);
                 // 取得所有商品
                 const products=res.data.products;
+                console.log("所有商品數據：", products);
                 setAllProducts(products);
-                // 商品排序初始
-                applySort(products, "price_high");
+                // 初始化排序方式
+                setSortType("price_high");
+                setCurrentPage(1);
             }catch(error){
                 console.log("error:",error.response);
             }finally{
@@ -57,137 +113,174 @@ function ProductList(){
         getProductList();
     },[]);
 
-    // 第二步：排序函式
+    // ============ offcanvas實體創建 ============
 
-    const applySort = (products, sort) => {
-        let processedProducts = [...products];
+    useEffect(() => {
+        const element = offcanvasRef.current;
+        
+        if (element && !offcanvasInstance.current) {
+            try {
+                offcanvasInstance.current = new bootstrap.Offcanvas(offcanvasRef.current);
+            } catch (error) {
+                console.error("創建失敗", error);
+            }
+        }
+        
+        return () => {
+            if (offcanvasInstance.current) {
+                try {
+                    offcanvasInstance.current.dispose();
+                    offcanvasInstance.current = null;
+                } catch (error) {
+                    console.error("清除失敗", error);
+                }
+            }
+        };
+    }, []);
 
-        switch (sort) {
-            case "hot":
-                // 熱銷排行：保留 is_hot
-                processedProducts = processedProducts.filter((p) => p.is_hot === true);
-                break;
+    // ============ 根據大分類 + 小分類篩選商品 ============
 
-            case "new":
-                // 最新上市：保留 is_new
-                processedProducts = processedProducts.filter((p) => p.is_new === true);
-                break;
-
-            case "price_low":
-                // 價格低至高
-                processedProducts.sort((a, b) => a.price - b.price);
-                break;
-
-            case "price_high":
-                // 價格高至低
-                processedProducts.sort((a, b) => b.price - a.price);
-                break;
-
-                // 預設排序
-            default:
-                break;
+    const getProductsByCategory = useCallback((products, mainCategory, subCategory) => {
+        // 如果是「所有商品」，返回全部
+        if (mainCategory === "all") {
+            return products;
         }
 
-        // 計算總頁數
-        const pages = Math.ceil(processedProducts.length / ITEMS_PER_PAGE);
-        setTotalPages(pages);
+        // 從配置中取得對應的中文 categoryValue
+        const config = CATEGORIES_CONFIG[mainCategory];
+        if (!config) return products;
 
-        // 重置到第1頁
-        setCurrentPage(1);
+        return products.filter(product => {
+            // product.category 遠端商品的中文「裝備」
+            // config.categoryValue 分類配置的中文「裝備」
+            return product.category === config.categoryValue && product.category_one === subCategory;
+        });
+    }, []);
 
-        // 更新排序類型
-        setSortType(sort);
+    // ============ 分頁函式 ============
 
-        // 顯示第1頁的商品
-        displayPage(processedProducts, 1);
-    };
-
-    // 第三步：分頁函式
-
-    const displayPage = (products, pageNum) => {
+    const displayPage = useCallback((products, pageNum) => {
         const pageIndex = pageNum - 1;
         const start = pageIndex * ITEMS_PER_PAGE;
         const end = start + ITEMS_PER_PAGE;
         const pageProducts = products.slice(start, end);
-        setProductList(pageProducts);
-    };
+        setProductList(pageProducts); 
+    },[]);
 
-    // 第四步：當頁碼改變時，顯示對應頁的商品
+    // ============ 排序邏輯 ============
 
-    useEffect(() => {
-        if (allProducts.length === 0) return;
+    const applySorting = useCallback((products, sort) => {
+        let sorted = [...products];
 
-        // 根據目前的排序類型重新排序
-        let processedProducts = [...allProducts];
-
-        switch (sortType) {
+        switch (sort) {
             case "hot":
-                processedProducts = processedProducts.filter((p) => p.is_hot === true);
+                sorted = sorted.filter((p) => p.is_hot === true);
                 break;
 
             case "new":
-                processedProducts = processedProducts.filter((p) => p.is_new === true);
+                sorted = sorted.filter((p) => p.is_new === true);
                 break;
 
             case "price_low":
-                processedProducts.sort((a, b) => a.price - b.price);
+                sorted.sort((a, b) => a.price - b.price);
                 break;
 
             case "price_high":
-                processedProducts.sort((a, b) => b.price - a.price);
+                sorted.sort((a, b) => b.price - a.price);
                 break;
 
             default:
                 break;
         }
-        displayPage(processedProducts, currentPage);
-    }, [currentPage, sortType, allProducts]);
 
-    // 計算篩選後的商品陣列
+        return sorted;
+    }, []);
+
+    // ============ 當大分類、小分類、排序、分頁改變時，更新顯示 ============
+
+    useEffect(() => {
+        if (allProducts.length === 0) return;
+
+        // 1. 根據大分類和小分類篩選
+        const categoryFiltered = getProductsByCategory(allProducts, selectedMainCategory, selectedSubCategory);
+
+        // 2. 應用排序
+        const sorted = applySorting(categoryFiltered, sortType);
+
+        // 3. 計算總頁數
+        const pages = Math.ceil(sorted.length / ITEMS_PER_PAGE);
+        setTotalPages(pages);
+
+        // 4. 顯示當前頁
+        displayPage(sorted, currentPage);
+    }, [selectedMainCategory, selectedSubCategory, sortType, currentPage, allProducts, getProductsByCategory, applySorting, displayPage]);
+
+    // ============ 計算篩選後的商品陣列 ============
 
     const filteredProducts = useMemo(() => {
         if (allProducts.length === 0) return [];
 
-            let processed = [...allProducts];
+        const categoryFiltered = getProductsByCategory(allProducts, selectedMainCategory, selectedSubCategory);
+        return applySorting(categoryFiltered, sortType);
+    }, [allProducts, selectedMainCategory, selectedSubCategory, sortType, getProductsByCategory, applySorting]);
 
-            switch (sortType) {
-                case "hot":
-                    return processed.filter((p) => p.is_hot === true);
-                case "new":
-                    return processed.filter((p) => p.is_new === true);
-                case "price_low":
-                case "price_high":
-                default:
-                    return processed;
-                }
-    }, [allProducts, sortType]);
-
-    // 動態計算顯示的商品數量
+    // ============ 動態計算顯示的商品數量 ============
 
     const displayedProductCount = useMemo(() => {
-    // hot 或 new，使用篩選結果的長度
-    if (sortType === "hot" || sortType === "new") {
-        return filteredProducts.length;
+        if (sortType === "hot" || sortType === "new") {
+            // hot 或 new，使用篩選結果的長度
+            return filteredProducts.length;
+            // price_low 或 price_high，使用全部商品長度
+        } else {
+            return getProductsByCategory(allProducts, selectedMainCategory, selectedSubCategory).length;
         }
-        // price_low 或 price_high，使用全部商品長度
-        return allProducts.length;
-    }, [sortType, filteredProducts, allProducts]);
+    }, [sortType, filteredProducts, allProducts, selectedMainCategory, selectedSubCategory, getProductsByCategory]);
 
+    // ============ 排序按鈕點擊事件 ============
 
-     // 排序按鈕點擊事件
+    const handleSortClick = useCallback((sort) => {
+        setSortType(sort);
+        setCurrentPage(1);
+    }, []);
 
-    const handleSortClick = (sort) => {
-        applySort(allProducts, sort);
-    };
+    // ============ 手機版radio暫時狀態 ============
 
-    // Pagination 點擊事件
+    const handleRadioChange = useCallback((sort) => {
+        setTempSortType(sort);
+    },[]);
 
-    const handlePageClick = (pageNum) => {
+    // ============ 手機版套用按鈕 ============
+
+    const handleApply = useCallback(() => {
+        setSortType(tempSortType);
+        setCurrentPage(1);
+        
+        if (offcanvasInstance.current) {
+            offcanvasInstance.current.hide();
+        }
+    }, [tempSortType]);
+
+    // ============ Pagination 點擊事件 ============
+
+    const handlePageClick = useCallback((pageNum) => {
         if (pageNum >= 1 && pageNum <= totalPages) {
-        setCurrentPage(pageNum);
-        // 滾動到頁面頂部
-        // window.scrollTo({ top: 0, behavior: 'smooth' });
+            setCurrentPage(pageNum);
         }
+    },[totalPages]);
+
+    // ============ 取得當前大分類的配置 ============
+    const currentMainCategoryConfig = selectedMainCategory === "all" ? null : CATEGORIES_CONFIG[selectedMainCategory];
+
+    // ============ 取得當前小分類的顯示名稱 ============
+    const getCurrentSubCategoryName = () => {
+        if (selectedMainCategory === "all") {
+            return "所有商品";
+        }
+        
+        if (!currentMainCategoryConfig) return selectedMainCategory;
+        
+        const subCat = currentMainCategoryConfig.subCategories.find(cat => cat.id === selectedSubCategory);
+        return subCat ? subCat.name : selectedSubCategory;
     };
 
      if (isLoading) {
@@ -209,27 +302,46 @@ function ProductList(){
             {/* 手機版上方選單 */}
             <ul className="nav nav-pills d-md-none phone_nav">
                 <li className="nav-item me-6 nav-item_new">
-                    <a className="nav-link ruby-text active" aria-current="page" href="#">所有商品</a>
+                    <a className="nav-link ruby-text active" href="#" onClick={(e) => {
+                        e.preventDefault();
+                        setSelectedMainCategory("all");
+                        setSelectedSubCategory("all");
+                        setCurrentPage(1);
+                        setSortType("price_high");
+                    }}>所有商品</a>
                 </li>
                 <li className="nav-item dropdown me-6  nav-item_new">
                     <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">健身裝備</a>
                     <ul className="dropdown-menu bg-primary-950 shodow_none">
-                        <li><a className="dropdown-item" href="#">重量訓練專區</a></li>
-                        <li><a className="dropdown-item" href="#">瑜伽伸展專區</a></li>
-                        <li><a className="dropdown-item" href="#">核心訓練專區</a></li>
-                        <li><a className="dropdown-item" href="#">有氧訓練專區</a></li>
-                        <li><a className="dropdown-item" href="#">按摩放鬆專區</a></li>
-                        <li><a className="dropdown-item" href="#">輔助訓練專區</a></li>
+                        {CATEGORIES_CONFIG.equipment.subCategories.map(cat => (
+                            <li key={cat.id}>
+                                <a className="dropdown-item" href="#" onClick={(e) => {
+                                    e.preventDefault();
+                                    setSelectedMainCategory("equipment");
+                                    setSelectedSubCategory(cat.id);
+                                    setCurrentPage(1);
+                                }}>
+                                    {cat.name}
+                                </a>
+                            </li>
+                        ))}
                     </ul>
                 </li>
                 <li className="nav-item dropdown me-6 nav-item_new">
                     <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">健身課程</a>
                     <ul className="dropdown-menu bg-primary-950 shodow_none">
-                        <li><a className="dropdown-item" href="#">重量訓練</a></li>
-                        <li><a className="dropdown-item" href="#">瑜珈</a></li>
-                        <li><a className="dropdown-item" href="#">有氧</a></li>
-                        <li><a className="dropdown-item" href="#">筋膜放鬆</a></li>
-                        <li><a className="dropdown-item" href="#">知識講座</a></li>
+                        {CATEGORIES_CONFIG.course.subCategories.map(cat => (
+                            <li key={cat.id}>
+                                <a className="dropdown-item" href="#" onClick={(e) => {
+                                    e.preventDefault();
+                                    setSelectedMainCategory("course");
+                                    setSelectedSubCategory(cat.id);
+                                    setCurrentPage(1);
+                                }}>
+                                    {cat.name}
+                                </a>
+                            </li>
+                        ))}
                     </ul>
                 </li>
             </ul>
@@ -306,7 +418,7 @@ function ProductList(){
                     className="breadcrumb-item active ps-2 ps-md-6 text-primary-400 fw-bold"
                     aria-current="page"
                     >
-                    所有商品
+                    {getCurrentSubCategoryName()}
                     </li>
                 </ol>
             </nav>
@@ -320,80 +432,178 @@ function ProductList(){
                 <div className="col-12 col-lg-3 p-0 d-none d-md-block">
                     <div className="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                         <div className="accordion" id="accordionExample">
+                            {/* 所有商品 */}
                             <div className="accordion-item border-radius-12 mb-7">
-                                <button className="nav-link px-6 py-3 fs-7 active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
+                                <button
+                                    className={`nav-link px-6 py-3 fs-7 ${selectedMainCategory === "all" ? "active" : ""}`}
+                                    onClick={() => {
+                                        setSelectedMainCategory("all");
+                                        setSelectedSubCategory("all");
+                                        setCurrentPage(1);
+                                        setSortType("price_high");
+                                    }}
+                                    style={{
+                                        border: "none",
+                                        background: "transparent",
+                                        color: selectedMainCategory === "all" ? "#e1ff00" : "white"
+                                    }}
+                                >
                                     所有商品
                                 </button>
                             </div>
+
+                            {/* 大分類：健身裝備 */}
                             <div className="accordion-item px-6 border-radius-12 mb-7">
-                                <h2 className="accordion-header" id="headingTwo">
-                                    <button className="accordion-button px-0 py-3 collapsed fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <h2 className="accordion-header" id="headingEquipment">
+                                    <button 
+                                        className="accordion-button px-0 py-3 fs-7"
+                                        type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseEquipment" 
+                                        aria-expanded={selectedMainCategory === "equipment" ? "true" : "false"}
+                                        aria-controls="collapseEquipment"
+                                        onClick={() => {
+                                            setSelectedMainCategory("equipment");
+                                            const firstSub = CATEGORIES_CONFIG.equipment.subCategories[0];
+                                            setSelectedSubCategory(firstSub.id);
+                                            setCurrentPage(1);
+                                            setSortType("price_high");
+                                        }}
+                                    >
                                         健身裝備
                                     </button>
                                 </h2>
-                                <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                {/* 小分類：健身裝備 */}
+                                <div 
+                                    id="collapseEquipment" 
+                                    className={`accordion-collapse collapse ${selectedMainCategory === "equipment" ? "show" : ""}`}
+                                    aria-labelledby="headingEquipment" 
+                                    data-bs-parent="#accordionExample"
+                                >
                                     <div className="accordion-body px-0 pb-1">
-                                        <button className="nav-link mb-3" id="v-pills-two-tab" data-bs-toggle="pill" data-bs-target="#v-pills-two" type="button" role="tab" aria-controls="v-pills-two" aria-selected="false">
-                                            重量訓練專區
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-three-tab" data-bs-toggle="pill" data-bs-target="#v-pills-three" type="button" role="tab" aria-controls="v-pills-three" aria-selected="false">
-                                            瑜伽伸展專區
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-four-tab" data-bs-toggle="pill" data-bs-target="#v-pills-four" type="button" role="tab" aria-controls="v-pills-four" aria-selected="false">
-                                            核心訓練專區
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-five-tab" data-bs-toggle="pill" data-bs-target="#v-pills-five" type="button" role="tab" aria-controls="v-pills-five" aria-selected="false">
-                                            有氧訓練專區
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-six-tab" data-bs-toggle="pill" data-bs-target="#v-pills-six" type="button" role="tab" aria-controls="v-pills-six" aria-selected="false">
-                                            按摩放鬆專區
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-seven-tab" data-bs-toggle="pill" data-bs-target="#v-pills-seven" type="button" role="tab" aria-controls="v-pills-seven" aria-selected="false">
-                                            輔助訓練專區
-                                        </button>
+                                        {CATEGORIES_CONFIG.equipment.subCategories.map(cat => (
+                                            <button 
+                                                key={cat.id}
+                                                className={`nav-link mb-3 ${selectedSubCategory === cat.id && selectedMainCategory === "equipment" ? "active" : ""}`}
+                                                onClick={() => {
+                                                    setSelectedMainCategory("equipment");
+                                                    setSelectedSubCategory(cat.id);
+                                                    setCurrentPage(1);
+                                                    setSortType("price_high");
+                                                }}
+                                                style={{
+                                                    background: "transparent",
+                                                    border: "none",
+                                                    color: selectedSubCategory === cat.id && selectedMainCategory === "equipment" ? "#e1ff00" : "white"
+                                                }}
+                                            >
+                                                {cat.name}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
+
+                            {/* 大分類：健身課程 */}
                             <div className="accordion-item px-6 border-radius-12 mb-7">
-                                <h2 className="accordion-header" id="headingThree">
-                                    <button className="accordion-button px-0 py-3 collapsed fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <h2 className="accordion-header" id="headingCourse">
+                                    <button 
+                                        className="accordion-button px-0 py-3 fs-7"
+                                        type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseCourse" 
+                                        aria-expanded={selectedMainCategory === "course" ? "true" : "false"}
+                                        aria-controls="collapseCourse"
+                                        onClick={() => {
+                                            setSelectedMainCategory("course");
+                                            const firstSub = CATEGORIES_CONFIG.course.subCategories[0];
+                                            setSelectedSubCategory(firstSub.id);
+                                            setCurrentPage(1);
+                                            setSortType("price_high");
+                                        }}
+                                    >
                                         健身課程
                                     </button>
                                 </h2>
-                                <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                {/* 小分類：健身課程 */}
+                                <div 
+                                    id="collapseCourse" 
+                                    className={`accordion-collapse collapse ${selectedMainCategory === "course" ? "show" : ""}`}
+                                    aria-labelledby="headingCourse" 
+                                    data-bs-parent="#accordionExample"
+                                >
                                     <div className="accordion-body px-0 pb-1">
-                                        <button className="nav-link mb-3" id="v-pills-eight-tab" data-bs-toggle="pill" data-bs-target="#v-pills-eight" type="button" role="tab" aria-controls="v-pills-eight" aria-selected="false">
-                                            重量訓練
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-nine-tab" data-bs-toggle="pill" data-bs-target="#v-pills-nine" type="button" role="tab" aria-controls="v-pills-nine" aria-selected="false">
-                                            瑜伽
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-ten-tab" data-bs-toggle="pill" data-bs-target="#v-pills-ten" type="button" role="tab" aria-controls="v-pills-ten" aria-selected="false">
-                                            有氧
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-elevent-tab" data-bs-toggle="pill" data-bs-target="#v-pills-elevent" type="button" role="tab" aria-controls="v-pills-elevent" aria-selected="false">
-                                            筋膜放鬆
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-twelve-tab" data-bs-toggle="pill" data-bs-target="#v-pills-twelve" type="button" role="tab" aria-controls="v-pills-twelve" aria-selected="false">
-                                            知識講座
-                                        </button>
+                                        {CATEGORIES_CONFIG.course.subCategories.map(cat => (
+                                            <button 
+                                                key={cat.id}
+                                                className={`nav-link mb-3 ${selectedSubCategory === cat.id && selectedMainCategory === "course" ? "active" : ""}`}
+                                                onClick={() => {
+                                                    setSelectedMainCategory("course");
+                                                    setSelectedSubCategory(cat.id);
+                                                    setCurrentPage(1);
+                                                    setSortType("price_high");
+                                                }}
+                                                style={{
+                                                    background: "transparent",
+                                                    border: "none",
+                                                    color: selectedSubCategory === cat.id && selectedMainCategory === "course" ? "#e1ff00" : "white"
+                                                }}
+                                            >
+                                                {cat.name}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
+
+                            {/* 大分類：入場方案 */}
                             <div className="accordion-item px-6 border-radius-12 mb-7">
-                                <h2 className="accordion-header" id="headingFour">
-                                    <button className="accordion-button px-0 py-3 collapsed fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                <h2 className="accordion-header" id="headingMembership">
+                                    <button 
+                                        className="accordion-button px-0 py-3 fs-7"
+                                        type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseMembership" 
+                                        aria-expanded={selectedMainCategory === "membership" ? "true" : "false"}
+                                        aria-controls="collapseMembership"
+                                        onClick={() => {
+                                            setSelectedMainCategory("membership");
+                                            const firstSub = CATEGORIES_CONFIG.membership.subCategories[0];
+                                            setSelectedSubCategory(firstSub.id);
+                                            setCurrentPage(1);
+                                            setSortType("price_high");
+                                        }}
+                                    >
                                         入場方案
                                     </button>
                                 </h2>
-                                <div id="collapseFour" className="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                {/* 小分類：入場方案 */}
+                                <div 
+                                    id="collapseMembership" 
+                                    className={`accordion-collapse collapse ${selectedMainCategory === "membership" ? "show" : ""}`}
+                                    aria-labelledby="headingMembership" 
+                                    data-bs-parent="#accordionExample"
+                                >
                                     <div className="accordion-body px-0 pb-1">
-                                        <button className="nav-link mb-3" id="v-pills-thirteen-tab" data-bs-toggle="pill" data-bs-target="#v-pills-thirteen" type="button" role="tab" aria-controls="v-pills-thirteen" aria-selected="false">
-                                            單次入場
-                                        </button>
-                                        <button className="nav-link mb-3" id="v-pills-fourteen-tab" data-bs-toggle="pill" data-bs-target="#v-pills-fourteen" type="button" role="tab" aria-controls="v-pills-fourteen" aria-selected="false">
-                                            包月入場
-                                        </button>
+                                        {CATEGORIES_CONFIG.membership.subCategories.map(cat => (
+                                            <button 
+                                                key={cat.id}
+                                                className={`nav-link mb-3 ${selectedSubCategory === cat.id && selectedMainCategory === "membership" ? "active" : ""}`}
+                                                onClick={() => {
+                                                    setSelectedMainCategory("membership");
+                                                    setSelectedSubCategory(cat.id);
+                                                    setCurrentPage(1);
+                                                    setSortType("price_high");
+                                                }}
+                                                style={{
+                                                    background: "transparent",
+                                                    border: "none",
+                                                    color: selectedSubCategory === cat.id && selectedMainCategory === "membership" ? "#e1ff00" : "white"
+                                                }}
+                                            >
+                                                {cat.name}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -435,7 +645,6 @@ function ProductList(){
                                                 最新上市
                                                 </button>
                                             </li>
-                                            {/* <li><a className="dropdown-item fs-8">商城推薦</a></li> */}
                                             <li><button className="dropdown-item fs-8"
                                                         onClick={() => handleSortClick('price_high')}
                                                 >
@@ -458,32 +667,65 @@ function ProductList(){
                                         <p className="ms-2">排序</p>
                                     </button>
                                     {/* 手機版下方側邊欄 */}
-                                    <div className="offcanvas offcanvas-bottom offcanvas_new bg-blue-900" tabIndex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+                                    <div
+                                        ref={offcanvasRef}
+                                        className="offcanvas offcanvas-bottom offcanvas_new bg-blue-900"
+                                        tabIndex="-1"
+                                        id="offcanvasBottom"
+                                        aria-labelledby="offcanvasBottomLabel"
+                                    >
                                         <div className="offcanvas-header">
                                             <h5 className="offcanvas-title text-white fs-7" id="offcanvasBottomLabel">排序依據</h5>
-                                            <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                         </div>
                                         <div className="offcanvas-body small">
                                             <div className="form-check text-white mb-2">
-                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" defaultChecked/>
+                                                <input 
+                                                    className="form-check-input" 
+                                                    type="radio" 
+                                                    name="sortRadio" 
+                                                    id="flexRadioDefault1"
+                                                    checked={tempSortType === "hot"}
+                                                    onChange={() => handleRadioChange("hot")}
+                                                />
                                                 <label className="form-check-label" htmlFor="flexRadioDefault1">
                                                     熱銷排行
                                                 </label>
                                             </div>
                                             <div className="form-check text-white mb-2">
-                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"/>
+                                                <input 
+                                                    className="form-check-input" 
+                                                    type="radio" 
+                                                    name="sortRadio" 
+                                                    id="flexRadioDefault2"
+                                                    checked={tempSortType === "new"}
+                                                    onChange={() => handleRadioChange("new")}
+                                                />
                                                 <label className="form-check-label" htmlFor="flexRadioDefault2">
                                                     最新上市
                                                 </label>
                                             </div>
                                             <div className="form-check text-white mb-2">
-                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4"/>
+                                                <input 
+                                                    className="form-check-input" 
+                                                    type="radio" 
+                                                    name="sortRadio" 
+                                                    id="flexRadioDefault4"
+                                                    checked={tempSortType === "price_high"}
+                                                    onChange={() => handleRadioChange("price_high")}
+                                                />
                                                 <label className="form-check-label" htmlFor="flexRadioDefault4">
                                                     價格高至低
                                                 </label>
                                             </div>
                                             <div className="form-check text-white mb-2">
-                                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault5"/>
+                                                 <input 
+                                                    className="form-check-input" 
+                                                    type="radio" 
+                                                    name="sortRadio" 
+                                                    id="flexRadioDefault5"
+                                                    checked={tempSortType === "price_low"}
+                                                    onChange={() => handleRadioChange("price_low")}
+                                                />
                                                 <label className="form-check-label" htmlFor="flexRadioDefault5">
                                                     價格低至高
                                                 </label>
@@ -491,12 +733,8 @@ function ProductList(){
                                             {/* 重設、套用按鈕 */}
                                             <div className="d-flex justify-content-center align-items-center mt-6">
                                                 <button
-                                                className="me-6 py-2 btn fs-6 fw-bold fill-btn border-radius-12 col-6"
-                                                >
-                                                重設
-                                                </button>
-                                                <button
-                                                className="py-2 btn fs-6 fw-bold fill-btn border-radius-12 col-6"
+                                                    className="py-2 btn fs-6 fw-bold fill-btn border-radius-12 col-12"
+                                                    onClick={handleApply}
                                                 >
                                                 套用
                                                 </button>
@@ -507,7 +745,7 @@ function ProductList(){
                                 </div>
                             </div>
                         
-                            {/* 28個產品 */}
+                            {/* 商品列表 */}
                             <div className="row mlr--10 mb-4">
                                 {/* 商品 */}
                                 {productList.length>0 ?(
@@ -531,7 +769,7 @@ function ProductList(){
                                                                         {product.is_hot ? "熱銷" : ""}
                                                                     </span>
                                                                     <span className="badge py-1 px-6 bg-primary-400 fs-8 text-blue-900 fw-bold">
-                                                                        {product.is_hot ? "最新上市" : ""}
+                                                                        {product.is_new ? "最新上市" : ""}
                                                                     </span>
                                                                 </div>
                                                                 {/* 收藏符號 */}
@@ -586,12 +824,13 @@ function ProductList(){
                                     })
                                 ):(
                                     <div className="col-12 text-center py-5">
-                                        <p className="text-white">沒有符合條件的商品</p>
+                                        <p className="fs-5 fs-md-1 text-white">沒有符合條件的商品</p>
                                     </div>
                                 )}
                             </div>
 
-                            {/* 換頁Pagination */}
+                            {/* 換頁Pagination - 有商品時顯示 */}
+                            {productList.length > 0 && (
                             <div className="row">
                                 <div className="col-12 d-flex justify-content-center">
                                     <nav aria-label="Page navigation example">
@@ -642,21 +881,8 @@ function ProductList(){
                                     </nav>
                                 </div>
                             </div>
+                            )}
                         </div>
-                        {/* 商品顯示區塊 */}
-                        <div className="tab-pane fade" id="v-pills-two" role="tabpanel" aria-labelledby="v-pills-two-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-three" role="tabpanel" aria-labelledby="v-pills-three-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-four" role="tabpanel" aria-labelledby="v-pills-four-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-five" role="tabpanel" aria-labelledby="v-pills-five-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-six" role="tabpanel" aria-labelledby="v-pills-six-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-seven" role="tabpanel" aria-labelledby="v-pills-seven-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-eight" role="tabpanel" aria-labelledby="v-pills-eight-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-nine" role="tabpanel" aria-labelledby="v-pills-nine-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-ten" role="tabpanel" aria-labelledby="v-pills-ten-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-elevent" role="tabpanel" aria-labelledby="v-pills-elevent-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-twelve" role="tabpanel" aria-labelledby="v-pills-twelve-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-thirteen" role="tabpanel" aria-labelledby="v-pills-thirteen-tab">...</div>
-                        <div className="tab-pane fade" id="v-pills-fourteen" role="tabpanel" aria-labelledby="v-pills-fourteen-tab">...</div>
                     </div>
                 </div>
             </div>

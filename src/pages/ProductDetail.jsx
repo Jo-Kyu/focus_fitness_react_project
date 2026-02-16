@@ -16,12 +16,15 @@ import evaluateCustomerPics from "../data/evaluateCustomerPics";
 // 匯入元件
 import Star from "../components/Star.jsx";
 import Glow from "../components/Glow.jsx";
+import ProductDetailCollapse from "../components/ProductDetailCollapse.jsx";
+
 // 商品卡片輪播
 import ProductsCardsCarousel from "../components/ProductsCardsCarousel";
 // 收藏共用狀態
-import { WishlistContext } from "../components/WishlistProvider";
+import { WishlistContext } from "../context/WishlistContext.js";
 // 登入共用狀態
-import { LoginAuthContext } from "../components/LoginAuthProvider";
+import { LoginAuthContext } from "../context/LoginAuthContext.js";
+
 // header
 import Header from "../components/Header";
 // footer
@@ -48,7 +51,6 @@ function ProductDetail() {
   const isFavorite = specificProduct?.id ? wishlist[specificProduct.id] : false;
   // 登入共用狀態解構
   const { isAuth } = useContext(LoginAuthContext);
-  console.log(isAuth);
   // 儲存全部商品資料
   const [allProducts, setallProducts] = useState([]);
   // 被選中的顏色
@@ -77,32 +79,36 @@ function ProductDetail() {
     );
   });
 
-  // 呼叫取得所有商品、呼叫取得特定商品
-  useEffect(() => {
-    getSpecificProduct();
-    getAllProducts();
-  }, []);
-
+  // 預設第一張圖片為展示圖片
   // 預設選中第一個顏色 / 尺寸
   useEffect(() => {
+    if (!specificProduct) return;
+
     if (specificProduct.category !== "課程") {
-      if (specificProduct.color?.length)
-        setSelectedColor(specificProduct.color[0]);
-      if (specificProduct.size?.length)
-        setSelectedSize(specificProduct.size[0]);
+      if (specificProduct.color?.length) {
+        setTimeout(() => setSelectedColor(specificProduct.color[0]), 0);
+      }
+
+      if (specificProduct.size?.length) {
+        setTimeout(() => setSelectedSize(specificProduct.size[0]), 0);
+      }
+    }
+
+    if (specificProduct.imagesUrl?.length) {
+      setTimeout(() => setActiveImg(specificProduct.imagesUrl[0]), 0);
     }
   }, [specificProduct]);
 
   // 預設第一張圖片為展示圖片
-  useEffect(() => {
-    if (specificProduct.imagesUrl?.length) {
-      setActiveImg(specificProduct.imagesUrl[0]);
-    }
-  }, [specificProduct]);
+  // useEffect(() => {
+  //   if (specificProduct.imagesUrl?.length) {
+  //     setActiveImg(specificProduct.imagesUrl[0]);
+  //   }
+  // }, [specificProduct]);
 
   // 取得特定商品(get網路請求)
   function getSpecificProduct() {
-    const dataId = ["-OkZiYf3HWry18AEw1W5"];
+    const dataId = ["-OkZjrzdRUZKHkDiQNXf"];
 
     axios
       .get(`${baseUrl}/v2/api/${path}/product/${dataId}`)
@@ -245,6 +251,12 @@ function ProductDetail() {
         console.dir(err);
       });
   }
+
+  // 呼叫取得所有商品、呼叫取得特定商品
+  useEffect(() => {
+    getSpecificProduct();
+    getAllProducts();
+  }, []);
 
   return (
     <>
@@ -874,352 +886,225 @@ function ProductDetail() {
                   </div>
                   {/* 商品資訊、購物須知、優惠活動 */}
                   {/* 商品資訊 */}
-                  <div className="mb-3 border border-secondary-600 border-radius-12 p-7 hover-effect">
-                    {/* 商品資訊標題 */}
-                    <div className="">
-                      <h3 className="mb-0 d-flex">
-                        <button
-                          className="btn fs-7 p-0 text-gray-950 fw-bold flex-fill rounded-0 d-flex justify-content-between align-items-center default-focus-btn border-0"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseExample"
-                          aria-expanded="false"
-                          aria-controls="collapseExample"
-                        >
-                          商品資訊
-                          <span className="p-2 d-flex align-items-center">
-                            <svg
-                              className=""
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M4.29289 9.20711C3.90237 8.81658 3.90237 8.18357 4.29289 7.79304C4.68342 7.40252 5.31643 7.40252 5.70696 7.79304L11.9999 14.086L18.2929 7.79304C18.6834 7.40252 19.3164 7.40252 19.707 7.79304C20.0975 8.18357 20.0975 8.81658 19.707 9.20711L12.707 16.2071C12.3164 16.5976 11.6834 16.5976 11.2929 16.2071L4.29289 9.20711Z"
-                                fill="white"
-                              />
-                            </svg>
-                          </span>
-                        </button>
-                      </h3>
-                    </div>
-
-                    <div
-                      className="collapse mt-2 text-black"
-                      id="collapseExample"
-                    >
-                      <div className="card card-body p-0 text-gray-950 border-0 transparent">
-                        <div className="mb-7">
-                          <div className="mb-1">
-                            <h4 className="mb-0 fs-8 text-gray-950 fw-bold">
-                              {specificProduct?.content_one?.title1}
-                            </h4>
-                          </div>
-                          <ul className="list-unstyled">
-                            <li className="fs-8 text-gray-200">
-                              {
-                                specificProduct?.content_one?.title1_intro
-                                  ?.intro1
-                              }
-                            </li>
-                            <li className="fs-8 text-gray-200">
-                              {
-                                specificProduct?.content_one?.title1_intro
-                                  ?.intro2
-                              }
-                            </li>
-                            <li className="fs-8 text-gray-200">
-                              {
-                                specificProduct?.content_one?.title1_intro
-                                  ?.intro3
-                              }
-                            </li>
-                          </ul>
+                  <ProductDetailCollapse title="商品資訊">
+                    <div className="card card-body p-0 text-gray-950 border-0 transparent">
+                      <div className="mb-7">
+                        <div className="mb-1">
+                          <h4 className="mb-0 fs-8 text-gray-950 fw-bold">
+                            {specificProduct?.content_one?.title1}
+                          </h4>
                         </div>
+                        <ul className="list-unstyled">
+                          <li className="fs-8 text-gray-200">
+                            {specificProduct?.content_one?.title1_intro?.intro1}
+                          </li>
+                          <li className="fs-8 text-gray-200">
+                            {specificProduct?.content_one?.title1_intro?.intro2}
+                          </li>
+                          <li className="fs-8 text-gray-200">
+                            {specificProduct?.content_one?.title1_intro?.intro3}
+                          </li>
+                        </ul>
+                      </div>
 
-                        <div className="mb-7">
-                          <div className="mb-1">
-                            <h4 className="mb-0 fs-8 text-gray-950 fw-bold">
-                              {specificProduct?.content_one?.title2}
-                            </h4>
-                          </div>
-                          <ul className="list-unstyled">
-                            <li className="fs-8 text-gray-200">
-                              {
-                                specificProduct?.content_one?.title2_intro
-                                  ?.intro1
-                              }
-                            </li>
-                            <li className="fs-8 text-gray-200">
-                              {
-                                specificProduct?.content_one?.title2_intro
-                                  ?.intro2
-                              }
-                            </li>
-                            <li className="fs-8 text-gray-200">
-                              {
-                                specificProduct?.content_one?.title2_intro
-                                  ?.intro3
-                              }
-                            </li>
-                          </ul>
+                      <div className="mb-7">
+                        <div className="mb-1">
+                          <h4 className="mb-0 fs-8 text-gray-950 fw-bold">
+                            {specificProduct?.content_one?.title2}
+                          </h4>
                         </div>
+                        <ul className="list-unstyled">
+                          <li className="fs-8 text-gray-200">
+                            {specificProduct?.content_one?.title2_intro?.intro1}
+                          </li>
+                          <li className="fs-8 text-gray-200">
+                            {specificProduct?.content_one?.title2_intro?.intro2}
+                          </li>
+                          <li className="fs-8 text-gray-200">
+                            {specificProduct?.content_one?.title2_intro?.intro3}
+                          </li>
+                        </ul>
+                      </div>
 
-                        <div className="pt-7 border-top border-blue-600">
-                          <div className="mb-1">
-                            <h4 className="mb-0 fs-8 text-gray-950 fw-bold">
-                              規格說明
-                            </h4>
-                          </div>
-                          <ul>
-                            <li className="fs-8 text-gray-200">
-                              {specificProduct?.content_one?.spec?.spec1}
-                            </li>
-                            <li className="fs-8 text-gray-200">
-                              {specificProduct?.content_one?.spec?.spec2}
-                            </li>
-                            <li className="fs-8 text-gray-200">
-                              {specificProduct?.content_one?.spec?.spec3}
-                            </li>
-                          </ul>
+                      <div className="pt-7 border-top border-blue-600">
+                        <div className="mb-1">
+                          <h4 className="mb-0 fs-8 text-gray-950 fw-bold">
+                            規格說明
+                          </h4>
                         </div>
+                        <ul>
+                          <li className="fs-8 text-gray-200">
+                            {specificProduct?.content_one?.spec?.spec1}
+                          </li>
+                          <li className="fs-8 text-gray-200">
+                            {specificProduct?.content_one?.spec?.spec2}
+                          </li>
+                          <li className="fs-8 text-gray-200">
+                            {specificProduct?.content_one?.spec?.spec3}
+                          </li>
+                        </ul>
                       </div>
                     </div>
-                  </div>
+                  </ProductDetailCollapse>
                   {/* 購物須知 */}
-                  <div className="mb-3 border border-secondary-600 border-radius-12 p-7 hover-effect">
-                    {/* 購物須知標題 */}
-                    <div>
-                      <h3 className="mb-0 d-flex">
-                        <button
-                          className="btn fs-7 p-0 text-gray-950 fw-bold flex-fill rounded-0 d-flex justify-content-between align-items-center default-focus-btn border-0"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#shopping-tips"
-                          aria-expanded="false"
-                          aria-controls="shopping-tips"
-                        >
-                          購物須知
-                          <span className="p-2 d-flex align-items-center">
+                  <ProductDetailCollapse title="購物須知">
+                    {/* 運送方式 */}
+                    <div className="card card-body mb-3 p-0 text-gray-950 border-0 transparent">
+                      <ul className="mb-0 list-unstyled">
+                        <li className="d-flex">
+                          <div className="me-3 p-2 bg-primary-950 rounded-circle">
                             <svg
-                              className=""
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
+                              className="text-primary-400"
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M4.29289 9.20711C3.90237 8.81658 3.90237 8.18357 4.29289 7.79304C4.68342 7.40252 5.31643 7.40252 5.70696 7.79304L11.9999 14.086L18.2929 7.79304C18.6834 7.40252 19.3164 7.40252 19.707 7.79304C20.0975 8.18357 20.0975 8.81658 19.707 9.20711L12.707 16.2071C12.3164 16.5976 11.6834 16.5976 11.2929 16.2071L4.29289 9.20711Z"
-                                fill="white"
+                                d="M14.1208 3.35067C15.3256 2.86228 16.6731 2.86228 17.8779 3.35067L27.876 7.40397C28.7565 7.76094 29.3327 8.61621 29.3327 9.56635V22.4367C29.3327 23.3868 28.7565 24.242 27.876 24.5991L17.8779 28.6523C16.6731 29.1407 15.3256 29.1407 14.1208 28.6523L4.12271 24.5991C3.24216 24.242 2.66602 23.3868 2.66602 22.4367V9.56635C2.66602 8.61621 3.24216 7.76094 4.12271 7.40397L14.1208 3.35067ZM17.1264 5.20415C16.4036 4.91112 15.5951 4.91112 14.8723 5.20415L12.3206 6.23858L22.3564 10.1414L25.9153 8.76722L17.1264 5.20415ZM19.5875 11.2105L9.61898 7.33385L6.11974 8.75246L16.0011 12.5952L19.5875 11.2105ZM4.66602 22.4367C4.66602 22.5724 4.74832 22.6945 4.87411 22.7456L14.8723 26.7988C14.9144 26.816 14.9571 26.8321 14.9998 26.8472V14.3517L4.66602 10.333V22.4367ZM17.1264 26.7988L27.1245 22.7456C27.2504 22.6945 27.3327 22.5724 27.3327 22.4367V10.3639L16.9998 14.3535V26.8469C17.0423 26.8319 17.0845 26.8159 17.1264 26.7988Z"
+                                fill="currentColor"
                               />
                             </svg>
-                          </span>
-                        </button>
-                      </h3>
+                          </div>
+                          <div>
+                            <div className="mb-1">
+                              <h4 className="mb-0 fs-8 text-primary-200">
+                                運送方式
+                              </h4>
+                            </div>
+                            <div className="mb-1">
+                              <p className="mb-0 fs-8 text-gray-200">
+                                {
+                                  specificProduct?.description_one
+                                    ?.shopping_info?.shipping
+                                }
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
                     </div>
-                    {/* 購物須知內容 */}
-                    <div
-                      className="collapse mt-2 text-black"
-                      id="shopping-tips"
-                    >
-                      {/* 運送方式 */}
-                      <div className="card card-body mb-3 p-0 text-gray-950 border-0 transparent">
-                        <ul className="mb-0 list-unstyled">
-                          <li className="d-flex">
-                            <div className="me-3 p-2 bg-primary-950 rounded-circle">
-                              <svg
-                                className="text-primary-400"
-                                width="32"
-                                height="32"
-                                viewBox="0 0 32 32"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M14.1208 3.35067C15.3256 2.86228 16.6731 2.86228 17.8779 3.35067L27.876 7.40397C28.7565 7.76094 29.3327 8.61621 29.3327 9.56635V22.4367C29.3327 23.3868 28.7565 24.242 27.876 24.5991L17.8779 28.6523C16.6731 29.1407 15.3256 29.1407 14.1208 28.6523L4.12271 24.5991C3.24216 24.242 2.66602 23.3868 2.66602 22.4367V9.56635C2.66602 8.61621 3.24216 7.76094 4.12271 7.40397L14.1208 3.35067ZM17.1264 5.20415C16.4036 4.91112 15.5951 4.91112 14.8723 5.20415L12.3206 6.23858L22.3564 10.1414L25.9153 8.76722L17.1264 5.20415ZM19.5875 11.2105L9.61898 7.33385L6.11974 8.75246L16.0011 12.5952L19.5875 11.2105ZM4.66602 22.4367C4.66602 22.5724 4.74832 22.6945 4.87411 22.7456L14.8723 26.7988C14.9144 26.816 14.9571 26.8321 14.9998 26.8472V14.3517L4.66602 10.333V22.4367ZM17.1264 26.7988L27.1245 22.7456C27.2504 22.6945 27.3327 22.5724 27.3327 22.4367V10.3639L16.9998 14.3535V26.8469C17.0423 26.8319 17.0845 26.8159 17.1264 26.7988Z"
-                                  fill="currentColor"
-                                />
-                              </svg>
+                    {/* 付款方式 */}
+                    <div className="card card-body p-0 text-gray-950 border-0 transparent">
+                      <ul className="mb-0 list-unstyled">
+                        <li className="d-flex">
+                          <div className="me-3 p-2 bg-primary-950 rounded-circle">
+                            <svg
+                              className="text-primary-400"
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M19.1409 3.46062C19.2593 3.31031 19.4797 3.29032 19.6233 3.41688L20.8513 4.4998L16.9844 9.3335H19.5456L22.3531 5.82412L24.556 7.76668C24.6915 7.88616 24.7072 8.0918 24.5913 8.23043L23.6697 9.3335H26.262C26.9207 8.37207 26.7704 7.0528 25.8788 6.26662L20.9461 1.91682C19.9415 1.0309 18.3988 1.17077 17.57 2.22295L11.9683 9.3335H14.5144L19.1409 3.46062ZM21.6667 18.6668C21.1144 18.6668 20.6667 19.1146 20.6667 19.6668C20.6667 20.2191 21.1144 20.6668 21.6667 20.6668H24.3333C24.8856 20.6668 25.3333 20.2191 25.3333 19.6668C25.3333 19.1146 24.8856 18.6668 24.3333 18.6668H21.6667ZM6 9.66683C6 9.11455 6.44772 8.66683 7 8.66683H11.1713L12.76 6.66683H7C5.34315 6.66683 4 8.00998 4 9.66683V23.6668C4 26.06 5.94009 28.0002 8.33333 28.0002H24.3333C26.7265 28.0002 28.6667 26.06 28.6667 23.6668V15.0002C28.6667 12.6069 26.7265 10.6668 24.3333 10.6668H7C6.44772 10.6668 6 10.2191 6 9.66683ZM6 23.6668V12.4961C6.31277 12.6067 6.64936 12.6668 7 12.6668H24.3333C25.622 12.6668 26.6667 13.7115 26.6667 15.0002V23.6668C26.6667 24.9555 25.622 26.0002 24.3333 26.0002H8.33333C7.04467 26.0002 6 24.9555 6 23.6668Z"
+                                fill="currentColor"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <div className="mb-1">
+                              <h4 className="mb-0 fs-8 text-primary-200">
+                                付款方式
+                              </h4>
                             </div>
-                            <div>
-                              <div className="mb-1">
-                                <h4 className="mb-0 fs-8 text-primary-200">
-                                  運送方式
-                                </h4>
-                              </div>
-                              <div className="mb-1">
-                                <p className="mb-0 fs-8 text-gray-200">
-                                  {
-                                    specificProduct?.description_one
-                                      ?.shopping_info?.shipping
-                                  }
-                                </p>
-                              </div>
+                            <div className="mb-1">
+                              <p className="mb-0 fs-8 text-gray-200">
+                                {
+                                  specificProduct?.description_one
+                                    ?.shopping_info?.payment
+                                }
+                              </p>
                             </div>
-                          </li>
-                        </ul>
-                      </div>
-                      {/* 付款方式 */}
-                      <div className="card card-body p-0 text-gray-950 border-0 transparent">
-                        <ul className="mb-0 list-unstyled">
-                          <li className="d-flex">
-                            <div className="me-3 p-2 bg-primary-950 rounded-circle">
-                              <svg
-                                className="text-primary-400"
-                                width="32"
-                                height="32"
-                                viewBox="0 0 32 32"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M19.1409 3.46062C19.2593 3.31031 19.4797 3.29032 19.6233 3.41688L20.8513 4.4998L16.9844 9.3335H19.5456L22.3531 5.82412L24.556 7.76668C24.6915 7.88616 24.7072 8.0918 24.5913 8.23043L23.6697 9.3335H26.262C26.9207 8.37207 26.7704 7.0528 25.8788 6.26662L20.9461 1.91682C19.9415 1.0309 18.3988 1.17077 17.57 2.22295L11.9683 9.3335H14.5144L19.1409 3.46062ZM21.6667 18.6668C21.1144 18.6668 20.6667 19.1146 20.6667 19.6668C20.6667 20.2191 21.1144 20.6668 21.6667 20.6668H24.3333C24.8856 20.6668 25.3333 20.2191 25.3333 19.6668C25.3333 19.1146 24.8856 18.6668 24.3333 18.6668H21.6667ZM6 9.66683C6 9.11455 6.44772 8.66683 7 8.66683H11.1713L12.76 6.66683H7C5.34315 6.66683 4 8.00998 4 9.66683V23.6668C4 26.06 5.94009 28.0002 8.33333 28.0002H24.3333C26.7265 28.0002 28.6667 26.06 28.6667 23.6668V15.0002C28.6667 12.6069 26.7265 10.6668 24.3333 10.6668H7C6.44772 10.6668 6 10.2191 6 9.66683ZM6 23.6668V12.4961C6.31277 12.6067 6.64936 12.6668 7 12.6668H24.3333C25.622 12.6668 26.6667 13.7115 26.6667 15.0002V23.6668C26.6667 24.9555 25.622 26.0002 24.3333 26.0002H8.33333C7.04467 26.0002 6 24.9555 6 23.6668Z"
-                                  fill="currentColor"
-                                />
-                              </svg>
-                            </div>
-                            <div>
-                              <div className="mb-1">
-                                <h4 className="mb-0 fs-8 text-primary-200">
-                                  付款方式
-                                </h4>
-                              </div>
-                              <div className="mb-1">
-                                <p className="mb-0 fs-8 text-gray-200">
-                                  {
-                                    specificProduct?.description_one
-                                      ?.shopping_info?.payment
-                                  }
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                      {/* 免配送商品須知 */}
+                          </div>
+                        </li>
+                      </ul>
                     </div>
-                  </div>
+                  </ProductDetailCollapse>
                   {/* 優惠活動 */}
-                  <div className="border border-secondary-600 border-radius-12 p-7 hover-effect">
-                    {/* 優惠活動標題 */}
-                    <div>
-                      <h3 className="mb-0 d-flex">
-                        <button
-                          className="btn fs-7 p-0 text-gray-950 fw-bold flex-fill rounded-0 d-flex justify-content-between align-items-center default-focus-btn border-0"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#special-offers"
-                          aria-expanded="false"
-                          aria-controls="special-offers"
-                        >
-                          優惠活動
-                          <span className="p-2 d-flex align-items-center">
+                  <ProductDetailCollapse title="優惠活動">
+                    <div className="card card-body p-0 text-gray-950 border-0 transparent">
+                      <ul className="mb-0 list-unstyled">
+                        {/* <優惠活動一 */}
+                        <li className="mb-3 d-flex align-items-center">
+                          <div className="me-3 p-2 bg-primary-950 rounded-circle">
                             <svg
-                              className=""
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
+                              fill="currentColor"
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M4.29289 9.20711C3.90237 8.81658 3.90237 8.18357 4.29289 7.79304C4.68342 7.40252 5.31643 7.40252 5.70696 7.79304L11.9999 14.086L18.2929 7.79304C18.6834 7.40252 19.3164 7.40252 19.707 7.79304C20.0975 8.18357 20.0975 8.81658 19.707 9.20711L12.707 16.2071C12.3164 16.5976 11.6834 16.5976 11.2929 16.2071L4.29289 9.20711Z"
-                                fill="white"
+                                d="M19.3728 4.78777C18.9823 4.39725 18.3491 4.39725 17.9585 4.78777L4.78703 17.9593C4.39651 18.3498 4.39651 18.983 4.78703 19.3736L6.21132 20.7978C6.74095 20.5017 7.35156 20.3332 7.9988 20.3332C10.0238 20.3332 11.6655 21.9748 11.6655 23.9998C11.6655 24.6472 11.4969 25.2577 11.2008 25.7873L12.6253 27.2118C13.0158 27.6024 13.6489 27.6024 14.0395 27.2118L27.2111 14.0402C27.6016 13.6497 27.6016 13.0165 27.2111 12.626L25.7867 11.2016C25.257 11.4979 24.6461 11.6665 23.9988 11.6665C21.9737 11.6665 20.3321 10.0249 20.3321 7.99986C20.3321 7.35246 20.5008 6.74169 20.7971 6.21197L19.3728 4.78777ZM16.5444 3.37355C17.716 2.20198 19.6155 2.20198 20.7871 3.37355L22.3489 4.93553C23.03 5.61653 22.908 6.5725 22.5646 7.15005C22.4171 7.3981 22.3321 7.68753 22.3321 7.99986C22.3321 8.92034 23.0783 9.66653 23.9988 9.66653C24.3111 9.66653 24.6005 9.58157 24.8485 9.43407C25.4261 9.09069 26.3822 8.96865 27.0631 9.64966L28.6252 11.2118C29.7968 12.3834 29.7968 14.2829 28.6252 15.4545L15.4537 28.626C14.2821 29.7976 12.3826 29.7976 11.2111 28.626L9.64884 27.0638C8.96792 26.3829 9.08983 25.427 9.43312 24.8496C9.58054 24.6014 9.66547 24.3121 9.66547 23.9998C9.66547 23.0794 8.91927 22.3332 7.9988 22.3332C7.68655 22.3332 7.39718 22.4181 7.14918 22.5656C6.57163 22.9089 5.61579 23.0308 4.93487 22.3498L3.37282 20.7878C2.20124 19.6162 2.20126 17.7168 3.37282 16.5452L16.5444 3.37355Z"
+                                fill="#E1FF00"
                               />
                             </svg>
-                          </span>
-                        </button>
-                      </h3>
+                          </div>
+                          <div>
+                            <p className="mb-0 fs-8 text-gray-200">
+                              {
+                                specificProduct?.description_one?.activity
+                                  ?.activity1
+                              }
+                            </p>
+                          </div>
+                        </li>
+                        {/* 優惠活動二 */}
+                        <li className="mb-3 d-flex align-items-center">
+                          <div className="me-3 p-2 bg-primary-950 rounded-circle">
+                            <svg
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
+                              fill="currentColor"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M19.3728 4.78777C18.9823 4.39725 18.3491 4.39725 17.9585 4.78777L4.78703 17.9593C4.39651 18.3498 4.39651 18.983 4.78703 19.3736L6.21132 20.7978C6.74095 20.5017 7.35156 20.3332 7.9988 20.3332C10.0238 20.3332 11.6655 21.9748 11.6655 23.9998C11.6655 24.6472 11.4969 25.2577 11.2008 25.7873L12.6253 27.2118C13.0158 27.6024 13.6489 27.6024 14.0395 27.2118L27.2111 14.0402C27.6016 13.6497 27.6016 13.0165 27.2111 12.626L25.7867 11.2016C25.257 11.4979 24.6461 11.6665 23.9988 11.6665C21.9737 11.6665 20.3321 10.0249 20.3321 7.99986C20.3321 7.35246 20.5008 6.74169 20.7971 6.21197L19.3728 4.78777ZM16.5444 3.37355C17.716 2.20198 19.6155 2.20198 20.7871 3.37355L22.3489 4.93553C23.03 5.61653 22.908 6.5725 22.5646 7.15005C22.4171 7.3981 22.3321 7.68753 22.3321 7.99986C22.3321 8.92034 23.0783 9.66653 23.9988 9.66653C24.3111 9.66653 24.6005 9.58157 24.8485 9.43407C25.4261 9.09069 26.3822 8.96865 27.0631 9.64966L28.6252 11.2118C29.7968 12.3834 29.7968 14.2829 28.6252 15.4545L15.4537 28.626C14.2821 29.7976 12.3826 29.7976 11.2111 28.626L9.64884 27.0638C8.96792 26.3829 9.08983 25.427 9.43312 24.8496C9.58054 24.6014 9.66547 24.3121 9.66547 23.9998C9.66547 23.0794 8.91927 22.3332 7.9988 22.3332C7.68655 22.3332 7.39718 22.4181 7.14918 22.5656C6.57163 22.9089 5.61579 23.0308 4.93487 22.3498L3.37282 20.7878C2.20124 19.6162 2.20126 17.7168 3.37282 16.5452L16.5444 3.37355Z"
+                                fill="#E1FF00"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="mb-0 fs-8 text-gray-200">
+                              {
+                                specificProduct?.description_one?.activity
+                                  ?.activity2
+                              }
+                            </p>
+                          </div>
+                        </li>
+                        {/* 優惠活動三 */}
+                        <li className="d-flex align-items-center">
+                          <div className="me-3 p-2 bg-primary-950 rounded-circle">
+                            <svg
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
+                              fill="currentColor"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M19.3728 4.78777C18.9823 4.39725 18.3491 4.39725 17.9585 4.78777L4.78703 17.9593C4.39651 18.3498 4.39651 18.983 4.78703 19.3736L6.21132 20.7978C6.74095 20.5017 7.35156 20.3332 7.9988 20.3332C10.0238 20.3332 11.6655 21.9748 11.6655 23.9998C11.6655 24.6472 11.4969 25.2577 11.2008 25.7873L12.6253 27.2118C13.0158 27.6024 13.6489 27.6024 14.0395 27.2118L27.2111 14.0402C27.6016 13.6497 27.6016 13.0165 27.2111 12.626L25.7867 11.2016C25.257 11.4979 24.6461 11.6665 23.9988 11.6665C21.9737 11.6665 20.3321 10.0249 20.3321 7.99986C20.3321 7.35246 20.5008 6.74169 20.7971 6.21197L19.3728 4.78777ZM16.5444 3.37355C17.716 2.20198 19.6155 2.20198 20.7871 3.37355L22.3489 4.93553C23.03 5.61653 22.908 6.5725 22.5646 7.15005C22.4171 7.3981 22.3321 7.68753 22.3321 7.99986C22.3321 8.92034 23.0783 9.66653 23.9988 9.66653C24.3111 9.66653 24.6005 9.58157 24.8485 9.43407C25.4261 9.09069 26.3822 8.96865 27.0631 9.64966L28.6252 11.2118C29.7968 12.3834 29.7968 14.2829 28.6252 15.4545L15.4537 28.626C14.2821 29.7976 12.3826 29.7976 11.2111 28.626L9.64884 27.0638C8.96792 26.3829 9.08983 25.427 9.43312 24.8496C9.58054 24.6014 9.66547 24.3121 9.66547 23.9998C9.66547 23.0794 8.91927 22.3332 7.9988 22.3332C7.68655 22.3332 7.39718 22.4181 7.14918 22.5656C6.57163 22.9089 5.61579 23.0308 4.93487 22.3498L3.37282 20.7878C2.20124 19.6162 2.20126 17.7168 3.37282 16.5452L16.5444 3.37355Z"
+                                fill="#E1FF00"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="mb-0 fs-8 text-gray-200">
+                              {
+                                specificProduct?.description_one?.activity
+                                  ?.activity3
+                              }
+                            </p>
+                          </div>
+                        </li>
+                      </ul>
                     </div>
-                    {/* 優惠活動內容 */}
-                    <div
-                      className="collapse mt-2 text-black"
-                      id="special-offers"
-                    >
-                      <div className="card card-body p-0 text-gray-950 border-0 transparent">
-                        <ul className="mb-0 list-unstyled">
-                          {/* <優惠活動一 */}
-                          <li className="mb-3 d-flex align-items-center">
-                            <div className="me-3 p-2 bg-primary-950 rounded-circle">
-                              <svg
-                                width="32"
-                                height="32"
-                                viewBox="0 0 32 32"
-                                fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M19.3728 4.78777C18.9823 4.39725 18.3491 4.39725 17.9585 4.78777L4.78703 17.9593C4.39651 18.3498 4.39651 18.983 4.78703 19.3736L6.21132 20.7978C6.74095 20.5017 7.35156 20.3332 7.9988 20.3332C10.0238 20.3332 11.6655 21.9748 11.6655 23.9998C11.6655 24.6472 11.4969 25.2577 11.2008 25.7873L12.6253 27.2118C13.0158 27.6024 13.6489 27.6024 14.0395 27.2118L27.2111 14.0402C27.6016 13.6497 27.6016 13.0165 27.2111 12.626L25.7867 11.2016C25.257 11.4979 24.6461 11.6665 23.9988 11.6665C21.9737 11.6665 20.3321 10.0249 20.3321 7.99986C20.3321 7.35246 20.5008 6.74169 20.7971 6.21197L19.3728 4.78777ZM16.5444 3.37355C17.716 2.20198 19.6155 2.20198 20.7871 3.37355L22.3489 4.93553C23.03 5.61653 22.908 6.5725 22.5646 7.15005C22.4171 7.3981 22.3321 7.68753 22.3321 7.99986C22.3321 8.92034 23.0783 9.66653 23.9988 9.66653C24.3111 9.66653 24.6005 9.58157 24.8485 9.43407C25.4261 9.09069 26.3822 8.96865 27.0631 9.64966L28.6252 11.2118C29.7968 12.3834 29.7968 14.2829 28.6252 15.4545L15.4537 28.626C14.2821 29.7976 12.3826 29.7976 11.2111 28.626L9.64884 27.0638C8.96792 26.3829 9.08983 25.427 9.43312 24.8496C9.58054 24.6014 9.66547 24.3121 9.66547 23.9998C9.66547 23.0794 8.91927 22.3332 7.9988 22.3332C7.68655 22.3332 7.39718 22.4181 7.14918 22.5656C6.57163 22.9089 5.61579 23.0308 4.93487 22.3498L3.37282 20.7878C2.20124 19.6162 2.20126 17.7168 3.37282 16.5452L16.5444 3.37355Z"
-                                  fill="#E1FF00"
-                                />
-                              </svg>
-                            </div>
-                            <div>
-                              <p className="mb-0 fs-8 text-gray-200">
-                                {
-                                  specificProduct?.description_one?.activity
-                                    ?.activity1
-                                }
-                              </p>
-                            </div>
-                          </li>
-                          {/* 優惠活動二 */}
-                          <li className="mb-3 d-flex align-items-center">
-                            <div className="me-3 p-2 bg-primary-950 rounded-circle">
-                              <svg
-                                width="32"
-                                height="32"
-                                viewBox="0 0 32 32"
-                                fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M19.3728 4.78777C18.9823 4.39725 18.3491 4.39725 17.9585 4.78777L4.78703 17.9593C4.39651 18.3498 4.39651 18.983 4.78703 19.3736L6.21132 20.7978C6.74095 20.5017 7.35156 20.3332 7.9988 20.3332C10.0238 20.3332 11.6655 21.9748 11.6655 23.9998C11.6655 24.6472 11.4969 25.2577 11.2008 25.7873L12.6253 27.2118C13.0158 27.6024 13.6489 27.6024 14.0395 27.2118L27.2111 14.0402C27.6016 13.6497 27.6016 13.0165 27.2111 12.626L25.7867 11.2016C25.257 11.4979 24.6461 11.6665 23.9988 11.6665C21.9737 11.6665 20.3321 10.0249 20.3321 7.99986C20.3321 7.35246 20.5008 6.74169 20.7971 6.21197L19.3728 4.78777ZM16.5444 3.37355C17.716 2.20198 19.6155 2.20198 20.7871 3.37355L22.3489 4.93553C23.03 5.61653 22.908 6.5725 22.5646 7.15005C22.4171 7.3981 22.3321 7.68753 22.3321 7.99986C22.3321 8.92034 23.0783 9.66653 23.9988 9.66653C24.3111 9.66653 24.6005 9.58157 24.8485 9.43407C25.4261 9.09069 26.3822 8.96865 27.0631 9.64966L28.6252 11.2118C29.7968 12.3834 29.7968 14.2829 28.6252 15.4545L15.4537 28.626C14.2821 29.7976 12.3826 29.7976 11.2111 28.626L9.64884 27.0638C8.96792 26.3829 9.08983 25.427 9.43312 24.8496C9.58054 24.6014 9.66547 24.3121 9.66547 23.9998C9.66547 23.0794 8.91927 22.3332 7.9988 22.3332C7.68655 22.3332 7.39718 22.4181 7.14918 22.5656C6.57163 22.9089 5.61579 23.0308 4.93487 22.3498L3.37282 20.7878C2.20124 19.6162 2.20126 17.7168 3.37282 16.5452L16.5444 3.37355Z"
-                                  fill="#E1FF00"
-                                />
-                              </svg>
-                            </div>
-                            <div>
-                              <p className="mb-0 fs-8 text-gray-200">
-                                {
-                                  specificProduct?.description_one?.activity
-                                    ?.activity2
-                                }
-                              </p>
-                            </div>
-                          </li>
-                          {/* 優惠活動三 */}
-                          <li className="d-flex align-items-center">
-                            <div className="me-3 p-2 bg-primary-950 rounded-circle">
-                              <svg
-                                width="32"
-                                height="32"
-                                viewBox="0 0 32 32"
-                                fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M19.3728 4.78777C18.9823 4.39725 18.3491 4.39725 17.9585 4.78777L4.78703 17.9593C4.39651 18.3498 4.39651 18.983 4.78703 19.3736L6.21132 20.7978C6.74095 20.5017 7.35156 20.3332 7.9988 20.3332C10.0238 20.3332 11.6655 21.9748 11.6655 23.9998C11.6655 24.6472 11.4969 25.2577 11.2008 25.7873L12.6253 27.2118C13.0158 27.6024 13.6489 27.6024 14.0395 27.2118L27.2111 14.0402C27.6016 13.6497 27.6016 13.0165 27.2111 12.626L25.7867 11.2016C25.257 11.4979 24.6461 11.6665 23.9988 11.6665C21.9737 11.6665 20.3321 10.0249 20.3321 7.99986C20.3321 7.35246 20.5008 6.74169 20.7971 6.21197L19.3728 4.78777ZM16.5444 3.37355C17.716 2.20198 19.6155 2.20198 20.7871 3.37355L22.3489 4.93553C23.03 5.61653 22.908 6.5725 22.5646 7.15005C22.4171 7.3981 22.3321 7.68753 22.3321 7.99986C22.3321 8.92034 23.0783 9.66653 23.9988 9.66653C24.3111 9.66653 24.6005 9.58157 24.8485 9.43407C25.4261 9.09069 26.3822 8.96865 27.0631 9.64966L28.6252 11.2118C29.7968 12.3834 29.7968 14.2829 28.6252 15.4545L15.4537 28.626C14.2821 29.7976 12.3826 29.7976 11.2111 28.626L9.64884 27.0638C8.96792 26.3829 9.08983 25.427 9.43312 24.8496C9.58054 24.6014 9.66547 24.3121 9.66547 23.9998C9.66547 23.0794 8.91927 22.3332 7.9988 22.3332C7.68655 22.3332 7.39718 22.4181 7.14918 22.5656C6.57163 22.9089 5.61579 23.0308 4.93487 22.3498L3.37282 20.7878C2.20124 19.6162 2.20126 17.7168 3.37282 16.5452L16.5444 3.37355Z"
-                                  fill="#E1FF00"
-                                />
-                              </svg>
-                            </div>
-                            <div>
-                              <p className="mb-0 fs-8 text-gray-200">
-                                {
-                                  specificProduct?.description_one?.activity
-                                    ?.activity3
-                                }
-                              </p>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+                  </ProductDetailCollapse>
                 </div>
               </>
             ) : (

@@ -1,5 +1,5 @@
 // 匯入Hook
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 // 匯入套件
 import { useForm } from "react-hook-form";
@@ -28,31 +28,37 @@ function CartStepTwo() {
   // 儲存購物車列表資料
   const [cartProducts, setCartProducts] = useState([]);
   // 儲存篩選出來的須配送商品資料
-  const [shippingProducts, setShippingProducts] = useState([]);
+  // const [shippingProducts, setShippingProducts] = useState([]);
   // 儲存篩選出來的免配送商品資料
-  const [shippingFreeProducts, setShippingFreeProducts] = useState([]);
+  // const [shippingFreeProducts, setShippingFreeProducts] = useState([]);
+  // 判斷頁面載入
+  const [isAllPageLoading, setAllPageLoading] = useState(true);
+
+  // 篩選須配送商品
+  const carts = cartProducts?.carts ?? [];
+  const shippingProducts = carts.filter((item) => item.product.is_shipping);
+
+  // 篩選免配送商品
+  const shippingFreeProducts = carts.filter(
+    (item) => !item.product.is_shipping,
+  );
+
   // 須配送商品總額
   const shippingProductsTotal = calcProductsTotal(shippingProducts);
   // 免配送商品總額
   const shippingFreeProductsTotal = calcProductsTotal(shippingFreeProducts);
-  // 判斷頁面載入
-  const [isAllPageLoading, setAllPageLoading] = useState(true);
-  // 運費判斷
-  const [shippingFee, setShippingFee] = useState(0);
 
   // 運費判斷
-  function shippingTotal() {
-    if (shippingProducts.length > 0 && shippingProductsTotal >= 499) {
-      setShippingFee(0);
-    } else if (shippingProducts.length > 0 && shippingProductsTotal < 499) {
-      setShippingFee(60);
-    }
-  }
+  const shippingTotal = useMemo(() => {
+    return shippingProducts.reduce((sum, item) => {
+      return sum + item.total;
+    }, 0);
+  }, [shippingProducts]);
 
-  // 運費判斷
-  useEffect(() => {
-    shippingTotal();
-  }, [shippingProducts, shippingProductsTotal]);
+  const shippingFee = useMemo(() => {
+    if (shippingProducts.length === 0) return 0;
+    return shippingTotal >= 499 ? 0 : 60;
+  }, [shippingProducts, shippingTotal]);
 
   // 呼叫取得購物車列表、呼叫取的所有商品
   useEffect(() => {
@@ -79,31 +85,32 @@ function CartStepTwo() {
   }
 
   // 篩選須配送商品
-  useEffect(() => {
-    if (cartProducts?.carts?.length) {
-      const filteredShippingProducts = cartProducts.carts.filter(
-        (item) => item.product.is_shipping,
-      );
-      setShippingProducts(filteredShippingProducts);
-      console.log(shippingProducts);
-    }
-    if (cartProducts?.carts?.length === 0) {
-      setShippingProducts([]);
-    }
-  }, [cartProducts]);
+
+  // useEffect(() => {
+  //   if (cartProducts?.carts?.length) {
+  //     const filteredShippingProducts = cartProducts.carts.filter(
+  //       (item) => item.product.is_shipping,
+  //     );
+  //     setShippingProducts(filteredShippingProducts);
+  //     console.log(shippingProducts);
+  //   }
+  //   if (cartProducts?.carts?.length === 0) {
+  //     setShippingProducts([]);
+  //   }
+  // }, [cartProducts]);
 
   // 篩選免配送商品
-  useEffect(() => {
-    if (cartProducts?.carts?.length) {
-      const filteredShippingFreeProducts = cartProducts.carts.filter(
-        (item) => item.product.is_shipping !== true,
-      );
-      setShippingFreeProducts(filteredShippingFreeProducts);
-    }
-    if (cartProducts?.carts?.length === 0) {
-      setShippingFreeProducts([]);
-    }
-  }, [cartProducts]);
+  // useEffect(() => {
+  //   if (cartProducts?.carts?.length) {
+  //     const filteredShippingFreeProducts = cartProducts.carts.filter(
+  //       (item) => item.product.is_shipping !== true,
+  //     );
+  //     setShippingFreeProducts(filteredShippingFreeProducts);
+  //   }
+  //   if (cartProducts?.carts?.length === 0) {
+  //     setShippingFreeProducts([]);
+  //   }
+  // }, [cartProducts]);
 
   // 須配送商品、免配送商品的個別的商品總額
   function calcProductsTotal(products) {
@@ -111,12 +118,13 @@ function CartStepTwo() {
   }
 
   // ReactHookForm
+
   const {
     register,
     handleSubmit,
     reset,
     watch,
-    formState: { errors, isValid, isTouched },
+    formState: { errors, isValid },
   } = useForm({
     defaultValues: {
       invoiceType: "member",

@@ -1,13 +1,11 @@
 // 匯入Hook
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { LoginAuthContext } from "../context/LoginAuthContext.js";
 
 // 匯入套件
 import axios from "axios";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-
-// 匯出Context
-export const LoginAuthContext = createContext();
 
 // 匯出元件
 export function LoginAuthProvider({ children }) {
@@ -82,28 +80,25 @@ export function LoginAuthProvider({ children }) {
   };
 
   // 驗證權限
-  const authorization = () => {
-    // 從cookie取得token
+  const authorization = useCallback(() => {
     const autoken = document.cookie.replace(
       /(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/,
       "$1",
     );
-    console.log(autoken);
 
-    // 將tokens放入headers
     if (autoken) {
       axios.defaults.headers.common.Authorization = autoken;
-      setToken(token);
+      setToken(autoken);
       setIsAuth(true);
     } else {
       setToken("");
       setIsAuth(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     authorization();
-  }, []);
+  }, [authorization]);
 
   // 驗證登入
   const checkLogin = async () => {

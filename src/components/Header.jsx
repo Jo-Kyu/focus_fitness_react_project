@@ -5,7 +5,7 @@ import { useContext } from "react";
 import Swal from "sweetalert2";
 
 // 匯入元件
-import { LoginAuthContext } from "./LoginAuthProvider";
+import { LoginAuthContext } from "../context/LoginAuthContext";
 import customer_5 from "../assets/images/icons/customer_5.png";
 
 function Header() {

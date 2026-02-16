@@ -26,7 +26,7 @@ import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
 // 登入共用狀態
-import { LoginAuthContext } from "../components/LoginAuthProvider";
+import { LoginAuthContext } from "../context/LoginAuthContext.js";
 
 // 環境變數
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -36,13 +36,13 @@ function CartStepOne() {
   // 儲存購物車列表資料
   const [cartProducts, setCartProducts] = useState([]);
   // 儲存篩選出來的須配送商品資料
-  const [shippingProducts, setShippingProducts] = useState([]);
+  // const [shippingProducts, setShippingProducts] = useState([]);
   // 儲存篩選出來的免配送商品資料
-  const [shippingFreeProducts, setShippingFreeProducts] = useState([]);
+  // const [shippingFreeProducts, setShippingFreeProducts] = useState([]);
   // 儲存篩選出來的銅板商品資料(<100)
-  const [coinProducts, setCoinProducts] = useState([]);
+  // const [coinProducts, setCoinProducts] = useState([]);
   // 儲存篩選出來的超值商品資料(<=6折)
-  const [goodValueProducts, setGoodValueProducts] = useState([]);
+  // const [goodValueProducts, setGoodValueProducts] = useState([]);
   // 儲存全部商品資料
   const [allProducts, setallProducts] = useState([]);
   // 判斷購物車是否為空
@@ -69,12 +69,6 @@ function CartStepOne() {
       />
     </svg>
   );
-
-  // 呼叫取得購物車列表、呼叫取的所有商品
-  useEffect(() => {
-    getCartProducts();
-    getAllProducts();
-  }, []);
 
   // 取得購物車列表(get網路請求)
   function getCartProducts() {
@@ -109,6 +103,12 @@ function CartStepOne() {
         console.dir(err);
       });
   }
+
+  // 呼叫取得購物車列表、呼叫取的所有商品
+  useEffect(() => {
+    getCartProducts();
+    getAllProducts();
+  }, []);
 
   // 在購物車內，增減購商品數量事件處理函式(網路請求API)
   function handleCartProductNum(cartProductId, productId, productQty) {
@@ -296,50 +296,24 @@ function CartStepOne() {
   }
 
   // 篩選須配送商品
-  useEffect(() => {
-    if (cartProducts?.carts?.length) {
-      const filteredShippingProducts = cartProducts.carts.filter(
-        (item) => item.product.is_shipping,
-      );
-      setShippingProducts(filteredShippingProducts);
-    }
-    if (cartProducts?.carts?.length === 0) {
-      setShippingProducts([]);
-    }
-  }, [cartProducts]);
+  const carts = cartProducts?.carts ?? [];
+
+  const shippingProducts = carts.filter((item) => item.product.is_shipping);
 
   // 篩選免配送商品
-  useEffect(() => {
-    if (cartProducts?.carts?.length) {
-      const filteredShippingFreeProducts = cartProducts.carts.filter(
-        (item) => item.product.is_shipping !== true,
-      );
-      setShippingFreeProducts(filteredShippingFreeProducts);
-    }
-    if (cartProducts?.carts?.length === 0) {
-      setShippingFreeProducts([]);
-    }
-  }, [cartProducts]);
+  const shippingFreeProducts = carts.filter(
+    (item) => !item.product.is_shipping,
+  );
+
+  const products = allProducts ?? [];
 
   // 篩選100元以下商品
-  useEffect(() => {
-    if (allProducts) {
-      const filteredCoinProducts = allProducts.filter(
-        (item) => item.price < 100,
-      );
-      setCoinProducts(filteredCoinProducts);
-    }
-  }, [allProducts]);
+  const coinProducts = products.filter((item) => item.price < 100);
 
   // 篩選大於等於6折商品
-  useEffect(() => {
-    if (allProducts) {
-      const filteredGoodValueProducts = allProducts.filter(
-        (item) => item.price / item.origin_price < 0.6,
-      );
-      setGoodValueProducts(filteredGoodValueProducts);
-    }
-  }, [allProducts]);
+  const goodValueProducts = products.filter(
+    (item) => item.price / item.origin_price < 0.6,
+  );
 
   // 加總須配送商品總額
   const shippingProductsTotal = shippingProducts.reduce((sum, item) => {

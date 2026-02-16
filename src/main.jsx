@@ -5,6 +5,7 @@ import { WishlistProvider } from "./components/WishlistProvider";
 import { LoginAuthProvider } from "./components/LoginAuthProvider";
 
 import App from "./App";
+import CartStepThree from "./pages/CartStepThree";
 
 import "./assets/scss/all.scss";
 import "bootstrap";
@@ -13,10 +14,10 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     {/* 全域 Toast 掛載 */}
     <Toaster position="top-right" />
-      <LoginAuthProvider>
-          <WishlistProvider>
-            <App />
-          </WishlistProvider>
-      </LoginAuthProvider>
+    <LoginAuthProvider>
+      <WishlistProvider>
+        <CartStepThree />
+      </WishlistProvider>
+    </LoginAuthProvider>
   </StrictMode>,
 );
