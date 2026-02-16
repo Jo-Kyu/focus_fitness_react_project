@@ -25,11 +25,11 @@ const CATEGORIES_CONFIG = {
     categoryValue: "裝備",            // 對應大類別 category
     subCategories: [
       { id: "重量訓練", name: "重量訓練專區" },
-      { id: "瑜珈伸展", name: "瑜伽伸展專區" },// 瑜伽改成「瑜珈」
+      { id: "瑜伽伸展", name: "瑜伽伸展專區" },
       { id: "核心訓練", name: "核心訓練專區" },
       { id: "有氧訓練", name: "有氧訓練專區" },
       { id: "按摩放鬆", name: "按摩放鬆專區" },
-      { id: "輔助訓練專區", name: "輔助訓練專區" }// 輔助訓練改「輔助訓練專區」
+      { id: "輔助訓練", name: "輔助訓練專區" }
     ]
   },
   course: {
