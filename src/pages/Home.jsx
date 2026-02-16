@@ -26,6 +26,7 @@ function Home() {
   // 定義header輪播區塊狀態
   const carouselRef = useRef(null);
   const carouselInstance = useRef(null);
+  const handleSlideRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   // 定義熱門商品狀態
@@ -36,37 +37,41 @@ function Home() {
   // header輪播區塊生成實體
 
   useEffect(() => {
-    // 保存 DOM 引用
-    const element = carouselRef.current;
-    
-    if (element && !carouselInstance.current) {
-      // 初始化 Bootstrap Carousel 實體
-      carouselInstance.current = new bootstrap.Carousel(element, {
-        interval: false, // 關閉自動播放，避免與手動控制衝突
-        wrap: true,
-        ride: false
-      });
+        const element = carouselRef.current;
 
-      // 定義事件處理函數
-      const handleSlide = (e) => {
-        setActiveIndex(e.to);
-      };
+        if (element && !carouselInstance.current) {
+            try {
+                carouselInstance.current = new bootstrap.Carousel(element, {
+                    interval: false,
+                    wrap: true,
+                    ride: false
+                });
 
-      // 監聽滑動完成事件
-      element.addEventListener('slid.bs.carousel', handleSlide);
+                handleSlideRef.current = (e) => {
+                    setActiveIndex(e.to);
+                };
 
-      // 清理函數：組件卸載時執行
-      return () => {
-        // 移除事件監聽器
-        element.removeEventListener('slid.bs.carousel', handleSlide);
-        // 銷毀 Bootstrap 實體
-        if (carouselInstance.current) {
-          carouselInstance.current.dispose();
-          carouselInstance.current = null;
+                // 事件監聽
+                element.addEventListener("slid.bs.carousel", handleSlideRef.current);
+            } catch (error) {
+                console.error("創建失敗", error);
+            }
         }
-      };
-    }
-  }, []); 
+
+        return () => {
+            if (element && handleSlideRef.current) {
+                element.removeEventListener("slid.bs.carousel", handleSlideRef.current);
+            }
+            if (carouselInstance.current) {
+                try {
+                    carouselInstance.current.dispose();
+                    carouselInstance.current = null;
+                } catch (error) {
+                    console.error("清除失敗", error);
+                }
+            }
+        };
+    }, []); 
 
   // 切換上一頁
   const handlePrev = (e) => {
