@@ -10,7 +10,7 @@ function CartEmpty() {
   // JSX
   return (
     <>
-      <Header />
+    
       <main className="px-6 position-relative overflow-hidden min-vh-100 ">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -68,7 +68,7 @@ function CartEmpty() {
           </div>
         </section>
       </main>
-      <Footer />
+
       <BackTop />
     </>
   );

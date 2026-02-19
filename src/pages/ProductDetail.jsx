@@ -1166,7 +1166,6 @@ function ProductDetail() {
           </div>
         </section>
       </main>
-      <Footer />
       <BackTop />
     </>
   );

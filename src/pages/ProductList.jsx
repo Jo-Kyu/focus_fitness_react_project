@@ -1,5 +1,6 @@
 // React Hooks
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { useLocation } from "react-router";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
@@ -8,6 +9,7 @@ import ProductListGlow from "../components/ProductListGlow";
 // 第三方套件
 import axios from "axios";
 import * as bootstrap from 'bootstrap';
+import { Collapse } from "bootstrap";
 
 // 定義按鈕顯示資料
 import sortLabels from "../data/sortLabels.js";
@@ -86,10 +88,13 @@ function ProductList(){
     const [totalPages, setTotalPages] = useState(0);
     // 加載狀態
     const [isLoading, setIsLoading] = useState(false);
+    // 導向取值
+    const location = useLocation();
 
      // 定義手機offcanvas
     const offcanvasRef = useRef(null); 
-    const offcanvasInstance = useRef(null);  
+    const offcanvasInstance = useRef(null); 
+
 
     // ============ 取得所有遠端商品 ============
 
@@ -269,9 +274,11 @@ function ProductList(){
     },[totalPages]);
 
     // ============ 取得當前大分類的配置 ============
+
     const currentMainCategoryConfig = selectedMainCategory === "all" ? null : CATEGORIES_CONFIG[selectedMainCategory];
 
     // ============ 取得當前小分類的顯示名稱 ============
+
     const getCurrentSubCategoryName = () => {
         if (selectedMainCategory === "all") {
             return "所有商品";
@@ -283,9 +290,32 @@ function ProductList(){
         return subCat ? subCat.name : selectedSubCategory;
     };
 
-     if (isLoading) {
+    // ============ 導至本頁的預設展開 ============
+
+    useEffect(() => {
+        const { openCategory } = location.state || {};
+        if (!openCategory) return;
+
+        if (openCategory === "all") {
+            // 設定為「所有商品」的預設狀態
+            setSelectedMainCategory("all");        // ← 依你的 state 初始值調整
+            setSelectedSubCategory("all");         // ← 依你的 state 初始值調整
+        } else {
+            setSelectedMainCategory(openCategory);
+            const firstSub = CATEGORIES_CONFIG[openCategory]?.subCategories[0];
+            if (firstSub) setSelectedSubCategory(firstSub.id);
+        }
+        
+        setCurrentPage(1);
+        setSortType("price_high");
+    }, [location.state]);
+
+    // ============ 顯示載入中 ============
+
+         if (isLoading) {
         return <div className="text-center py-5">載入中...</div>;
     }
+
 
     return(
     <>

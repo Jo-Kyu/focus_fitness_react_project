@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 function Footer() {
 
 
@@ -35,14 +37,18 @@ function Footer() {
                 <div className="d-flex flex-column flex-lg-row">
                     <div className="link-item">
                         <div className="mb-1 mb-lg-7">
-                            <a className="nav-link" href="#"><span className="page-title text-nowrap">FOCUS 商城</span></a>
+                            <Link className="nav-link" to="/"><span className="page-title text-nowrap">FOCUS 商城</span></Link>
                         </div>
                         <ul className="navbar-nav flex-row flex-lg-column mb-7">
                             <li className="nav-item mb-0 mb-lg-3 me-3">
-                                <a className="nav-link p-0" href="#"><span className="page-item text-nowrap">課程</span></a>
+                                <Link className="nav-link p-0" to="/product-list" state={{ openCategory: "course" }}>
+                                    <span className="page-item text-nowrap">健身課程</span>
+                                </Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link p-0" href="#"><span className="page-item text-nowrap">器材</span></a>
+                                <Link className="nav-link p-0" to="/product-list" state={{ openCategory: "equipment" }}>
+                                    <span className="page-item text-nowrap">健身裝備</span>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -71,10 +77,10 @@ function Footer() {
                         </div>
                         <ul className="navbar-nav flex-row flex-lg-column mb-7">
                             <li className="nav-item mb-0 mb-lg-3 me-3">
-                                <a className="nav-link p-0" href="#"><span className="page-item text-nowrap">登入</span></a>
+                                <Link className="nav-link p-0" to="/login"><span className="page-item text-nowrap">登入</span></Link>
                             </li>
                             <li className="nav-item mb-0 mb-lg-3">
-                                <a className="nav-link p-0" href="#"><span className="page-item text-nowrap">購物車</span></a>
+                                <Link className="nav-link p-0" to="/cart-step-one"><span className="page-item text-nowrap">購物車</span></Link>
                             </li>
                         </ul>
                     </div>

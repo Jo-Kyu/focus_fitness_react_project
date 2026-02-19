@@ -1,5 +1,7 @@
 // 匯入Hook
-import { useContext } from "react";
+import { useContext, useRef, useEffect } from "react";
+import { Link,useNavigate } from "react-router";
+import { Collapse } from "bootstrap";
 
 // 匯入套件
 import Swal from "sweetalert2";
@@ -11,6 +13,13 @@ import customer_5 from "../assets/images/icons/customer_5.png";
 function Header() {
   // 登入共用狀態解構
   const { isAuth } = useContext(LoginAuthContext);
+  // ref 指向 collapse 的 div
+  const navbarRef = useRef(null); 
+  // 儲存實例
+  const collapseRef = useRef(null);
+  // 導向至登入頁
+  const navigate = useNavigate();
+
   const customerIcon = (
     <svg
       width="36"
@@ -39,6 +48,29 @@ function Header() {
     </svg>
   );
 
+  // 初始化 Bootstrap Collapse 實例
+  useEffect(() => {
+    if (navbarRef.current) {
+      collapseRef.current = new Collapse(navbarRef.current, {
+        toggle: false, // 不要一建立就自動切換狀態
+      });
+    }
+    // 元件卸載時清除實例
+    return () => {
+      collapseRef.current?.dispose();
+    };
+  }, []);
+
+  // 路由切換時自動關閉選單
+  useEffect(() => {
+    collapseRef.current?.hide();
+  }, []);
+
+  // 手動關閉選單
+  const closeNavbar = () => {
+    collapseRef.current?.hide();
+  };
+
   return (
     <>
       {/* 毛玻璃導覽列 */}
@@ -46,7 +78,7 @@ function Header() {
         <div className="container">
           <nav className="navbar navbar-expand-lg glass-navbar">
             {/* Logo */}
-            <a className="navbar-brand fw-bold" href="#">
+            <Link className="navbar-brand fw-bold" to="/">
               <img
                 src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/logos/FOCUS-FITNESS-logo-3-long-big.png?raw=true"
                 alt="Logo-Focus"
@@ -59,11 +91,11 @@ function Header() {
                 style={{ width: "36px", height: "40px" }}
                 className="d-block d-lg-none"
               />
-            </a>
+            </Link>
             {/* Toggler (手機選單按鈕) */}
             <div className="mobile-toggler d-flex justify-content-center align-items-center column-gap-1">
               {/* 購物車 */}
-              <a className="d-block d-lg-none p-2 text-dark" href="#">
+              <Link className="d-block d-lg-none p-2 text-dark" to="/cart-step-one">
                 <svg
                   width="24"
                   height="24"
@@ -76,9 +108,9 @@ function Header() {
                     fill="white"
                   />
                 </svg>
-              </a>
+              </Link>
               {/* 會員中心 */}
-              <a className="d-block d-lg-none p-2 text-dark" href="#">
+              <Link className="d-block d-lg-none p-2 text-dark" to="/login">
                 {isAuth ? (
                   <>
                     <img
@@ -90,16 +122,13 @@ function Header() {
                 ) : (
                   customerIcon
                 )}
-              </a>
+              </Link>
               {/* 漢堡選單 */}
               <button
                 className="navbar-toggler p-2 border-0"
                 type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNavDropdown"
-                aria-controls="navbarNavDropdown"
-                aria-expanded="false"
                 aria-label="Toggle navigation"
+                onClick={() => collapseRef.current?.toggle()} 
               >
                 <svg
                   width="24"
@@ -117,38 +146,36 @@ function Header() {
             </div>
             {/* 導覽列內容 */}
             <div
+              ref={navbarRef} 
               className="collapse navbar-collapse justify-content-center"
-              id="navbarNavDropdown"
             >
               <ul className="navbar-nav column-gap-6">
                 {/* FOCUS商城 */}
                 <li className="nav-item dropdown">
-                  <a
-                    className="nav-link dropdown-toggle nav-pill no-caret"
-                    href="#"
-                    id="navbarDropdownMenuLink"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    data-bs-display="static"
-                    aria-expanded="false"
+                  <Link className="nav-link nav-pill"
+                        to="/product-list"
+                        state={{ openCategory: "all" }}
                   >
                     FOCUS商城
-                  </a>
+                  </Link>
                 </li>
                 {/* 收藏清單 */}
                 <li className="nav-item">
-                  <a className="nav-link nav-pill d-lg-none d-block" href="#">
+                  <Link className="nav-link nav-pill d-lg-none d-block" 
+                        to="/favorite-products"
+                        onClick={closeNavbar}
+                  >
                     收藏清單
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
             {/* 右側功能區 */}
             <div className="d-flex align-items-center  column-gap-6 d-none d-lg-block">
               {/* 收藏按鈕 */}
-              <a
+              <Link
                 className="p-2 text-dark "
-                href="#"
+                to="/favorite-products"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -164,23 +191,28 @@ function Header() {
                       reverseButtons: true, // 按鈕位置對調
                       confirmButtonText: "前往登入！",
                       cancelButtonText: "取消！",
-
                       customClass: {
                         popup: "handleAddToCartToast",
                         confirmButton: "cancelButton",
                         cancelButton: "confirmButton",
                       },
-                    });
-                    console.log(isAuth);
-                    console.log("未登入");
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                          navigate("/login"); // 確認後導向登入頁
+                        }
+                      });
+                    // console.log(isAuth);
+                    // console.log("未登入");
                     return;
                   }
+                  // isAuth 為 true 時，正常導向收藏頁
+                  navigate("/favorite-products");
                 }}
               >
                 {favoriteIcon}
-              </a>
+              </Link>
               {/* 購物車 */}
-              <a className="p-2 text-dark" href="#">
+              <Link className="p-2 text-dark" to="/cart-step-one">
                 <svg
                   width="36"
                   height="36"
@@ -193,9 +225,9 @@ function Header() {
                     fill="white"
                   />
                 </svg>
-              </a>
+              </Link>
               {/* 會員中心 */}
-              <a className="p-2 text-dark" href="#">
+              <Link className="p-2 text-dark" to="/login">
                 {isAuth ? (
                   <>
                     <img
@@ -207,7 +239,7 @@ function Header() {
                 ) : (
                   customerIcon
                 )}
-              </a>
+              </Link>
             </div>
           </nav>
         </div>

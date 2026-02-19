@@ -333,7 +333,7 @@ function CartStepOne() {
   // JSX
   return (
     <>
-      <Header />
+      
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -1157,7 +1157,6 @@ function CartStepOne() {
               )}
             </div>
           </section>
-          <Footer />
           {/* 回到頂部按鈕 */}
           <BackTop />
         </>

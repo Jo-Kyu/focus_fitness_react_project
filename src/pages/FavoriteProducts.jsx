@@ -138,7 +138,6 @@ function FavoriteProducts() {
           </a>
         </div>
       </main>
-      <Footer />
       <BackTop />
     </>
   );
