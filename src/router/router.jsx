@@ -16,7 +16,7 @@ const router=createHashRouter([
         element:<FrontLayout />,
         children:[
             {
-                index:true,
+                path:"/",
                 element:<Home />
             },
             {
@@ -24,7 +24,7 @@ const router=createHashRouter([
                 element:<ProductList />
             },
             {
-                path:"/product-detail",
+                path:"/product-detail/:id",
                 element:<ProductDetail />
             },
             {
