@@ -41,14 +41,8 @@ function Footer() {
                             <li className="nav-item mb-0 mb-lg-3 me-3">
                                 <a className="nav-link p-0" href="#"><span className="page-item text-nowrap">課程</span></a>
                             </li>
-                            <li className="nav-item mb-0 mb-lg-3 me-3">
-                                <a className="nav-link p-0" href="#"><span className="page-item text-nowrap">器材</span></a>
-                            </li>
-                            <li className="nav-item mb-0 mb-lg-3 me-3">
-                                <a className="nav-link p-0" href="#"><span className="page-item text-nowrap">服飾</span></a>
-                            </li>
                             <li className="nav-item">
-                                <a className="nav-link p-0" href="#"><span className="page-item text-nowrap">其他配件</span></a>
+                                <a className="nav-link p-0" href="#"><span className="page-item text-nowrap">器材</span></a>
                             </li>
                         </ul>
                     </div>

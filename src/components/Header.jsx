@@ -121,7 +121,7 @@ function Header() {
               id="navbarNavDropdown"
             >
               <ul className="navbar-nav column-gap-6">
-                {/* Dropdown: FOCUS商城 */}
+                {/* FOCUS商城 */}
                 <li className="nav-item dropdown">
                   <a
                     className="nav-link dropdown-toggle nav-pill no-caret"
@@ -134,26 +134,6 @@ function Header() {
                   >
                     FOCUS商城
                   </a>
-                  <ul
-                    className="dropdown-menu custom-dropdown-menu mt-2 mb-2"
-                    aria-labelledby="navbarDropdownMenuLink"
-                  >
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        健身器材
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        運動服飾
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        營養補給
-                      </a>
-                    </li>
-                  </ul>
                 </li>
                 {/* 收藏清單 */}
                 <li className="nav-item">
