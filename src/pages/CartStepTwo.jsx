@@ -192,7 +192,7 @@ function CartStepTwo() {
   // JSX
   return (
     <>
-      <Header />
+     
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -1091,7 +1091,6 @@ function CartStepTwo() {
           </form>
         </section>
       </main>
-      <Footer />
       <BackTop />
     </>
   );

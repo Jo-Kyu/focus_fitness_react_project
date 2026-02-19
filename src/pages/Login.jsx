@@ -224,7 +224,6 @@ function Login() {
           </div>
         </div>
       </main>
-      <Footer />
       <BackTop />
     </>
   );
