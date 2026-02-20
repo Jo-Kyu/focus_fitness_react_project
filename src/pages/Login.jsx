@@ -48,7 +48,7 @@ function Login() {
 
   return (
     <>
-      <Header />
+
       <main className="px-6 position-relative overflow-hidden login-bg-1">
         <section className="max-h-130 max-h-md-144 container"></section>
         {/* 光暈 */}

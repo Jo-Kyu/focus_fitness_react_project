@@ -9,6 +9,7 @@ import CartStepThree from "../pages/CartStepThree"
 import Login from "../pages/Login"
 import FavoriteProducts from "../pages/FavoriteProducts"
 import PageNotFound from "../pages/PageNotFound"
+import CartStepGuard from "../components/CartStepGuard";
 
 const router=createHashRouter([
     {
@@ -33,11 +34,19 @@ const router=createHashRouter([
             },
             {
                 path:"/cart-step-two",
-                element:<CartStepTwo />
+                element:(
+                    <CartStepGuard>
+                        <CartStepTwo />
+                    </CartStepGuard>
+                )
             },
             {
                 path:"/cart-step-three",
-                element:<CartStepThree />
+                element:(
+                    <CartStepGuard>
+                        <CartStepThree />
+                    </CartStepGuard>
+                )
             },
             {
                 path:"/login",
