@@ -1,7 +1,8 @@
-import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
 
 function CartStepGuard({ children }) {
-  const canAccess = sessionStorage.getItem("cartStepOnePassed");
+  const location = useLocation();
+  const canAccess = location.state?.fromCheckout;
   
   if (!canAccess) {
     return <Navigate to="/" replace />;
