@@ -1,7 +1,6 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router";
-import { NavLink } from "react-router";
+import { useParams, NavLink, useNavigate } from "react-router";
 
 // 匯入套件
 import axios from "axios";
@@ -41,6 +40,8 @@ const path = import.meta.env.VITE_API_PATH;
 function ProductDetail() {
   // 取得動態路由參數
   const { id } = useParams();
+  // 導向至登入頁
+  const navigate = useNavigate();
 
   // 儲存特定商品資料
   const [specificProduct, setGetSpecificProduct] = useState([]);
@@ -167,9 +168,13 @@ function ProductDetail() {
           confirmButton: "cancelButton",
           cancelButton: "confirmButton",
         },
-      });
-      console.log(isAuth);
-      console.log("未登入");
+      }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/login"); // 確認後導向登入頁
+          }
+        });
+      // console.log(isAuth);
+      // console.log("未登入");
       return;
     }
     // 判斷收藏狀態
