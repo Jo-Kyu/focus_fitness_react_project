@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { NavLink } from "react-router";
 
 // 匯入元件
 // 收藏共用狀態
@@ -19,7 +20,7 @@ function ProductsCarouselCards({ product }) {
   const { isAuth } = useContext(LoginAuthContext);
 
   return (
-    <a className="rounded-3 position-relative" href="#">
+    <NavLink className="rounded-3 position-relative" to={`/product-detail/${product.id}`}>
       {/* 卡片圖片 */}
       <div>
         <div className="overflow-hidden">
@@ -151,7 +152,7 @@ function ProductsCarouselCards({ product }) {
           </span>
         </div>
       </div>
-    </a>
+    </NavLink>
   );
 }
 

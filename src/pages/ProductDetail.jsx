@@ -1,6 +1,7 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router";
+import { NavLink } from "react-router";
 
 // 匯入套件
 import axios from "axios";
@@ -39,7 +40,7 @@ const path = import.meta.env.VITE_API_PATH;
 
 function ProductDetail() {
   // 取得動態路由參數
-  const {id}=useParams();
+  const { id }=useParams();
 
   // 儲存特定商品資料
   const [specificProduct, setGetSpecificProduct] = useState([]);
@@ -864,12 +865,13 @@ function ProductDetail() {
                       >
                         加入購物車
                       </button>
-                      <button
+                      <NavLink
                         className="me-md-6 py-2 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold fill-btn flex-fill border-radius-12"
                         onClick={handleDirectBuy}
+                        to="/cart-step-one"
                       >
-                        直接購買
-                      </button>
+                          直接購買
+                      </NavLink>
                       {/* 收藏按鈕 */}
                       <div className="d-none d-md-flex">
                         <button className="btn p-2 " onClick={handleFavorite}>
