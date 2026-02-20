@@ -1,6 +1,6 @@
 // 匯入Hook
 import { useContext, useRef, useEffect } from "react";
-import { Link,useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Collapse } from "bootstrap";
 
 // 匯入套件
@@ -14,7 +14,7 @@ function Header() {
   // 登入共用狀態解構
   const { isAuth } = useContext(LoginAuthContext);
   // ref 指向 collapse 的 div
-  const navbarRef = useRef(null); 
+  const navbarRef = useRef(null);
   // 儲存實例
   const collapseRef = useRef(null);
   // 導向至登入頁
@@ -24,6 +24,20 @@ function Header() {
     <svg
       width="36"
       height="36"
+      viewBox="0 0 36 36"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M25.5 28.5C25.5 27.5007 24.8918 26.4129 23.5312 25.5059C22.1812 24.6059 20.2303 24 18 24C15.7697 24 13.8188 24.6059 12.4688 25.5059C11.1082 26.4129 10.5 27.5007 10.5 28.5C10.5 29.3284 9.82843 30 9 30C8.17157 30 7.5 29.3284 7.5 28.5C7.5 26.1856 8.90783 24.2743 10.8047 23.0098C12.712 21.7383 15.26 21 18 21C20.74 21 23.288 21.7383 25.1953 23.0098C27.0922 24.2743 28.5 26.1856 28.5 28.5C28.5 29.3284 27.8284 30 27 30C26.1716 30 25.5 29.3284 25.5 28.5ZM22.5 12C22.5 9.51472 20.4853 7.5 18 7.5C15.5147 7.5 13.5 9.51472 13.5 12C13.5 14.4853 15.5147 16.5 18 16.5C20.4853 16.5 22.5 14.4853 22.5 12ZM25.5 12C25.5 16.1421 22.1421 19.5 18 19.5C13.8579 19.5 10.5 16.1421 10.5 12C10.5 7.85786 13.8579 4.5 18 4.5C22.1421 4.5 25.5 7.85786 25.5 12Z"
+        fill="white"
+      />
+    </svg>
+  );
+  const customerIconPhone = (
+    <svg
+      width="24"
+      height="24"
       viewBox="0 0 36 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +109,10 @@ function Header() {
             {/* Toggler (手機選單按鈕) */}
             <div className="mobile-toggler d-flex justify-content-center align-items-center column-gap-1">
               {/* 購物車 */}
-              <Link className="d-block d-lg-none p-2 text-dark" to="/cart-step-one">
+              <Link
+                className="d-block d-lg-none p-2 text-dark"
+                to="/cart-step-one"
+              >
                 <svg
                   width="24"
                   height="24"
@@ -120,7 +137,7 @@ function Header() {
                     />
                   </>
                 ) : (
-                  customerIcon
+                  customerIconPhone
                 )}
               </Link>
               {/* 漢堡選單 */}
@@ -128,7 +145,7 @@ function Header() {
                 className="navbar-toggler p-2 border-0"
                 type="button"
                 aria-label="Toggle navigation"
-                onClick={() => collapseRef.current?.toggle()} 
+                onClick={() => collapseRef.current?.toggle()}
               >
                 <svg
                   width="24"
@@ -146,24 +163,57 @@ function Header() {
             </div>
             {/* 導覽列內容 */}
             <div
-              ref={navbarRef} 
+              ref={navbarRef}
               className="collapse navbar-collapse justify-content-center"
             >
               <ul className="navbar-nav column-gap-6">
                 {/* FOCUS商城 */}
                 <li className="nav-item dropdown">
-                  <Link className="nav-link nav-pill"
-                        to="/product-list"
-                        state={{ openCategory: "all" }}
+                  <Link
+                    className="nav-link nav-pill"
+                    to="/product-list"
+                    state={{ openCategory: "all" }}
                   >
                     FOCUS商城
                   </Link>
                 </li>
                 {/* 收藏清單 */}
                 <li className="nav-item">
-                  <Link className="nav-link nav-pill d-lg-none d-block" 
-                        to="/favorite-products"
-                        onClick={closeNavbar}
+                  <Link
+                    className="nav-link nav-pill d-lg-none d-block"
+                    to="/favorite-products"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      // 判斷登入狀態
+                      if (!isAuth) {
+                        Swal.fire({
+                          title: "您尚未登入帳號",
+                          text: "登入帳號後，才可進入收藏商品清單！",
+                          iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                                  </svg>`,
+                          showCancelButton: true, // 顯示取消按鈕
+                          reverseButtons: true, // 按鈕位置對調
+                          confirmButtonText: "前往登入！",
+                          cancelButtonText: "取消！",
+                          customClass: {
+                            popup: "handleAddToCartToast",
+                            confirmButton: "cancelButton",
+                            cancelButton: "confirmButton",
+                          },
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            navigate("/login"); // 確認後導向登入頁
+                          }
+                        });
+                        // console.log(isAuth);
+                        // console.log("未登入");
+                        return;
+                      }
+                      // isAuth 為 true 時，正常導向收藏頁
+                      navigate("/favorite-products");
+                    }}
                   >
                     收藏清單
                   </Link>
@@ -197,10 +247,10 @@ function Header() {
                         cancelButton: "confirmButton",
                       },
                     }).then((result) => {
-                        if (result.isConfirmed) {
-                          navigate("/login"); // 確認後導向登入頁
-                        }
-                      });
+                      if (result.isConfirmed) {
+                        navigate("/login"); // 確認後導向登入頁
+                      }
+                    });
                     // console.log(isAuth);
                     // console.log("未登入");
                     return;
