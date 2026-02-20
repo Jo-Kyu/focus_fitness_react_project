@@ -1111,7 +1111,6 @@ function CartStepOne() {
                   className="me-md-6 py-2 px-9 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold flex-fill border-radius-12"
                   disabled={isCartEmpty}
                   onClick={handleStartCheckout}
-                  to="/cart-step-two"
                 >
                   開始結帳
                 </button>
