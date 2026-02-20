@@ -40,11 +40,7 @@ const path = import.meta.env.VITE_API_PATH;
 
 function ProductDetail() {
   // 取得動態路由參數
-<<<<<<< HEAD
   const { id } = useParams();
-=======
-  const { id }=useParams();
->>>>>>> 57b80120afdc963aa4e526088f26d7aa40700315
 
   // 儲存特定商品資料
   const [specificProduct, setGetSpecificProduct] = useState([]);
@@ -873,7 +869,7 @@ function ProductDetail() {
                         onClick={handleDirectBuy}
                         to="/cart-step-one"
                       >
-                          直接購買
+                        直接購買
                       </NavLink>
                       {/* 收藏按鈕 */}
                       <div className="d-none d-md-flex">
