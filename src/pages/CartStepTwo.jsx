@@ -1,5 +1,6 @@
 // 匯入Hook
 import { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router";
 
 // 匯入套件
 import { useForm } from "react-hook-form";
@@ -25,6 +26,8 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
 function CartStepTwo() {
+  // 初始化導航工具
+  const navigate = useNavigate();
   // 儲存購物車列表資料
   const [cartProducts, setCartProducts] = useState([]);
   // 儲存篩選出來的須配送商品資料
@@ -1077,6 +1080,7 @@ function CartStepTwo() {
                     type="submit"
                     className="mx-auto py-2 px-9 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold flex-fill border-radius-12"
                     disabled={!isValid}
+                    onClick={() => navigate("/cart-step-three")}
                   >
                     完成結帳
                   </button>

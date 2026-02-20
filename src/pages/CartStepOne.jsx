@@ -1,6 +1,6 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
-import { Link } from "react-router";
+import { Link,useNavigate } from "react-router";
 
 // 匯入套件
 import axios from "axios";
@@ -35,6 +35,8 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
 function CartStepOne() {
+  // 導向頁面
+  const navigate = useNavigate();
   // 儲存購物車列表資料
   const [cartProducts, setCartProducts] = useState([]);
   // 儲存篩選出來的須配送商品資料
@@ -262,9 +264,13 @@ function CartStepOne() {
           confirmButton: "cancelButton",
           cancelButton: "confirmButton",
         },
-      });
-      console.log(isAuth);
-      console.log("未登入");
+      }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/login"); // 確認後導向登入頁
+          }
+        });
+      // console.log(isAuth);
+      // console.log("未登入");
       return;
     }
 
@@ -295,6 +301,9 @@ function CartStepOne() {
 
     // 通過檢查，進結帳
     // navigate("/checkout");
+
+    sessionStorage.setItem("canAccessStepTwo", "true");
+    navigate("/cart-step-two");
   }
 
   // 篩選須配送商品

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { NavLink } from "react-router";
+import { NavLink,useNavigate } from "react-router";
 
 // 匯入元件
 // 收藏共用狀態
@@ -12,6 +12,8 @@ import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
 function ProductsCarouselCards({ product }) {
+   // 導向至登入頁
+  const navigate = useNavigate();
   // 收藏商品按鈕
   // 收藏共用狀態解構
   const { wishlist, toggleWishlistItem } = useContext(WishlistContext);
@@ -71,9 +73,13 @@ function ProductsCarouselCards({ product }) {
                     confirmButton: "cancelButton",
                     cancelButton: "confirmButton",
                   },
-                });
-                console.log(isAuth);
-                console.log("未登入");
+                }).then((result) => {
+                      if (result.isConfirmed) {
+                        navigate("/login"); // 確認後導向登入頁
+                      }
+                    });
+                // console.log(isAuth);
+                // console.log("未登入");
                 return;
               }
               toggleWishlistItem(product.id);
