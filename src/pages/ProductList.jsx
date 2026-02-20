@@ -1,6 +1,6 @@
 // React Hooks
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
-import { useLocation } from "react-router";
+import { NavLink, useLocation } from "react-router";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
@@ -54,20 +54,6 @@ const CATEGORIES_CONFIG = {
     ]
   }
 };
-
-// 創建中文 category 值到配置的對應
-// const CATEGORY_VALUE_MAP = Object.entries(CATEGORIES_CONFIG).reduce((map, [key, config]) => {
-//   map[config.categoryValue] = key;
-//   return map;
-// }, {});
-// { "裝備": "equipment", "課程": "course", "入場方案": "membership" }
-
-// 取得大分類列表
-// const MAIN_CATEGORIES = Object.entries(CATEGORIES_CONFIG).map(([categoryName, config]) => ({
-//   id: categoryName,
-//   name: config.name,
-//   config: config
-// }));
 
 function ProductList(){
     // 定義遠端取得的商品狀態
@@ -332,25 +318,31 @@ function ProductList(){
             {/* 手機版上方選單 */}
             <ul className="nav nav-pills d-md-none phone_nav">
                 <li className="nav-item me-6 nav-item_new">
-                    <a className="nav-link ruby-text active" href="#" onClick={(e) => {
-                        e.preventDefault();
-                        setSelectedMainCategory("all");
-                        setSelectedSubCategory("all");
-                        setCurrentPage(1);
-                        setSortType("price_high");
-                    }}>所有商品</a>
+                    <a class="nav-link ruby-text active" 
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setSelectedMainCategory("all");
+                            setSelectedSubCategory("all");
+                            setCurrentPage(1);
+                            setSortType("price_high");
+                        }}
+                    >
+                            所有商品
+                    </a>
                 </li>
                 <li className="nav-item dropdown me-6  nav-item_new">
                     <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">健身裝備</a>
                     <ul className="dropdown-menu bg-primary-950 shodow_none">
                         {CATEGORIES_CONFIG.equipment.subCategories.map(cat => (
                             <li key={cat.id}>
-                                <a className="dropdown-item" href="#" onClick={(e) => {
-                                    e.preventDefault();
-                                    setSelectedMainCategory("equipment");
-                                    setSelectedSubCategory(cat.id);
-                                    setCurrentPage(1);
-                                }}>
+                                <a  className="dropdown-item"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setSelectedMainCategory("equipment");
+                                        setSelectedSubCategory(cat.id);
+                                        setCurrentPage(1);
+                                    }}
+                                >
                                     {cat.name}
                                 </a>
                             </li>
@@ -362,12 +354,14 @@ function ProductList(){
                     <ul className="dropdown-menu bg-primary-950 shodow_none">
                         {CATEGORIES_CONFIG.course.subCategories.map(cat => (
                             <li key={cat.id}>
-                                <a className="dropdown-item" href="#" onClick={(e) => {
-                                    e.preventDefault();
-                                    setSelectedMainCategory("course");
-                                    setSelectedSubCategory(cat.id);
-                                    setCurrentPage(1);
-                                }}>
+                                <a  className="dropdown-item"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setSelectedMainCategory("course");
+                                        setSelectedSubCategory(cat.id);
+                                        setCurrentPage(1);
+                                    }}
+                                >
                                     {cat.name}
                                 </a>
                             </li>
@@ -477,6 +471,7 @@ function ProductList(){
                                         background: "transparent",
                                         color: selectedMainCategory === "all" ? "#e1ff00" : "white"
                                     }}
+                                    type="button"
                                 >
                                     所有商品
                                 </button>
@@ -526,6 +521,7 @@ function ProductList(){
                                                     border: "none",
                                                     color: selectedSubCategory === cat.id && selectedMainCategory === "equipment" ? "#e1ff00" : "white"
                                                 }}
+                                                type="button"
                                             >
                                                 {cat.name}
                                             </button>
@@ -578,6 +574,7 @@ function ProductList(){
                                                     border: "none",
                                                     color: selectedSubCategory === cat.id && selectedMainCategory === "course" ? "#e1ff00" : "white"
                                                 }}
+                                                type="button"
                                             >
                                                 {cat.name}
                                             </button>
@@ -630,6 +627,7 @@ function ProductList(){
                                                     border: "none",
                                                     color: selectedSubCategory === cat.id && selectedMainCategory === "membership" ? "#e1ff00" : "white"
                                                 }}
+                                                type="button"
                                             >
                                                 {cat.name}
                                             </button>
@@ -665,24 +663,28 @@ function ProductList(){
                                         <ul className="dropdown-menu w-100 p-2 mt-1" aria-labelledby="dropdownMenuButton1">
                                             <li><button className="dropdown-item fs-8"
                                                         onClick={() => handleSortClick("hot")}
+                                                        type="button"
                                                 >
                                                 熱銷排行
                                                 </button>
                                             </li>
                                             <li><button className="dropdown-item fs-8"
                                                         onClick={() => handleSortClick("new")}
+                                                        type="button"
                                                 >
                                                 最新上市
                                                 </button>
                                             </li>
                                             <li><button className="dropdown-item fs-8"
                                                         onClick={() => handleSortClick('price_high')}
+                                                        type="button"
                                                 >
                                                 價格高至低
                                                 </button>
                                             </li>
                                             <li><button className="dropdown-item fs-8"
                                                         onClick={() => handleSortClick('price_low')}
+                                                        type="button"
                                                 >
                                                 價格低至高
                                                 </button>
@@ -783,7 +785,7 @@ function ProductList(){
                                         return (
                                             <div className="col-6 col-sm-4 plr-10 mb-6 mb-md-7" key={product.id}>
                                                 <div className="card rounded-3 bg-blue-600 flex-grow-0 flex-shrink-0 hover-effect-3 overflow-hidden">
-                                                    <a className="rounded-3 position-relative" href="#">
+                                                    <NavLink className="rounded-3 position-relative" to={`/product-detail/${product.id}`}>
                                                         <div>
                                                             {/* 商品圖 */}
                                                             <div>
@@ -848,7 +850,7 @@ function ProductList(){
                                                                 </span>
                                                             </div>
                                                         </div>
-                                                    </a>
+                                                    </NavLink>
                                                 </div>
                                             </div>);
                                     })
@@ -866,18 +868,18 @@ function ProductList(){
                                     <nav aria-label="Page navigation example">
                                         <ul className="pagination d-flex align-items-center">
                                             <li className={`page-item ${currentPage === 1 ? 'disabled' : ""}`}>
-                                                <a  className="page-link"
-                                                    href="#" 
-                                                    aria-label="Previous"
-                                                    onClick={() => handlePageClick(currentPage - 1)}
-                                                    disabled={currentPage === 1}
+                                                <button className="page-link"
+                                                        type="button"
+                                                        aria-label="Previous"
+                                                        onClick={() => handlePageClick(currentPage - 1)}
+                                                        disabled={currentPage === 1}
                                                 >
                                                     <span aria-hidden="true">
                                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{transform:"rotate(180deg)"}}>
                                                         <path d="M6.91009 3.57757C7.23553 3.25214 7.76304 3.25214 8.08848 3.57757L13.9218 9.41091C14.2473 9.73634 14.2473 10.2639 13.9218 10.5893L8.08848 16.4226C7.76304 16.7481 7.23553 16.7481 6.91009 16.4226C6.58466 16.0972 6.58466 15.5697 6.91009 15.2442L12.1542 10.0001L6.91009 4.75596C6.58466 4.43052 6.58466 3.90301 6.91009 3.57757Z" fill="white"/>
                                                         </svg>
                                                     </span>
-                                                </a>
+                                                </button>
                                             </li>
                                             {/* 頁碼 */}
                                             {Array.from({ length: totalPages }, (_, i) => (
@@ -885,27 +887,27 @@ function ProductList(){
                                                 key={i + 1}
                                                 className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}
                                                 >
-                                                <a  className="page-link"
-                                                    onClick={() => handlePageClick(i + 1)}
-                                                    href="#"
+                                                <button className="page-link"
+                                                        onClick={() => handlePageClick(i + 1)}
+                                                        type="button"
                                                 >
                                                     {i + 1}
-                                                </a>
+                                                </button>
                                                 </li>
                                             ))}
                                             <li className={`page-item ${currentPage === totalPages ? 'disabled' : ""}`}>
-                                                <a  className="page-link"
-                                                    href="#" 
-                                                    aria-label="Next"
-                                                    onClick={() => handlePageClick(currentPage + 1)}
-                                                    disabled={currentPage === totalPages}
+                                                <button className="page-link"
+                                                        type="button"
+                                                        aria-label="Next"
+                                                        onClick={() => handlePageClick(currentPage + 1)}
+                                                        disabled={currentPage === totalPages}
                                                 >
                                                     <span aria-hidden="true">
                                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M6.91009 3.57757C7.23553 3.25214 7.76304 3.25214 8.08848 3.57757L13.9218 9.41091C14.2473 9.73634 14.2473 10.2639 13.9218 10.5893L8.08848 16.4226C7.76304 16.7481 7.23553 16.7481 6.91009 16.4226C6.58466 16.0972 6.58466 15.5697 6.91009 15.2442L12.1542 10.0001L6.91009 4.75596C6.58466 4.43052 6.58466 3.90301 6.91009 3.57757Z" fill="white"/>
                                                         </svg>
                                                     </span>
-                                                </a>
+                                                </button>
                                             </li>
                                         </ul>
                                     </nav>
