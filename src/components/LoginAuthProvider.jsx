@@ -15,7 +15,7 @@ export function LoginAuthProvider({ children }) {
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const Login = (data) => {
+  const Login = (data,onSuccess) => {
     setLoading(true);
     const login = {
       username: data.userLoginEmail,
@@ -56,6 +56,10 @@ export function LoginAuthProvider({ children }) {
             popup: "handleAddToCartToast",
             confirmButton: "confirmButton-2 ",
           },
+        }).then((result) => {
+          if (result.isConfirmed && onSuccess) {
+            onSuccess(); // ← 按下確認後執行外部傳入的 navigate
+          }
         });
       })
       .catch((error) => {
@@ -157,8 +161,14 @@ export function LoginAuthProvider({ children }) {
             console.dir(err);
             console.log("登出失敗");
           })
-          .finally(() => setLoading(false));
-      }
+          .finally(() => {
+            // 不管 API 成功或失敗，都清除登入狀態
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+            setToken("");
+            setIsAuth(false);
+            setLoading(false);
+          });
+        }
     });
   }
 
