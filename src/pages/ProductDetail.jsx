@@ -40,7 +40,7 @@ const path = import.meta.env.VITE_API_PATH;
 
 function ProductDetail() {
   // 取得動態路由參數
-  const { id }=useParams();
+  const { id } = useParams();
 
   // 儲存特定商品資料
   const [specificProduct, setGetSpecificProduct] = useState([]);
@@ -265,7 +265,6 @@ function ProductDetail() {
 
   return (
     <>
-
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -441,12 +440,12 @@ function ProductDetail() {
                     {/* 商品小圖片，電腦版出現 */}
                     <ul className="mb-0 d-flex list-unstyled thumb-list d-none d-lg-flex">
                       {specificProduct.imagesUrl?.map((img, index) => (
-                        <li key={index} className="me-6 max-w-111">
+                        <li key={index} className="me-6 max-w-111 min-w-111">
                           <button
                             className={`btn p-0 hover-effect-2 rounded-3 overflow-hidden ${activeImg === img ? "active" : ""}`}
                             onClick={() => setActiveImg(img)}
                           >
-                            <img src={img} alt="" />
+                            <img src={img} alt="" className="min-h-83" />
                           </button>
                         </li>
                       ))}
@@ -870,7 +869,7 @@ function ProductDetail() {
                         onClick={handleDirectBuy}
                         to="/cart-step-one"
                       >
-                          直接購買
+                        直接購買
                       </NavLink>
                       {/* 收藏按鈕 */}
                       <div className="d-none d-md-flex">

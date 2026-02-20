@@ -11,12 +11,12 @@ import "bootstrap";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-      {/* 全域 Toast 掛載 */}
-      <Toaster position="top-right" />
-        <LoginAuthProvider>
-          <WishlistProvider>
-            <RouterProvider router={router} />
-          </WishlistProvider>
-        </LoginAuthProvider>
-  </StrictMode>
+    {/* 全域 Toast 掛載 */}
+    <Toaster position="top-right" />
+    <LoginAuthProvider>
+      <WishlistProvider>
+        <RouterProvider router={router} />
+      </WishlistProvider>
+    </LoginAuthProvider>
+  </StrictMode>,
 );
