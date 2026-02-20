@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { NavLink } from "react-router";
 
 // 匯入元件
 // 收藏共用狀態
@@ -154,12 +155,13 @@ function FavoriteProductCards({ product }) {
         </div>
         {/* 按鈕 */}
         <div>
-          <button
+          <NavLink
             type="button"
             className="mb-6 mb-md-0 me-md-6 px-8 py-1 py-md-2 fill-btn btn fs-9 fw-bold  flex-fill border-radius-12 w-100"
+            to={`/product-detail/${product.id}`}
           >
             立即購物
-          </button>
+          </NavLink>
         </div>
       </div>
     </div>
