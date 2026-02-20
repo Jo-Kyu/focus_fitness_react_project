@@ -14,10 +14,6 @@ import { ThreeCircles } from "react-loader-spinner";
 import Glow from "../components/Glow.jsx";
 import CartEmpty from "../pages/CartEmpty.jsx";
 import Loading from "../components/Loading.jsx";
-// header
-import Header from "../components/Header";
-// footer
-import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
 
@@ -195,7 +191,6 @@ function CartStepTwo() {
   // JSX
   return (
     <>
-     
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}

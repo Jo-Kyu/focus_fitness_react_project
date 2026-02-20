@@ -1,6 +1,6 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
-import { Link,useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 // 匯入套件
 import axios from "axios";
@@ -28,7 +28,6 @@ import Footer from "../components/Footer";
 import BackTop from "../components/BackTop";
 // 登入共用狀態
 import { LoginAuthContext } from "../context/LoginAuthContext.js";
-
 
 // 環境變數
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -265,10 +264,10 @@ function CartStepOne() {
           cancelButton: "confirmButton",
         },
       }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/login"); // 確認後導向登入頁
-          }
-        });
+        if (result.isConfirmed) {
+          navigate("/login"); // 確認後導向登入頁
+        }
+      });
       // console.log(isAuth);
       // console.log("未登入");
       return;
@@ -344,7 +343,6 @@ function CartStepOne() {
   // JSX
   return (
     <>
-      
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -452,8 +450,7 @@ function CartStepOne() {
                 {shippingProducts.length > 0 ? (
                   <>
                     {/* 選取全部 */}
-                    <div className=" py-3 px-106 px-lg-4 border-bottom border-blue-600">
-                      {/* 複選按鈕 */}
+                    {/* <div className=" py-3 px-106 px-lg-4 border-bottom border-blue-600">
                       <div className="htmlForm-check ps-0 d-flex align-items-center mb-0">
                         <div className="me-3 p-104">
                           <input
@@ -471,7 +468,7 @@ function CartStepOne() {
                           選取全部
                         </label>
                       </div>
-                    </div>
+                    </div> */}
                     {shippingProducts?.map((cartProduct) => {
                       // 原價
                       const originalPrice = cartProduct?.product?.origin_price;
@@ -493,8 +490,7 @@ function CartStepOne() {
                         >
                           {/*  複選按鈕、商品圖片、商品資訊 */}
                           <div className="d-flex  mb-lg-0 mb-3">
-                            {/*  複選按鈕 */}
-                            <div className="form-check mb-0 p-0 d-flex align-items-lg-center">
+                            {/* <div className="form-check mb-0 p-0 d-flex align-items-lg-center">
                               <div className="me-2 me-lg-3 p-104">
                                 <input
                                   className="form-check-input rounded-1 max-w-20 max-h-20 ms-0 mt-0 border-gray-500 border-2 box-shadow-none"
@@ -503,7 +499,7 @@ function CartStepOne() {
                                   id="flexCheckDefault"
                                 />
                               </div>
-                            </div>
+                            </div> */}
                             {/*  商品圖片 */}
                             <div className="me-6 me-lg-4 max-w-80 max-w-lg-160">
                               <img
@@ -706,7 +702,7 @@ function CartStepOne() {
                     {/* 選取全部 */}
                     <div className=" py-3 px-106 px-lg-4 border-bottom border-blue-600">
                       {/* 複選按鈕 */}
-                      <div className="form-check ps-0 d-flex align-items-center mb-0">
+                      {/* <div className="form-check ps-0 d-flex align-items-center mb-0">
                         <div className="me-3 p-104">
                           <input
                             className="form-check-input rounded-1 max-w-20 max-h-20 ms-0 mt-0 border-gray-500 border-2 box-shadow-none"
@@ -722,7 +718,7 @@ function CartStepOne() {
                         >
                           選取全部
                         </label>
-                      </div>
+                      </div> */}
                     </div>
                     {shippingFreeProducts?.map((cartProduct) => {
                       // 原價
@@ -747,7 +743,7 @@ function CartStepOne() {
                           {/*  複選按鈕、商品圖片、商品資訊 */}
                           <div className="d-flex  mb-lg-0 mb-3">
                             {/*  複選按鈕 */}
-                            <div className="form-check mb-0 p-0 d-flex align-items-lg-center">
+                            {/* <div className="form-check mb-0 p-0 d-flex align-items-lg-center">
                               <div className="me-2 me-lg-3 p-104">
                                 <input
                                   className="form-check-input rounded-1 max-w-20 max-h-20 ms-0 mt-0 border-gray-500 border-2 box-shadow-none"
@@ -756,7 +752,7 @@ function CartStepOne() {
                                   id="flexCheckDefault"
                                 />
                               </div>
-                            </div>
+                            </div> */}
                             {/*  商品圖片 */}
                             <div className="me-6 me-lg-4 max-w-80 max-w-lg-160">
                               <img
@@ -1100,7 +1096,7 @@ function CartStepOne() {
               </div>
               {/* 繼續購物按鈕、開始結帳按鈕 */}
               <div className="d-flex flex-column flex-md-row align-items-md-center">
-                <Link 
+                <Link
                   className="mb-6 mb-md-0 me-md-6 px-9 py-2 py-md-3 fill-btn btn fs-7 fw-bold  flex-fill border-radius-12"
                   to="/product-list"
                 >
