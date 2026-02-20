@@ -1,6 +1,7 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
 import { useParams, NavLink, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 // 匯入套件
 import axios from "axios";
