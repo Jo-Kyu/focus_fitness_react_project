@@ -1,6 +1,7 @@
 // React Hooks
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { NavLink } from "react-router";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
@@ -30,8 +31,11 @@ function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   // 定義熱門商品狀態
-  const [hotCourse, setHotCourse]=useState([]);
-  const [hotEquip, setHotEquip]=useState([]);
+  const [hotCourse, setHotCourse] = useState([]);
+  const [hotEquip, setHotEquip] = useState([]);
+
+  // About定位點
+  const aboutUsRef = useRef(null);
   
 
   // header輪播區塊生成實體
@@ -131,6 +135,14 @@ const onSubmit=(data)=>{
   console.log(data);
   reset();
 };
+
+// About-Us表單
+
+// 滾動至定位點
+const handleScrollToAboutUs = (e) => {
+  e.preventDefault();
+  aboutUsRef.current?.scrollIntoView({ behavior: "smooth" });
+};
     
   return (
   <>
@@ -174,13 +186,18 @@ const onSubmit=(data)=>{
                                   <p className="header-notes text-nowrap">{carousel.feature}</p>
                                 </div>
                                 <div className="d-flex flex-column flex-lg-row row-gap-3 column-gap-lg-3">
-                                  <a  className="btn serve-btn text-nowrap" 
-                                      type="button" 
-                                      href="#">立即購物
-                                  </a>
+                                  <NavLink  className="btn serve-btn text-nowrap" 
+                                            type="button" 
+                                            to="/product-list"
+                                            state={{ openCategory: "all" }} 
+                                  >
+                                    立即購物
+                                  </NavLink>
                                   <a  className="btn serve-btn text-nowrap" 
                                       type="button"
-                                      href="#">預約服務
+                                      onClick={handleScrollToAboutUs}
+                                  >
+                                    預約服務
                                   </a>
                                 </div>
                               </div>
@@ -235,7 +252,12 @@ const onSubmit=(data)=>{
                         <div className={`card-body order-1 order-lg-${isReverse ? "0" : "1"} p-0`}>
                           <h5 className="card-title fs-5 fs-lg-10 fw-bold text-primary-400 mb-6 mb-lg-8">{serviceCard.title}</h5>
                           <p className="card-text fs-8 fs-lg-5 fw-normal text-gray-950 mb-6 mb-lg-8">{serviceCard.description}</p>
-                          <a href="#" className="btn card-btn text-nowrap">立即購物</a>
+                            <NavLink  className="btn card-btn text-nowrap" 
+                                      to="/product-list" 
+                                      state={{ openCategory: "all" }}
+                            >
+                              立即購物
+                            </NavLink>
                         </div>
                         <div className={`card-img-wrapper order-0 order-lg-${isReverse ? "1" : "0"} position-relative mb-2 mb-lg-0`}>
                           <img  className="card-img-top card-img-service" 
@@ -262,9 +284,12 @@ const onSubmit=(data)=>{
           <div className="mb-4 mb-lg-11">
             <div className="best-class d-flex justify-content-between align-items-center mb-2 mb-lg-6">
               <p className="fs-5 fs-lg-4 fw-bold text-gray-950">熱門課程</p>
-              <a href="#" className="fs-8 fs-lg-7 fw-bold text-gray-200 text-decoration-underline">
+              <NavLink className="fs-8 fs-lg-7 fw-bold text-gray-200 text-decoration-underline" 
+                    to="/product-list"
+                    state={{ openCategory: "course" }}
+              >
                 查看全部
-              </a>
+              </NavLink>
             </div>
             <div className="row flex-nowrap scroll">
               {/* 熱門課程卡片 */}
@@ -272,7 +297,7 @@ const onSubmit=(data)=>{
                 hotCourse.map((course)=>{
                   return (
                           <div className="col-10 col-lg-4" key={course.id}>
-                            <a href="#" className="d-block h-100 text-decoration-none">
+                            <NavLink className="d-block h-100 text-decoration-none" to={`/product-detail/${course.id}`}>
                               <div className="card bg-blue-600 h-100 border-0">
                                 <img  className="card-img-top"
                                       src={course.imageUrl}
@@ -287,7 +312,7 @@ const onSubmit=(data)=>{
                                   </p>
                                 </div>
                               </div>
-                            </a>
+                            </NavLink>
                           </div>
                           );
                 })
@@ -298,9 +323,12 @@ const onSubmit=(data)=>{
           <div className="mb-4 mb-lg-11">
             <div className="best-class d-flex justify-content-between align-items-center mb-2 mb-lg-6">
               <p className="fs-5 fs-lg-4 fw-bold text-gray-950">熱門裝備</p>
-                <a href="#" className="fs-8 fs-lg-7 fw-bold text-gray-200 text-decoration-underline">
+                <NavLink className="fs-8 fs-lg-7 fw-bold text-gray-200 text-decoration-underline"
+                      to="/product-list"
+                      state={{ openCategory: "equipment" }}
+                >
                   查看全部
-                </a>
+                </NavLink>
             </div>
             <div className="row flex-nowrap scroll">
               {/* 熱門裝備卡片 */}
@@ -308,7 +336,7 @@ const onSubmit=(data)=>{
                 hotEquip.map((equip)=>{
                   return (
                           <div className="col-10 col-lg-4" key={equip.id}>
-                            <a href="#" className="d-block h-100 text-decoration-none">
+                            <NavLink className="d-block h-100 text-decoration-none" to={`/product-detail/${equip.id}`}>
                               <div className="card bg-blue-600 h-100 border-0">
                                 <img  className="card-img-top"
                                       src={equip.imageUrl}
@@ -326,7 +354,7 @@ const onSubmit=(data)=>{
                                   </div>
                                 </div>
                               </div>
-                            </a>
+                            </NavLink>
                           </div>
                           );
                 })
@@ -352,7 +380,8 @@ const onSubmit=(data)=>{
       <section className="info-about">
         <div className="container">
           {/* About-Us */}
-          <AboutUs></AboutUs>
+            <span ref={aboutUsRef}></span>
+            <AboutUs></AboutUs>
           {/* Contact-Us */}
           <div className="contact-us p-7 p-lg-9">
             <div className="contact-us-head">

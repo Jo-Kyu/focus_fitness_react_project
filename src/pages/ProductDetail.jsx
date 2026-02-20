@@ -1,5 +1,6 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
+import { useParams } from "react-router";
 
 // 匯入套件
 import axios from "axios";
@@ -37,6 +38,9 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
 function ProductDetail() {
+  // 取得動態路由參數
+  const {id}=useParams();
+
   // 儲存特定商品資料
   const [specificProduct, setGetSpecificProduct] = useState([]);
 
@@ -108,10 +112,15 @@ function ProductDetail() {
 
   // 取得特定商品(get網路請求)
   function getSpecificProduct() {
+<<<<<<< HEAD
     const dataId = ["-OlbTQ3h8vi2WkjLZQUY"];
 
+=======
+    // const dataId = ["-OkZjrzdRUZKHkDiQNXf"];
+    // id 從動態路由參數取得
+>>>>>>> 2d61530b144d34ed891dd70cf7f183cd8ddda585
     axios
-      .get(`${baseUrl}/v2/api/${path}/product/${dataId}`)
+      .get(`${baseUrl}/v2/api/${path}/product/${id}`)
       .then((res) => {
         setGetSpecificProduct(res.data.product);
         console.log("取得特定商品成功");
@@ -256,11 +265,11 @@ function ProductDetail() {
   useEffect(() => {
     getSpecificProduct();
     getAllProducts();
-  }, []);
+  }, [id]);
 
   return (
     <>
-      <Header />
+
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -1166,7 +1175,6 @@ function ProductDetail() {
           </div>
         </section>
       </main>
-      <Footer />
       <BackTop />
     </>
   );
