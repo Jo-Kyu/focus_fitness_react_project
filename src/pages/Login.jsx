@@ -26,7 +26,7 @@ function Login() {
   // 表單提交事件處理函式
 
   const handleLoginSubmit = (data) => {
-    Login(data, () => navigate("/product-list"))
+    Login(data, () => navigate("/product-list",{state:{ openCategory: "all" }}))
       .then(() => {
         console.log("登入成功");
       })
@@ -48,7 +48,7 @@ function Login() {
 
   return (
     <>
-      <Header />
+
       <main className="px-6 position-relative overflow-hidden login-bg-1">
         <section className="max-h-130 max-h-md-144 container"></section>
         {/* 光暈 */}

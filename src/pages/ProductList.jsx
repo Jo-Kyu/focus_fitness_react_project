@@ -64,7 +64,7 @@ const CATEGORIES_CONFIG = {
   }
 };
 
-function ProductList({product}){
+function ProductList(){
     // 定義遠端取得的商品狀態
     const [allProducts, setAllProducts] = useState([]);
     // 定義商品列表狀態

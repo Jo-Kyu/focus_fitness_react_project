@@ -1075,7 +1075,11 @@ function CartStepTwo() {
                     type="submit"
                     className="mx-auto py-2 px-9 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold flex-fill border-radius-12"
                     disabled={!isValid}
-                    onClick={() => navigate("/cart-step-three")}
+                    onClick={() =>
+                      navigate("/cart-step-three", {
+                        state: { fromCheckout: true },
+                      })
+                    }
                   >
                     完成結帳
                   </button>
