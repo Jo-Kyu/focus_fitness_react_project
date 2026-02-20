@@ -1,3 +1,5 @@
+// 匯入router元件
+import { Link } from "react-router";
 // 匯入元件
 import Ellipse_2 from "../assets/images/index_page/光暈/Ellipse_2.svg";
 // header
@@ -6,6 +8,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
+
 function CartEmpty() {
   // JSX
   return (
@@ -61,9 +64,12 @@ function CartEmpty() {
               <h2 className="fs-sm-1 fs-4 text-gray-950 fw-bold mb-4">
                 點擊下方按鈕，立即前往購物!
               </h2>
-              <button className="mb-6 mb-md-0 me-md-6 py-2 py-md-3 fill-btn btn fs-7 fw-bold fill-btn flex-fill border-radius-12 w-50">
+              <Link className="mb-6 mb-md-0 me-md-6 py-2 py-md-3 fill-btn btn fs-7 fw-bold fill-btn flex-fill border-radius-12 w-50" 
+                    to="/product-list" 
+                    state={{ openCategory: "all" }}
+              >
                 立即購物
-              </button>
+              </Link>
             </div>
           </div>
         </section>

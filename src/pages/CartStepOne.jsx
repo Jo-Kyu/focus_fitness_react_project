@@ -1,5 +1,6 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
+import { Link } from "react-router";
 
 // 匯入套件
 import axios from "axios";
@@ -27,6 +28,7 @@ import Footer from "../components/Footer";
 import BackTop from "../components/BackTop";
 // 登入共用狀態
 import { LoginAuthContext } from "../context/LoginAuthContext.js";
+
 
 // 環境變數
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -1089,14 +1091,18 @@ function CartStepOne() {
               </div>
               {/* 繼續購物按鈕、開始結帳按鈕 */}
               <div className="d-flex flex-column flex-md-row align-items-md-center">
-                <button className="mb-6 mb-md-0 me-md-6 px-9 py-2 py-md-3 fill-btn btn fs-7 fw-bold  flex-fill border-radius-12">
+                <Link 
+                  className="mb-6 mb-md-0 me-md-6 px-9 py-2 py-md-3 fill-btn btn fs-7 fw-bold  flex-fill border-radius-12"
+                  to="/product-list"
+                >
                   繼續購物
-                </button>
+                </Link>
                 <button
                   type="button"
                   className="me-md-6 py-2 px-9 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold flex-fill border-radius-12"
                   disabled={isCartEmpty}
                   onClick={handleStartCheckout}
+                  to="/cart-step-two"
                 >
                   開始結帳
                 </button>
