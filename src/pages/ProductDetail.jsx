@@ -1,12 +1,6 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
-<<<<<<< HEAD
-import { useParams } from "react-router";
-import { NavLink } from "react-router";
-import { Link } from "react-router";
-=======
 import { useParams, NavLink, useNavigate } from "react-router";
->>>>>>> 323518ef05164fa2755df96d6eb1c9a9e744018f
 
 // 匯入套件
 import axios from "axios";
@@ -142,10 +136,10 @@ function ProductDetail() {
           cancelButton: "confirmButton",
         },
       }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/login"); // 確認後導向登入頁
-          }
-        });
+        if (result.isConfirmed) {
+          navigate("/login"); // 確認後導向登入頁
+        }
+      });
       // console.log(isAuth);
       // console.log("未登入");
       return;
