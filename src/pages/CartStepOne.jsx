@@ -1,5 +1,6 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
+import { Link } from "react-router";
 
 // 匯入套件
 import axios from "axios";
@@ -27,7 +28,7 @@ import Footer from "../components/Footer";
 import BackTop from "../components/BackTop";
 // 登入共用狀態
 import { LoginAuthContext } from "../context/LoginAuthContext.js";
-import { NavLink,Link } from "react-router";
+
 
 // 環境變數
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -1096,7 +1097,7 @@ function CartStepOne() {
                 >
                   繼續購物
                 </Link>
-                <Link
+                <button
                   type="button"
                   className="me-md-6 py-2 px-9 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold flex-fill border-radius-12"
                   disabled={isCartEmpty}
@@ -1104,7 +1105,7 @@ function CartStepOne() {
                   to="/cart-step-two"
                 >
                   開始結帳
-                </Link>
+                </button>
               </div>
             </div>
           </section>
