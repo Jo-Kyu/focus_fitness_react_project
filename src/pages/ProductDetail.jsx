@@ -39,7 +39,7 @@ const path = import.meta.env.VITE_API_PATH;
 
 function ProductDetail() {
   // 取得動態路由參數
-  const {id}=useParams();
+  const { id }=useParams();
 
   // 儲存特定商品資料
   const [specificProduct, setGetSpecificProduct] = useState([]);
