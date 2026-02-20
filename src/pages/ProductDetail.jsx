@@ -108,7 +108,7 @@ function ProductDetail() {
 
   // 取得特定商品(get網路請求)
   function getSpecificProduct() {
-    const dataId = ["-OkZjrzdRUZKHkDiQNXf"];
+    const dataId = ["-OlbTQ3h8vi2WkjLZQUY"];
 
     axios
       .get(`${baseUrl}/v2/api/${path}/product/${dataId}`)
@@ -436,12 +436,12 @@ function ProductDetail() {
                     {/* 商品小圖片，電腦版出現 */}
                     <ul className="mb-0 d-flex list-unstyled thumb-list d-none d-lg-flex">
                       {specificProduct.imagesUrl?.map((img, index) => (
-                        <li key={index} className="me-6 max-w-111">
+                        <li key={index} className="me-6 max-w-111 min-w-111">
                           <button
                             className={`btn p-0 hover-effect-2 rounded-3 overflow-hidden ${activeImg === img ? "active" : ""}`}
                             onClick={() => setActiveImg(img)}
                           >
-                            <img src={img} alt="" />
+                            <img src={img} alt="" className="min-h-83"/>
                           </button>
                         </li>
                       ))}

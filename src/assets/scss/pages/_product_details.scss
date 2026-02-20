@@ -138,6 +138,11 @@
 }
 
 // min-width
+
+.min-h-83 {
+  min-height: 83px;
+}
+
 .min-h-95 {
   min-height: 95px;
 }
@@ -245,9 +250,9 @@
 
 .product-main-img {
   background-image: url("../images/product_details_page/Rectangle_58.jpg");
-  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-size: cover; 
 }
 
 .login-bg-1 {

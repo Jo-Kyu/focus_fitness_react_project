@@ -6,6 +6,7 @@ import { LoginAuthProvider } from "./components/LoginAuthProvider";
 
 import App from "./App";
 
+
 import "./assets/scss/all.scss";
 import "bootstrap";
 
