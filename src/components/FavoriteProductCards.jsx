@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { NavLink,useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 
 // 匯入元件
 // 收藏共用狀態
@@ -75,10 +75,10 @@ function FavoriteProductCards({ product }) {
                     cancelButton: "confirmButton",
                   },
                 }).then((result) => {
-                        if (result.isConfirmed) {
-                          navigate("/login"); // 確認後導向登入頁
-                        }
-                    });
+                  if (result.isConfirmed) {
+                    navigate("/login"); // 確認後導向登入頁
+                  }
+                });
                 // console.log(isAuth);
                 // console.log("未登入");
                 return;

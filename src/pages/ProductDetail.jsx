@@ -1,6 +1,7 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
 import { useParams, NavLink, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 // 匯入套件
 import axios from "axios";
@@ -112,39 +113,6 @@ function ProductDetail() {
   //   }
   // }, [specificProduct]);
 
-  // 取得特定商品(get網路請求)
-  function getSpecificProduct() {
-    // const dataId = ["-OkZjrzdRUZKHkDiQNXf"];
-    // id 從動態路由參數取得
-    axios
-      .get(`${baseUrl}/v2/api/${path}/product/${id}`)
-      .then((res) => {
-        setGetSpecificProduct(res.data.product);
-        console.log("取得特定商品成功");
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log("取得特定商品失敗");
-        console.dir(err);
-      });
-  }
-
-  // 取得全部商品(get網路請求)
-  function getAllProducts() {
-    axios
-      .get(`${baseUrl}/v2/api/${path}/products/all`)
-      .then((res) => {
-        setallProducts(res.data.products);
-        console.log(res.data.products);
-        console.log("取得全部商品成功");
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log("取得全部商品失敗");
-        console.dir(err);
-      });
-  }
-
   // 收藏事件處理涵式
   const handleFavorite = () => {
     // const newFavorite = !isfavorite;
@@ -169,10 +137,10 @@ function ProductDetail() {
           cancelButton: "confirmButton",
         },
       }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/login"); // 確認後導向登入頁
-          }
-        });
+        if (result.isConfirmed) {
+          navigate("/login"); // 確認後導向登入頁
+        }
+      });
       // console.log(isAuth);
       // console.log("未登入");
       return;
@@ -264,8 +232,36 @@ function ProductDetail() {
 
   // 呼叫取得所有商品、呼叫取得特定商品
   useEffect(() => {
-    getSpecificProduct();
-    getAllProducts();
+    (() => {
+      axios
+        .get(`${baseUrl}/v2/api/${path}/product/${id}`)
+        .then((res) => {
+          setGetSpecificProduct(res.data.product);
+          console.log("取得特定商品成功");
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log("取得特定商品失敗");
+          console.dir(err);
+        });
+    })();
+
+    //
+
+    (() => {
+      axios
+        .get(`${baseUrl}/v2/api/${path}/products/all`)
+        .then((res) => {
+          setallProducts(res.data.products);
+          console.log(res.data.products);
+          console.log("取得全部商品成功");
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log("取得全部商品失敗");
+          console.dir(err);
+        });
+    })();
   }, [id]);
 
   return (
@@ -281,9 +277,9 @@ function ProductDetail() {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb mb-0 fs-9 fs-md-6">
               <li className="breadcrumb-item pe-2 pe-md-6">
-                <a className="text-gray-200 fw-bold" href="#">
+                <Link className="text-gray-200 fw-bold" to="/">
                   首頁
-                </a>
+                </Link>
               </li>
               {/* 電腦版顯示箭頭符號 */}
               <li className="d-none d-md-block">
@@ -316,9 +312,9 @@ function ProductDetail() {
                 </svg>
               </li>
               <li className="breadcrumb-item px-2 px-md-6">
-                <a className="text-gray-200 fw-bold" href="#">
+                <Link className="text-gray-200 fw-bold" to="/product-list">
                   商城
-                </a>
+                </Link>
               </li>
               {/* 電腦版顯示箭頭符號 */}
               <li className="d-none d-md-block">
@@ -351,80 +347,12 @@ function ProductDetail() {
                 </svg>
               </li>
               <li className="breadcrumb-item px-2 px-md-6">
-                <a className="text-gray-200 fw-bold" href="#">
-                  健身裝備
-                </a>
-              </li>
-              {/* 電腦版顯示箭頭符號 */}
-              <li className="d-none d-md-block">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                <Link
+                  className="text-primary-400 fw-bold"
+                  to={`/product-detail/${specificProduct.id}`}
                 >
-                  <path
-                    d="M6.91009 3.57757C7.23553 3.25214 7.76304 3.25214 8.08848 3.57757L13.9218 9.41091C14.2473 9.73634 14.2473 10.2639 13.9218 10.5893L8.08848 16.4226C7.76304 16.7481 7.23553 16.7481 6.91009 16.4226C6.58466 16.0972 6.58466 15.5697 6.91009 15.2442L12.1542 10.0001L6.91009 4.75596C6.58466 4.43052 6.58466 3.90301 6.91009 3.57757Z"
-                    fill="white"
-                  />
-                </svg>
-              </li>
-              {/* 手機版顯示箭頭符號 */}
-              <li className="d-md-none">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M6.91009 3.57757C7.23553 3.25214 7.76304 3.25214 8.08848 3.57757L13.9218 9.41091C14.2473 9.73634 14.2473 10.2639 13.9218 10.5893L8.08848 16.4226C7.76304 16.7481 7.23553 16.7481 6.91009 16.4226C6.58466 16.0972 6.58466 15.5697 6.91009 15.2442L12.1542 10.0001L6.91009 4.75596C6.58466 4.43052 6.58466 3.90301 6.91009 3.57757Z"
-                    fill="white"
-                  />
-                </svg>
-              </li>
-              <li className="breadcrumb-item px-2 px-md-6">
-                <a className="text-gray-200 fw-bold" href="#">
-                  重量訓練專區
-                </a>
-              </li>
-              {/* 電腦版顯示箭頭符號 */}
-              <li className="d-none d-md-block">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M6.91009 3.57757C7.23553 3.25214 7.76304 3.25214 8.08848 3.57757L13.9218 9.41091C14.2473 9.73634 14.2473 10.2639 13.9218 10.5893L8.08848 16.4226C7.76304 16.7481 7.23553 16.7481 6.91009 16.4226C6.58466 16.0972 6.58466 15.5697 6.91009 15.2442L12.1542 10.0001L6.91009 4.75596C6.58466 4.43052 6.58466 3.90301 6.91009 3.57757Z"
-                    fill="white"
-                  />
-                </svg>
-              </li>
-              {/* 手機版顯示箭頭符號 */}
-              <li className="d-md-none">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M6.91009 3.57757C7.23553 3.25214 7.76304 3.25214 8.08848 3.57757L13.9218 9.41091C14.2473 9.73634 14.2473 10.2639 13.9218 10.5893L8.08848 16.4226C7.76304 16.7481 7.23553 16.7481 6.91009 16.4226C6.58466 16.0972 6.58466 15.5697 6.91009 15.2442L12.1542 10.0001L6.91009 4.75596C6.58466 4.43052 6.58466 3.90301 6.91009 3.57757Z"
-                    fill="white"
-                  />
-                </svg>
-              </li>
-              <li
-                className="breadcrumb-item active ps-2 ps-md-6 text-primary-400 fw-bold"
-                aria-current="page"
-              >
-                助力帶
+                  {specificProduct.title}
+                </Link>
               </li>
             </ol>
           </nav>
@@ -565,7 +493,7 @@ function ProductDetail() {
                             className={`btn p-0 hover-effect-2 rounded-3 overflow-hidden ${activeImg === img ? "active" : ""}`}
                             onClick={() => setActiveImg(img)}
                           >
-                            <img src={img} alt="" />
+                            <img src={img} alt="" className="min-h-83" />
                           </button>
                         </li>
                       ))}

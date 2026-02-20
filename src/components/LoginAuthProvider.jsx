@@ -1,6 +1,7 @@
 // 匯入Hook
 import { useState, useEffect, useCallback } from "react";
 import { LoginAuthContext } from "../context/LoginAuthContext.js";
+import { WishlistContext } from "../context/WishlistContext.js";
 
 // 匯入套件
 import axios from "axios";
@@ -14,8 +15,11 @@ export function LoginAuthProvider({ children }) {
   const [isAuth, setIsAuth] = useState(false);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(() => {
+    return localStorage.getItem("auth_user");
+  });
 
-  const Login = (data,onSuccess) => {
+  const Login = (data, onSuccess) => {
     setLoading(true);
     const login = {
       username: data.userLoginEmail,
@@ -35,6 +39,8 @@ export function LoginAuthProvider({ children }) {
         checkLogin();
         setToken(token);
         setIsAuth(true);
+        setUser(login.username);
+        localStorage.setItem("auth_user", login.username);
         console.log("login res:", res.data);
         console.log("token:", token);
 
@@ -163,19 +169,21 @@ export function LoginAuthProvider({ children }) {
           })
           .finally(() => {
             // 不管 API 成功或失敗，都清除登入狀態
-            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+            document.cookie =
+              "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
             setToken("");
             setIsAuth(false);
             setLoading(false);
+            setUser(null);
           });
-        }
+      }
     });
   }
 
   // JSX
   return (
     <LoginAuthContext.Provider
-      value={{ isAuth, token, Login, Logout, loading }}
+      value={{ isAuth, token, Login, Logout, loading, user }}
     >
       {children}
     </LoginAuthContext.Provider>

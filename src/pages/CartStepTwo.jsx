@@ -14,10 +14,6 @@ import { ThreeCircles } from "react-loader-spinner";
 import Glow from "../components/Glow.jsx";
 import CartEmpty from "../pages/CartEmpty.jsx";
 import Loading from "../components/Loading.jsx";
-// header
-import Header from "../components/Header";
-// footer
-import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
 
@@ -195,7 +191,6 @@ function CartStepTwo() {
   // JSX
   return (
     <>
-     
       <main className="px-6 position-relative overflow-hidden">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -1080,7 +1075,11 @@ function CartStepTwo() {
                     type="submit"
                     className="mx-auto py-2 px-9 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold flex-fill border-radius-12"
                     disabled={!isValid}
-                    onClick={() => navigate("/cart-step-three", { state: { fromCheckout: true } })}
+                    onClick={() =>
+                      navigate("/cart-step-three", {
+                        state: { fromCheckout: true },
+                      })
+                    }
                   >
                     完成結帳
                   </button>
