@@ -1103,6 +1103,7 @@ function CartStepOne() {
                 <Link 
                   className="mb-6 mb-md-0 me-md-6 px-9 py-2 py-md-3 fill-btn btn fs-7 fw-bold  flex-fill border-radius-12"
                   to="/product-list"
+                  state={{ openCategory: "all" }}
                 >
                   繼續購物
                 </Link>
