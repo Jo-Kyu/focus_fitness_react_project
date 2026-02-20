@@ -26,7 +26,7 @@ function Login() {
   // 表單提交事件處理函式
 
   const handleLoginSubmit = (data) => {
-    Login(data, () => navigate("/product-list"))
+    Login(data, () => navigate("/product-list",{state:{ openCategory: "all" }}))
       .then(() => {
         console.log("登入成功");
       })

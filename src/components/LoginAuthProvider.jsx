@@ -58,7 +58,7 @@ export function LoginAuthProvider({ children }) {
           },
         }).then((result) => {
           if (result.isConfirmed && onSuccess) {
-            onSuccess(); // ← 按下確認後執行外部傳入的 navigate
+            onSuccess(); // 按下確認後執行外部傳入的 navigate
           }
         });
       })
