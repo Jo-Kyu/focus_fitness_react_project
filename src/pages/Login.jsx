@@ -1,5 +1,6 @@
 // 匯入Hook
 import { useContext } from "react";
+import { NavLink } from "react-router";
 
 // 匯入元件
 import { LoginAuthContext } from "../context/LoginAuthContext.js";
@@ -207,14 +208,16 @@ function Login() {
                           )}
                         </button>
                         {/* 立即購物 */}
-                        <button
+                        <NavLink
                           type="button"
                           className="btn btn-danger-dark text-white w-100 pt-3 pb-3 fs-7 fw-bold cancelButton text-black"
                           onClick={() => {}}
                           disabled={loading}
+                          to="/product-list"
+                          state={{ openCategory: "all" }}
                         >
                           立即購物
-                        </button>
+                        </NavLink>
                       </div>
                     )}
                   </form>
