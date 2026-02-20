@@ -1,6 +1,6 @@
 // 匯入Hook
 import { useContext } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 
 // 匯入元件
 import { LoginAuthContext } from "../context/LoginAuthContext.js";
@@ -22,10 +22,11 @@ import logo from "../assets/images/logos/FOCUS-FITNESS-logo-3-long-big.png";
 
 function Login() {
   const { Login, isAuth, Logout, loading } = useContext(LoginAuthContext);
+  const navigate = useNavigate();
   // 表單提交事件處理函式
 
   const handleLoginSubmit = (data) => {
-    Login(data)
+    Login(data, () => navigate("/product-list"))
       .then(() => {
         console.log("登入成功");
       })
