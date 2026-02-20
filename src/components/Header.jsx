@@ -81,9 +81,9 @@ function Header() {
   }, []);
 
   // 手動關閉選單
-  const closeNavbar = () => {
-    collapseRef.current?.hide();
-  };
+  // const closeNavbar = () => {
+  //   collapseRef.current?.hide();
+  // };
 
   return (
     <>
