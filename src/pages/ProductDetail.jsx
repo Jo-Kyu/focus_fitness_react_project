@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 
 // 匯入資料
 import evaluateCustomerPics from "../data/evaluateCustomerPics";
+import { CartContext } from "../context/CartContext";
 
 // 匯入元件
 import Star from "../components/Star.jsx";
@@ -39,6 +40,8 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
 function ProductDetail() {
+  // 購物車共用狀態解構
+  const { fetchCartCount } = useContext(CartContext);
   // 取得動態路由參數
   const { id } = useParams();
   // 導向至登入頁
@@ -203,6 +206,7 @@ function ProductDetail() {
         });
         console.log("商品加入購物車成功");
         console.log(res);
+        fetchCartCount();//購物車數字計算函式
         return res;
       })
       .catch((err) => {
