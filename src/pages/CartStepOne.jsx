@@ -10,6 +10,7 @@ import "swiper/css/pagination";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { ThreeCircles } from "react-loader-spinner";
+import { CartContext } from "../context/CartContext";
 
 // 匯入元件
 // 光輝
@@ -34,6 +35,8 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
 function CartStepOne() {
+  // 購物車共用狀態解構
+  const { fetchCartCount } = useContext(CartContext);
   // 導向頁面
   const navigate = useNavigate();
   // 儲存購物車列表資料
@@ -126,7 +129,7 @@ function CartStepOne() {
       .put(`${baseUrl}/v2/api/${path}/cart/${cartProductId}`, cartProductNum)
       .then((res) => {
         getCartProducts();
-
+        fetchCartCount();//購物車數字計算函式
         console.log("更新特定商品數量成功");
         console.log(res);
       })
@@ -159,6 +162,7 @@ function CartStepOne() {
           .delete(`${baseUrl}/v2/api/${path}/cart/${delProductId}`)
           .then((res) => {
             getCartProducts();
+            fetchCartCount();//購物車數字計算函式
             Swal.fire({
               title: "刪除成功 !",
               text: "已刪除商品 !",
@@ -205,6 +209,7 @@ function CartStepOne() {
           .delete(`${baseUrl}/v2/api/${path}/carts`)
           .then((res) => {
             getCartProducts();
+            fetchCartCount();//購物車數字計算函式
             Swal.fire({
               title: "刪除成功 !",
               text: "已刪除商品 !",
