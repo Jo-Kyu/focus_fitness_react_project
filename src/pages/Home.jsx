@@ -1,7 +1,7 @@
 // React Hooks
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { NavLink } from "react-router";
+import { NavLink, Link } from "react-router";
 
 // 元件
 import BackTop from "../components/BackTop.jsx";
@@ -297,8 +297,10 @@ const handleScrollToAboutUs = (e) => {
                 hotCourse.map((course)=>{
                   return (
                           <div className="col-10 col-lg-4" key={course.id}>
-                            <NavLink className="d-block h-100 text-decoration-none" to={`/product-detail/${course.id}`}>
-                              <div className="card bg-blue-600 h-100 border-0">
+                            <NavLink  className="d-block h-100 text-decoration-none" 
+                                      to={`/product-detail/${course.id}`}
+                            >
+                              <div className="card bg-blue-600 h-100">
                                 <img  className="card-img-top"
                                       src={course.imageUrl}
                                       alt={course.title}
@@ -336,8 +338,10 @@ const handleScrollToAboutUs = (e) => {
                 hotEquip.map((equip)=>{
                   return (
                           <div className="col-10 col-lg-4" key={equip.id}>
-                            <NavLink className="d-block h-100 text-decoration-none" to={`/product-detail/${equip.id}`}>
-                              <div className="card bg-blue-600 h-100 border-0">
+                            <Link className="d-block h-100 text-decoration-none" 
+                                  to={`/product-detail/${equip.id}`}
+                            >
+                              <div className="card bg-blue-600 h-100">
                                 <img  className="card-img-top"
                                       src={equip.imageUrl}
                                       alt={equip.title}
@@ -354,7 +358,7 @@ const handleScrollToAboutUs = (e) => {
                                   </div>
                                 </div>
                               </div>
-                            </NavLink>
+                            </Link>
                           </div>
                           );
                 })

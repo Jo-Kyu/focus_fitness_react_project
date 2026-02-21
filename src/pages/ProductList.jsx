@@ -1,6 +1,6 @@
 // React Hooks
 import { useEffect, useState, useMemo, useRef, useCallback, useContext } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router";
+import { Link, NavLink, useLocation, useNavigate } from "react-router";
 
 // 收藏共用狀態
 import { WishlistContext } from "../context/WishlistContext.js";
@@ -18,7 +18,6 @@ import ProductListGlow from "../components/ProductListGlow";
 // 第三方套件
 import axios from "axios";
 import * as bootstrap from 'bootstrap';
-import { Collapse } from "bootstrap";
 
 // 定義按鈕顯示資料
 import sortLabels from "../data/sortLabels.js";
@@ -391,7 +390,9 @@ function ProductList(){
             <nav style={{ "--bs-breadcrumb-divider": "/" }}  aria-label="breadcrumb">
                 <ol className="breadcrumb mb-2 fs-9 fs-md-6">
                     <li className="breadcrumb-item pe-2 pe-md-6">
-                        <a className="text-gray-200 fw-bold" href="#">首頁</a>
+                        <Link className="text-gray-200 fw-bold" to="/">
+                            首頁
+                        </Link>
                     </li>
                     {/* 電腦版顯示箭頭符號 */}
                     <li className="d-none d-md-block">
@@ -424,7 +425,9 @@ function ProductList(){
                         </svg>
                     </li>
                     <li className="breadcrumb-item px-2 px-md-6">
-                        <a className="text-gray-200 fw-bold" href="#">商城</a>
+                        <Link className="text-gray-200 fw-bold" to="/product-list">
+                            商城
+                        </Link>
                     </li>
                     {/* 電腦版顯示箭頭符號 */}
                     <li className="d-none d-md-block">
@@ -456,9 +459,8 @@ function ProductList(){
                             />
                         </svg>
                     </li>
-                    <li
-                    className="breadcrumb-item active ps-2 ps-md-6 text-primary-400 fw-bold"
-                    aria-current="page"
+                    <li className="breadcrumb-item active ps-2 ps-md-6 text-primary-400 fw-bold"
+                        aria-current="page"
                     >
                     {getCurrentSubCategoryName()}
                     </li>
