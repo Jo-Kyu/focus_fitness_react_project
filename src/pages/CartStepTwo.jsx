@@ -1,5 +1,5 @@
 // 匯入Hook
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useContext } from "react";
 import { useNavigate } from "react-router";
 
 // 匯入套件
@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { ThreeCircles } from "react-loader-spinner";
+import { CartContext } from "../context/CartContext";
 
 // 匯入元件
 import Glow from "../components/Glow.jsx";
@@ -22,6 +23,8 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
 function CartStepTwo() {
+  // 購物車商品輸量狀態撈取
+  const { fetchCartCount } = useContext(CartContext);
   // 初始化導航工具
   const navigate = useNavigate();
   // 儲存購物車列表資料
@@ -168,6 +171,7 @@ function CartStepTwo() {
     axios
       .post(`${baseUrl}/v2/api/${path}/pay/${orderId}`)
       .then((res) => {
+        fetchCartCount();
         console.log("結帳成功");
         console.log(res);
       })
