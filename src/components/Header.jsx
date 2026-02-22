@@ -289,7 +289,7 @@ function Header() {
                     fill="white"
                   />
                 </svg>
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                <span className="position-absolute top-0 start-50 badge rounded-circle bg-danger" 
                       style={{ backgroundColor: '#e1ff00' }}>
                       <span style={{ color: '#ff514f' }}>{cartCount}</span>
                 </span>
