@@ -129,7 +129,7 @@ function CartStepOne() {
       .put(`${baseUrl}/v2/api/${path}/cart/${cartProductId}`, cartProductNum)
       .then((res) => {
         getCartProducts();
-        fetchCartCount();//購物車數字計算函式
+        fetchCartCount(); //購物車數字計算函式
         console.log("更新特定商品數量成功");
         console.log(res);
       })
@@ -162,7 +162,7 @@ function CartStepOne() {
           .delete(`${baseUrl}/v2/api/${path}/cart/${delProductId}`)
           .then((res) => {
             getCartProducts();
-            fetchCartCount();//購物車數字計算函式
+            fetchCartCount(); //購物車數字計算函式
             Swal.fire({
               title: "刪除成功 !",
               text: "已刪除商品 !",
@@ -209,7 +209,7 @@ function CartStepOne() {
           .delete(`${baseUrl}/v2/api/${path}/carts`)
           .then((res) => {
             getCartProducts();
-            fetchCartCount();//購物車數字計算函式
+            fetchCartCount(); //購物車數字計算函式
             Swal.fire({
               title: "刪除成功 !",
               text: "已刪除商品 !",
@@ -283,7 +283,7 @@ function CartStepOne() {
 
     // 有免配送商品 + 尚未勾選須知
     // 有免配送商品 + 尚未勾選
-    if (shippingFreeProducts.length && !isNoticeChecked) {
+    if (cartProducts?.carts?.length && !isNoticeChecked) {
       console.log("請勾選須知");
       Swal.fire({
         title: "您尚未勾選左側購物須知",
@@ -545,7 +545,9 @@ function CartStepOne() {
                                 <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 my-3">
                                   <button
                                     className="btn p-2 border-0 text-white fs-2"
+                                    disabled={cartProduct?.qty === 1}
                                     onClick={() => {
+                                      if (cartProduct?.qty === 1) return;
                                       handleCartProductNum(
                                         cartProduct?.id,
                                         cartProduct?.product_id,
