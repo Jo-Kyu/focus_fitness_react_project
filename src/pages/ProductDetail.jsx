@@ -206,7 +206,7 @@ function ProductDetail() {
         });
         console.log("商品加入購物車成功");
         console.log(res);
-        fetchCartCount();//購物車數字計算函式
+        fetchCartCount(); //購物車數字計算函式
         return res;
       })
       .catch((err) => {
@@ -759,7 +759,9 @@ function ProductDetail() {
                       <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-md-210 w-100 my-3">
                         <button
                           className="btn p-2 border-0 text-white fs-2"
+                          disabled={productQty === 1}
                           onClick={() => {
+                            if (productQty === 1) return;
                             setProductQty((preQty) => Math.max(1, preQty - 1));
                             toast.success(`商品數量已減少 1`, {
                               className: "handleAddToCartToast",
