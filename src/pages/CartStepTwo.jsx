@@ -818,7 +818,7 @@ function CartStepTwo() {
                                 宅配運費
                               </h3>
                               <h2 className="fs-8 fs-lg-6 fs-sm-6 text-warning-normal fw-bold">
-                                {shippingProductsTotal > 499 ? "免運" : "NT$60"}
+                                {shippingProductsTotal >= 499 ? "免運" : "NT$60"}
                               </h2>
                             </div>
                           </div>
@@ -1008,12 +1008,12 @@ function CartStepTwo() {
                           {/* 商品金額 */}
                           <div className="mb-6 d-flex">
                             <div className="ms-auto">
-                              <h3 className="fs-6 text-gray-500 fw-regular">
-                                商品金額：
+                              <h3 className="fs-6 text-gray-200 fw-regular">
+                                商品總金額：
                               </h3>
                             </div>
                             <div className="max-w-120">
-                              <h3 className="fs-6 text-gray-950 fw-bold text-end">
+                              <h3 className="fs-6 text-white fw-bold text-end">
                                 NT${cartProducts.final_total}
                               </h3>
                             </div>
@@ -1021,7 +1021,7 @@ function CartStepTwo() {
                           {/* 優惠券折抵 */}
                           {/* <div className="mb-6 d-flex">
                             <div className="ms-auto">
-                                <h3 className="fs-6 text-gray-500 fw-regular">優惠券折抵：</h3>
+                                <h3 className="fs-6 text-gray-200 fw-regular">優惠券折抵：</h3>
                             </div>
                             <div className="max-w-120" >
                                 <h3 className="fs-6 text-warning-dark fw-bold text-end">-NT$100</h3>
@@ -1030,12 +1030,12 @@ function CartStepTwo() {
                           {/* 運費 */}
                           <div className="mb-6 d-flex">
                             <div className="ms-auto">
-                              <h3 className="fs-6 text-gray-500 fw-regular">
+                              <h3 className="fs-6 text-gray-200 fw-regular">
                                 運費：
                               </h3>
                             </div>
                             <div className="max-w-120">
-                              <h3 className="fs-6 text-gray-950 fw-bold text-end">
+                              <h3 className="fs-6 text-white fw-bold text-end">
                                 NT${shippingFee}
                               </h3>
                             </div>
@@ -1043,7 +1043,7 @@ function CartStepTwo() {
                           {/* 結帳總金額 */}
                           <div className="d-flex">
                             <div className="ms-auto">
-                              <h3 className="fs-6 text-gray-500 fw-regular">
+                              <h3 className="fs-6 text-gray-200 fw-regular">
                                 結帳總金額：
                               </h3>
                             </div>

@@ -334,7 +334,14 @@ function CartStepOne() {
     return sum + item.total;
   }, 0);
 
-  const isFreeShipping = shippingProductsTotal >= 499;
+ // 運費免費條件：有商品且總額 >= 499
+const isFreeShipping = shippingProducts.length > 0 && shippingProductsTotal >= 499;
+
+// 計算運費
+const shippingFee = shippingProducts.length === 0 ? 0 : isFreeShipping ? 0 : 60;
+
+// 計算結帳總額
+const checkoutTotal = cartProducts?.final_total + shippingFee;
 
   // JSX
   if (isAllPageLoading) {
@@ -683,9 +690,12 @@ function CartStepOne() {
                 )}
 
                 {/*  已達免運門檻 */}
-                <div>
+                <div className="d-flex justify-content-between">
                   <h2 className="py-6 py-sm-8 ps-sm-105 px-3 fs-8 text-primary-200 fw-regular">
-                    {isFreeShipping ? "已達宅配免運門檻" : ""}
+                    {isFreeShipping ? "已達宅配免運門檻" : "未達免運門檻"}
+                  </h2>
+                  <h2 className="py-6 py-sm-8 pe-sm-105 px-3 fs-8 text-primary-200 fw-regular">
+                    {isFreeShipping ? "" : "宅配運費：NT$60"}
                   </h2>
                 </div>
               </div>
@@ -792,6 +802,7 @@ function CartStepOne() {
                                 <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 my-3">
                                   <button
                                     className="btn p-2 border-0 text-white fs-2"
+                                    disabled={cartProduct?.qty === 1}
                                     onClick={() => {
                                       handleCartProductNum(
                                         cartProduct?.id,
@@ -998,11 +1009,27 @@ function CartStepOne() {
                           {/* 商品總金額 */}
                           <div>
                             <p className="d-flex justify-content-between">
-                              <span className="text-primary-500">
+                              <span className="text-gray-200">
                                 商品總金額：
                               </span>
-                              <span className="text-gray-950 fw-bold">
+                              <span className="text-white fw-bold">
                                 NT${cartProducts?.final_total}
+                              </span>
+                            </p>
+                            <p className="d-flex justify-content-between">
+                              <span className="text-gray-200">
+                                運費：
+                              </span>
+                              <span className="text-white fw-bold">
+                                NT${shippingFee}
+                              </span>
+                            </p>
+                            <p className="d-flex justify-content-between">
+                              <span className="text-gray-200">
+                                結帳總金額：
+                              </span>
+                              <span className="text-primary-400 fw-bold">
+                               NT${checkoutTotal}
                               </span>
                             </p>
                           </div>
