@@ -679,7 +679,7 @@ function ProductDetail() {
                             xmlns="http://www.w3.org/2000/svg"
                             width="30"
                             height="31"
-                            fill={isFavorite ? "white" : ""}
+                            fill={isFavorite ? "white" : "transparent"}
                             stroke="white"
                             className="bi bi-bookmark-fill"
                             viewBox="0 0 16 20"
