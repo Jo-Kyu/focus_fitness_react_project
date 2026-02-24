@@ -304,6 +304,7 @@ const handleScrollToAboutUs = (e) => {
                                 <img  className="card-img-top"
                                       src={course.imageUrl}
                                       alt={course.title}
+                                      style={{ height: 'clamp(167px, 14vw, 206px)', objectFit: 'cover' }}
                                 />
                                 <div className="card-body p-7 d-flex flex-column">
                                   <h5 className="card-title fs-5 fs-lg-4 fw-bold text-gray-950 mb-6">{course.title}</h5>
@@ -345,6 +346,7 @@ const handleScrollToAboutUs = (e) => {
                                 <img  className="card-img-top"
                                       src={equip.imageUrl}
                                       alt={equip.title}
+                                      style={{ height: 'clamp(162px, 14vw, 206px)', objectFit: 'cover' }}
                                 />
                                 <div className="card-body p-7 d-flex flex-column">
                                   <h5 className="card-title fs-5 fs-lg-4 fw-bold text-gray-950 mb-6">{equip.title}</h5>
