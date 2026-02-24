@@ -955,7 +955,7 @@ function ProductDetail() {
                               </h4>
                             </div>
                             <div className="mb-1">
-                              <p className="mb-0 fs-8 text-gray-200">
+                              <p className="mb-0 fs-8 text-gray-200 text-nowrap">
                                 {
                                   specificProduct?.description_one
                                     ?.shopping_info?.payment
