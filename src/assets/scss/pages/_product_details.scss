@@ -385,14 +385,14 @@ input.placeholder-lg::placeholder {
 // handleAddToCart的吐司樣式
 .handleAddToCartToast {
   background: #31374d !important;
-  font-size: 18px;
-  padding: 20px 30px;
-  border-radius: 12px;
-  border: solid 3px #e1ff00;
+  font-size: 18px !important;
+  padding: 20px 30px !important;
+  border-radius: 12px !important;
+  border: solid 3px #e1ff00 !important;
   min-width: 300px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
   color: white !important;
-  font-size: bold;
+  font-weight: bold !important;
 }
 
 .handleToast {
