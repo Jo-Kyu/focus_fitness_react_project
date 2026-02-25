@@ -252,7 +252,7 @@
   background-image: url("../images/product_details_page/Rectangle_58.jpg");
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover; 
+  background-size: cover;
 }
 
 .login-bg-1 {
@@ -384,14 +384,14 @@ input.placeholder-lg::placeholder {
 
 // handleAddToCart的吐司樣式
 .handleAddToCartToast {
-  background: #31374d;
+  background: #31374d !important;
   font-size: 18px;
   padding: 20px 30px;
   border-radius: 12px;
   border: solid 3px #e1ff00;
   min-width: 300px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  color: white;
+  color: white !important;
   font-size: bold;
 }
 
