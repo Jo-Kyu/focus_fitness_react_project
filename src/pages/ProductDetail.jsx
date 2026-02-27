@@ -224,7 +224,7 @@ function ProductDetail() {
     handleAddToCart(specificProduct.id, productQty)
       .then((res) => {
         // 加入購物車成功後跳轉
-        // navigate("/cart/step1");
+        navigate("/cart-step-one");
         console.log("商品直接加入購物車成功");
         console.log(res);
       })
@@ -803,13 +803,14 @@ function ProductDetail() {
                       >
                         加入購物車
                       </button>
-                      <NavLink
+                      <button
                         className="me-md-6 py-2 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold fill-btn flex-fill border-radius-12"
                         onClick={handleDirectBuy}
-                        to="/cart-step-one"
+                        type="button"
+                        // to="/cart-step-one"
                       >
                         直接購買
-                      </NavLink>
+                      </button>
                       {/* 收藏按鈕 */}
                       <div className="d-none d-md-flex">
                         <button className="btn p-2 " onClick={handleFavorite}>
