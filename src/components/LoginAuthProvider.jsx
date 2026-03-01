@@ -1,7 +1,6 @@
 // 匯入Hook
 import { useState, useEffect, useCallback } from "react";
 import { LoginAuthContext } from "../context/LoginAuthContext.js";
-import { WishlistContext } from "../context/WishlistContext.js";
 
 // 匯入套件
 import axios from "axios";
@@ -41,10 +40,7 @@ export function LoginAuthProvider({ children }) {
         setIsAuth(true);
         setUser(login.username);
         localStorage.setItem("auth_user", login.username);
-        console.log("login res:", res.data);
-        console.log("token:", token);
 
-        console.log(res);
         Swal.fire({
           title: "登入成功 !",
           iconHtml: ` <svg
@@ -68,8 +64,7 @@ export function LoginAuthProvider({ children }) {
           }
         });
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
         toast.error("登入失敗!", {
           className: "handleAddToCartToast",
           icon: (
@@ -111,12 +106,11 @@ export function LoginAuthProvider({ children }) {
   }, [authorization]);
 
   // 驗證登入
-  const checkLogin = async () => {
-    try {
-      await axios.post(`${baseUrl}/v2/api/user/check`);
-    } catch (error) {
-      console.log(error);
-    }
+  const checkLogin = () => {
+    axios
+      .post(`${baseUrl}/v2/api/user/check`)
+      .then(() => {})
+      .catch(() => {});
   };
 
   // 登出
@@ -140,7 +134,7 @@ export function LoginAuthProvider({ children }) {
         setLoading(true);
         axios
           .post(`${baseUrl}/v2/logout`)
-          .then((res) => {
+          .then(() => {
             toast.success("登出成功！", {
               className: "handleAddToCartToast",
               icon: (
@@ -156,17 +150,13 @@ export function LoginAuthProvider({ children }) {
                 </svg>
               ),
             });
-            console.log("登出成功");
-            console.dir(res);
+
             document.cookie =
               "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
             setToken("");
             setIsAuth(false);
           })
-          .catch((err) => {
-            console.dir(err);
-            console.log("登出失敗");
-          })
+          .catch(() => {})
           .finally(() => {
             // 不管 API 成功或失敗，都清除登入狀態
             document.cookie =

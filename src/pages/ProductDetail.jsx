@@ -1,6 +1,6 @@
 // 匯入Hook
 import { useEffect, useState, useContext } from "react";
-import { useParams, NavLink, useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { Link } from "react-router";
 
 // 匯入套件
@@ -28,10 +28,6 @@ import { WishlistContext } from "../context/WishlistContext.js";
 // 登入共用狀態
 import { LoginAuthContext } from "../context/LoginAuthContext.js";
 
-// header
-import Header from "../components/Header";
-// footer
-import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
 
@@ -109,13 +105,6 @@ function ProductDetail() {
     }
   }, [specificProduct]);
 
-  // 預設第一張圖片為展示圖片
-  // useEffect(() => {
-  //   if (specificProduct.imagesUrl?.length) {
-  //     setActiveImg(specificProduct.imagesUrl[0]);
-  //   }
-  // }, [specificProduct]);
-
   // 收藏事件處理涵式
   const handleFavorite = () => {
     // const newFavorite = !isfavorite;
@@ -144,8 +133,6 @@ function ProductDetail() {
           navigate("/login"); // 確認後導向登入頁
         }
       });
-      // console.log(isAuth);
-      // console.log("未登入");
       return;
     }
     // 判斷收藏狀態
@@ -204,8 +191,7 @@ function ProductDetail() {
           className: "handleAddToCartToast",
           icon: cartIcon,
         });
-        console.log("商品加入購物車成功");
-        console.log(res);
+
         fetchCartCount(); //購物車數字計算函式
         return res;
       })
@@ -213,8 +199,7 @@ function ProductDetail() {
         toast.error("加入購物車失敗！", {
           className: "handleAddToCartToast",
         });
-        console.log("商品加入購物車失敗");
-        console.dir(err);
+
         throw err;
       });
   }
@@ -222,16 +207,11 @@ function ProductDetail() {
   // 直接購買事件處理函式(網路請求API)
   function handleDirectBuy() {
     handleAddToCart(specificProduct.id, productQty)
-      .then((res) => {
+      .then(() => {
         // 加入購物車成功後跳轉
         navigate("/cart-step-one");
-        console.log("商品直接加入購物車成功");
-        console.log(res);
       })
-      .catch((err) => {
-        console.log("商品直接加入購物車失敗");
-        console.dir(err);
-      });
+      .catch(() => {});
   }
 
   // 呼叫取得所有商品、呼叫取得特定商品
@@ -241,13 +221,8 @@ function ProductDetail() {
         .get(`${baseUrl}/v2/api/${path}/product/${id}`)
         .then((res) => {
           setGetSpecificProduct(res.data.product);
-          console.log("取得特定商品成功");
-          console.log(res);
         })
-        .catch((err) => {
-          console.log("取得特定商品失敗");
-          console.dir(err);
-        });
+        .catch(() => {});
     })();
 
     //
@@ -257,14 +232,8 @@ function ProductDetail() {
         .get(`${baseUrl}/v2/api/${path}/products/all`)
         .then((res) => {
           setallProducts(res.data.products);
-          console.log(res.data.products);
-          console.log("取得全部商品成功");
-          console.log(res);
         })
-        .catch((err) => {
-          console.log("取得全部商品失敗");
-          console.dir(err);
-        });
+        .catch(() => {});
     })();
   }, [id]);
 

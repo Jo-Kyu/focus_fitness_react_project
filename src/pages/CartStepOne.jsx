@@ -21,10 +21,7 @@ import CartEmpty from "../pages/CartEmpty.jsx";
 import ProductsCardsCarousel from "../components/ProductsCardsCarousel.jsx";
 // 載入
 import Loading from "../components/Loading.jsx";
-// header
-import Header from "../components/Header";
-// footer
-import Footer from "../components/Footer";
+
 // 回到最上方
 import BackTop from "../components/BackTop";
 // 登入共用狀態
@@ -41,14 +38,6 @@ function CartStepOne() {
   const navigate = useNavigate();
   // 儲存購物車列表資料
   const [cartProducts, setCartProducts] = useState([]);
-  // 儲存篩選出來的須配送商品資料
-  // const [shippingProducts, setShippingProducts] = useState([]);
-  // 儲存篩選出來的免配送商品資料
-  // const [shippingFreeProducts, setShippingFreeProducts] = useState([]);
-  // 儲存篩選出來的銅板商品資料(<100)
-  // const [coinProducts, setCoinProducts] = useState([]);
-  // 儲存篩選出來的超值商品資料(<=6折)
-  // const [goodValueProducts, setGoodValueProducts] = useState([]);
   // 儲存全部商品資料
   const [allProducts, setallProducts] = useState([]);
   // 判斷購物車是否為空
@@ -82,13 +71,8 @@ function CartStepOne() {
       .get(`${baseUrl}/v2/api/${path}/cart`)
       .then((res) => {
         setCartProducts(res.data.data);
-        console.log("取得購物車列表成功");
-        console.log(res);
       })
-      .catch((err) => {
-        console.log("取得購物車列表失敗");
-        console.dir(err);
-      })
+      .catch(() => {})
       .finally(() => {
         setAllPageLoading(false);
       });
@@ -100,14 +84,8 @@ function CartStepOne() {
       .get(`${baseUrl}/v2/api/${path}/products/all`)
       .then((res) => {
         setallProducts(res.data.products);
-        console.log(res.data.products);
-        console.log("取得全部商品成功");
-        console.log(res);
       })
-      .catch((err) => {
-        console.log("取得全部商品失敗");
-        console.dir(err);
-      });
+      .catch(() => {});
   }
 
   // 呼叫取得購物車列表、呼叫取的所有商品
@@ -127,16 +105,11 @@ function CartStepOne() {
     };
     axios
       .put(`${baseUrl}/v2/api/${path}/cart/${cartProductId}`, cartProductNum)
-      .then((res) => {
+      .then(() => {
         getCartProducts();
         fetchCartCount(); //購物車數字計算函式
-        console.log("更新特定商品數量成功");
-        console.log(res);
       })
-      .catch((err) => {
-        console.log("更新特定商品數量失敗");
-        console.dir(err);
-      });
+      .catch(() => {});
   }
 
   // 刪除購物車單一商品事件處理函式(網路請求API)
@@ -160,7 +133,7 @@ function CartStepOne() {
       if (res.isConfirmed) {
         axios
           .delete(`${baseUrl}/v2/api/${path}/cart/${delProductId}`)
-          .then((res) => {
+          .then(() => {
             getCartProducts();
             fetchCartCount(); //購物車數字計算函式
             Swal.fire({
@@ -175,13 +148,8 @@ function CartStepOne() {
                 popup: "handleAddToCartToast",
               },
             });
-            console.log("刪除特定商品成功");
-            console.log(res);
           })
-          .catch((err) => {
-            console.log("刪除特定商品失敗");
-            console.dir(err);
-          });
+          .catch(() => {});
       }
     });
   }
@@ -207,7 +175,7 @@ function CartStepOne() {
       if (res.isConfirmed) {
         axios
           .delete(`${baseUrl}/v2/api/${path}/carts`)
-          .then((res) => {
+          .then(() => {
             getCartProducts();
             fetchCartCount(); //購物車數字計算函式
             Swal.fire({
@@ -222,31 +190,11 @@ function CartStepOne() {
                 popup: "handleAddToCartToast",
               },
             });
-            console.log("刪除全部商品成功");
-            console.log(res);
           })
-          .catch((err) => {
-            console.log("刪除全部商品失敗");
-            console.dir(err);
-          });
+          .catch(() => {});
       }
     });
   }
-
-  // 刪除購物車全部商品事件處理函式(網路請求API)
-  // function handleDelAllProducts() {
-  //   axios
-  //     .delete(`${baseUrl}/v2/api/${path}/carts`)
-  //     .then((res) => {
-  //       getCartProducts();
-  //       console.log("刪除全部商品成功");
-  //       console.log(res);
-  //     })
-  //     .catch((err) => {
-  //       console.log("刪除全部商品失敗");
-  //       console.dir(err);
-  //     });
-  // }
 
   // 開始結帳事件處理函式
   function handleStartCheckout() {
@@ -273,8 +221,7 @@ function CartStepOne() {
           navigate("/login"); // 確認後導向登入頁
         }
       });
-      // console.log(isAuth);
-      // console.log("未登入");
+
       return;
     }
 
@@ -284,7 +231,6 @@ function CartStepOne() {
     // 有免配送商品 + 尚未勾選須知
     // 有免配送商品 + 尚未勾選
     if (cartProducts?.carts?.length && !isNoticeChecked) {
-      console.log("請勾選須知");
       Swal.fire({
         title: "您尚未勾選左側購物須知",
         text: "勾選購物須知後，才可以開始結帳！",
@@ -300,11 +246,6 @@ function CartStepOne() {
       });
       return;
     }
-
-    console.log("須知已勾選，轉移頁面");
-
-    // 通過檢查，進結帳
-    // navigate("/checkout");
 
     navigate("/cart-step-two", { state: { fromCheckout: true } });
   }
@@ -334,14 +275,16 @@ function CartStepOne() {
     return sum + item.total;
   }, 0);
 
- // 運費免費條件：有商品且總額 >= 499
-const isFreeShipping = shippingProducts.length > 0 && shippingProductsTotal >= 499;
+  // 運費免費條件：有商品且總額 >= 499
+  const isFreeShipping =
+    shippingProducts.length > 0 && shippingProductsTotal >= 499;
 
-// 計算運費
-const shippingFee = shippingProducts.length === 0 ? 0 : isFreeShipping ? 0 : 60;
+  // 計算運費
+  const shippingFee =
+    shippingProducts.length === 0 ? 0 : isFreeShipping ? 0 : 60;
 
-// 計算結帳總額
-const checkoutTotal = cartProducts?.final_total + shippingFee;
+  // 計算結帳總額
+  const checkoutTotal = cartProducts?.final_total + shippingFee;
 
   // JSX
   if (isAllPageLoading) {
@@ -369,7 +312,7 @@ const checkoutTotal = cartProducts?.final_total + shippingFee;
               </div>
               <div className="d-flex align-items-center">
                 <div className="me-6">
-                  <p className="fs-9 fs-md-5 text-white">確認購買商品</p>
+                  <h1 className="fs-9 fs-md-5 text-white">確認購買商品</h1>
                 </div>
                 <div className="d-none d-md-flex">
                   <svg
@@ -749,7 +692,6 @@ const checkoutTotal = cartProducts?.final_total + shippingFee;
                       const discount = Math.round(
                         (1 - totalPrice / totalOriginalPrice) * 100,
                       );
-                      console.log("免配送商品", shippingFreeProducts);
 
                       return (
                         <div
@@ -1017,9 +959,7 @@ const checkoutTotal = cartProducts?.final_total + shippingFee;
                               </span>
                             </p>
                             <p className="d-flex justify-content-between">
-                              <span className="text-gray-200">
-                                運費：
-                              </span>
+                              <span className="text-gray-200">運費：</span>
                               <span className="text-white fw-bold">
                                 NT${shippingFee}
                               </span>
@@ -1029,7 +969,7 @@ const checkoutTotal = cartProducts?.final_total + shippingFee;
                                 結帳總金額：
                               </span>
                               <span className="text-primary-400 fw-bold">
-                               NT${checkoutTotal}
+                                NT${checkoutTotal}
                               </span>
                             </p>
                           </div>

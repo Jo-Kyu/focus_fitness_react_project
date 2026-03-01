@@ -29,10 +29,6 @@ function CartStepTwo() {
   const navigate = useNavigate();
   // 儲存購物車列表資料
   const [cartProducts, setCartProducts] = useState([]);
-  // 儲存篩選出來的須配送商品資料
-  // const [shippingProducts, setShippingProducts] = useState([]);
-  // 儲存篩選出來的免配送商品資料
-  // const [shippingFreeProducts, setShippingFreeProducts] = useState([]);
   // 判斷頁面載入
   const [isAllPageLoading, setAllPageLoading] = useState(true);
 
@@ -73,46 +69,14 @@ function CartStepTwo() {
       .get(`${baseUrl}/v2/api/${path}/cart`)
       .then((res) => {
         setCartProducts(res.data.data);
-        console.log("取得購物車列表成功");
-        console.log(res);
-        console.log(res.data.data);
       })
-      .catch((err) => {
-        console.log("取得購物車列表失敗");
-        console.dir(err);
-      })
+      .catch(() => {})
       .finally(() => {
         setAllPageLoading(false);
       });
   }
 
   // 篩選須配送商品
-
-  // useEffect(() => {
-  //   if (cartProducts?.carts?.length) {
-  //     const filteredShippingProducts = cartProducts.carts.filter(
-  //       (item) => item.product.is_shipping,
-  //     );
-  //     setShippingProducts(filteredShippingProducts);
-  //     console.log(shippingProducts);
-  //   }
-  //   if (cartProducts?.carts?.length === 0) {
-  //     setShippingProducts([]);
-  //   }
-  // }, [cartProducts]);
-
-  // 篩選免配送商品
-  // useEffect(() => {
-  //   if (cartProducts?.carts?.length) {
-  //     const filteredShippingFreeProducts = cartProducts.carts.filter(
-  //       (item) => item.product.is_shipping !== true,
-  //     );
-  //     setShippingFreeProducts(filteredShippingFreeProducts);
-  //   }
-  //   if (cartProducts?.carts?.length === 0) {
-  //     setShippingFreeProducts([]);
-  //   }
-  // }, [cartProducts]);
 
   // 須配送商品、免配送商品的個別的商品總額
   function calcProductsTotal(products) {
@@ -137,7 +101,6 @@ function CartStepTwo() {
 
   // 表單提交事件處理函式、成立訂單 (post網路請求)
   const handleOnSubmit = (data) => {
-    console.log(data);
     const userSetOrder = {
       data: {
         user: {
@@ -156,29 +119,18 @@ function CartStepTwo() {
         reset();
         getCartProducts();
         checkout(res.data.orderId);
-        console.log("訂單成立成功");
-        console.log(res);
-        console.log(res.data.orderId);
       })
-      .catch((err) => {
-        console.log("訂單成立失敗");
-        console.dir(err);
-      });
+      .catch(() => {});
   };
 
   // 結帳 (post網路請求)
   function checkout(orderId) {
     axios
       .post(`${baseUrl}/v2/api/${path}/pay/${orderId}`)
-      .then((res) => {
+      .then(() => {
         fetchCartCount();
-        console.log("結帳成功");
-        console.log(res);
       })
-      .catch((err) => {
-        console.log("結帳成失敗");
-        console.dir(err);
-      });
+      .catch(() => {});
   }
 
   // 監聽付款方式
@@ -239,7 +191,7 @@ function CartStepTwo() {
               </div>
               <div className="d-flex align-items-center">
                 <div className="me-6">
-                  <p className="fs-9 fs-md-5 text-white">填寫訂購資料</p>
+                  <h1 className="fs-9 fs-md-5 text-white">填寫訂購資料</h1>
                 </div>
                 <div className="d-none d-md-flex">
                   <svg
@@ -818,7 +770,9 @@ function CartStepTwo() {
                                 宅配運費
                               </h3>
                               <h2 className="fs-8 fs-lg-6 fs-sm-6 text-warning-normal fw-bold">
-                                {shippingProductsTotal >= 499 ? "免運" : "NT$60"}
+                                {shippingProductsTotal >= 499
+                                  ? "免運"
+                                  : "NT$60"}
                               </h2>
                             </div>
                           </div>
