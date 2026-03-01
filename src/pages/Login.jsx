@@ -5,10 +5,6 @@ import { NavLink, useNavigate } from "react-router";
 // 匯入元件
 import { LoginAuthContext } from "../context/LoginAuthContext.js";
 
-// header
-import Header from "../components/Header";
-// footer
-import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
 import Glow from "../components/Glow.jsx";
@@ -26,14 +22,11 @@ function Login() {
   // 表單提交事件處理函式
 
   const handleLoginSubmit = (data) => {
-    Login(data, () => navigate("/product-list",{state:{ openCategory: "all" }}))
-      .then(() => {
-        console.log("登入成功");
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("登入失敗");
-      });
+    Login(data, () =>
+      navigate("/product-list", { state: { openCategory: "all" } }),
+    )
+      .then(() => {})
+      .catch(() => {});
   };
 
   // 表單
@@ -48,7 +41,6 @@ function Login() {
 
   return (
     <>
-
       <main className="px-6 position-relative overflow-hidden login-bg-1">
         <section className="max-h-130 max-h-md-144 container"></section>
         {/* 光暈 */}
@@ -75,9 +67,9 @@ function Login() {
                     <h2 className="fs-7 fw-bold mb-3 text-primary-400">
                       {!isAuth ? "/ Log in /" : "/ Log  out /"}
                     </h2>
-                    <h2 className="fs-2 fw-bold lh-sm">
+                    <h1 className="fs-2 fw-bold lh-sm">
                       {!isAuth ? "會員登入" : "會員登出"}
-                    </h2>
+                    </h1>
                   </div>
 
                   {/*表單*/}

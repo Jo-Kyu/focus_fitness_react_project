@@ -79,8 +79,6 @@ function FavoriteProductCards({ product }) {
                     navigate("/login"); // 確認後導向登入頁
                   }
                 });
-                // console.log(isAuth);
-                // console.log("未登入");
                 return;
               }
               toggleWishlistItem(product.id);

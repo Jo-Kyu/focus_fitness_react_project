@@ -2,10 +2,6 @@
 import { NavLink } from "react-router";
 // 匯入元件
 import Ellipse_2 from "../assets/images/index_page/光暈/Ellipse_2.svg";
-// header
-import Header from "../components/Header";
-// footer
-import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
 
@@ -13,7 +9,6 @@ function FavoriteEmpty() {
   // JSX
   return (
     <>
-      
       <main className="px-6 position-relative overflow-hidden min-vh-100 ">
         <section className="max-h-130 max-h-md-144"></section>
         {/* 光暈 */}
@@ -42,9 +37,9 @@ function FavoriteEmpty() {
           <div className="mb-4 mb-sm-8 container px-0 max-w-1296 border border-secondary-600 border-radius-12">
             {/* 空購物車 */}
             <div className="p-6 py-sm-4  bg-blue-700 text-center border-radius-12">
-              <h2 className="fs-sm-1 fs-4 text-gray-950 fw-bold">
+              <h1 className="fs-sm-1 fs-4 text-gray-950 fw-bold">
                 您的收藏清單還是空的喔!
-              </h2>
+              </h1>
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +57,7 @@ function FavoriteEmpty() {
               <h2 className="fs-sm-1 fs-4 text-gray-950 fw-bold mb-4">
                 點擊下方按鈕，立即前往購物!
               </h2>
-              <NavLink 
+              <NavLink
                 className="mb-6 mb-md-0 me-md-6 py-2 py-md-3 fill-btn btn fs-7 fw-bold fill-btn flex-fill border-radius-12 w-50"
                 to="/product-list"
                 state={{ openCategory: "all" }}
@@ -73,7 +68,7 @@ function FavoriteEmpty() {
           </div>
         </section>
       </main>
-      
+
       <BackTop />
     </>
   );

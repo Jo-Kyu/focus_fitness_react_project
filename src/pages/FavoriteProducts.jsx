@@ -9,15 +9,9 @@ import "swiper/css/pagination";
 
 // 匯入元件
 import Glow from "../components/Glow.jsx";
-import CartEmpty from "../pages/CartEmpty.jsx";
 import FavoriteEmpty from "./FavoriteEmpty.jsx";
 import Loading from "../components/Loading.jsx";
-import { ThreeCircles } from "react-loader-spinner";
 
-// header
-import Header from "../components/Header";
-// footer
-import Footer from "../components/Footer";
 // 回到最上方
 import BackTop from "../components/BackTop";
 import { WishlistContext } from "../context/WishlistContext.js";
@@ -39,14 +33,11 @@ function FavoriteProducts() {
 
   // 取得被收藏的商品id
   const favoriteIds = Object.keys(wishlist).filter((id) => wishlist[id]);
-  //   console.log(favoriteIds);
 
   // 被收藏商品id比對全部商品資料id，篩選出被收藏的商品資料
   const favoriteProducts = allProducts.filter((product) =>
     favoriteIds.includes(product.id),
   );
-
-  console.log(favoriteProducts);
 
   // 取得全部商品(get網路請求)
   function getAllProducts() {
@@ -54,14 +45,8 @@ function FavoriteProducts() {
       .get(`${baseUrl}/v2/api/${path}/products/all`)
       .then((res) => {
         setallProducts(res.data.products);
-        console.log(res.data.products);
-        console.log("取得全部商品成功");
-        console.log(res);
       })
-      .catch((err) => {
-        console.log("取得全部商品失敗");
-        console.dir(err);
-      })
+      .catch(() => {})
       .finally(() => {
         setAllPageLoading(false);
       });
@@ -94,14 +79,17 @@ function FavoriteProducts() {
           <div className="mb-4 mb-sm-8 container px-0 max-w-1296 border border-secondary-600 border-radius-12">
             {/* 收藏清單商品標題 */}
             <div className="mb-3 py-6 py-sm-4  bg-blue-700 text-center border-radius-12 border-bottom-leftt-radius-0 border-bottom-right-radius-0">
-              <h2 className="fs-7 text-gray-950 fw-bold">商品收藏清單</h2>
+              <h1 className="fs-7 text-gray-950 fw-bold">商品收藏清單</h1>
             </div>
             {/* 卡片列表 */}
             <div className="px-6">
               <div className="row">
                 {favoriteProducts.map((favoriteProduct) => {
                   return (
-                    <div className="col-lg-3 col-md-4 col-6  mb-6 rounded-3 ">
+                    <div
+                      className="col-lg-3 col-md-4 col-6  mb-6 rounded-3 "
+                      key={favoriteProduct.id}
+                    >
                       <FavoriteProductCards product={favoriteProduct} />
                     </div>
                   );
