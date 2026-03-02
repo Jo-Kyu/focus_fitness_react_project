@@ -17,8 +17,7 @@ const { reset,
         mode:"onTouched"
       });
 
-const onSubmit=(data)=>{
-  console.log(data);
+const onSubmit=()=>{
   reset();
 };
     

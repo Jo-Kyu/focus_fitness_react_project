@@ -107,13 +107,12 @@ function ProductList(){
                 const res=await axios.get(`${baseUrl}/v2/api/${path}/products/all`);
                 // 取得所有商品
                 const products=res.data.products;
-                console.log("所有商品數據：", products);
                 setAllProducts(products);
                 // 初始化排序方式
                 setSortType("price_high");
                 setCurrentPage(1);
             }catch(error){
-                console.log("error:",error.response);
+                console.error("error:",error.response);
             }finally{
                 setIsLoading(false);
             }
@@ -855,8 +854,6 @@ function ProductList(){
                                                                             navigate("/login"); // 確認後導向登入頁
                                                                         }
                                                                         });
-                                                                    // console.log(isAuth);
-                                                                    // console.log("未登入");
                                                                     return;
                                                                 }
                                                                 toggleWishlistItem(product.id);

@@ -88,11 +88,6 @@ function Header() {
     collapseRef.current?.hide();
   }, []);
 
-  // 手動關閉選單
-  // const closeNavbar = () => {
-  //   collapseRef.current?.hide();
-  // };
-
   return (
     <>
       {/* 毛玻璃導覽列 */}
@@ -219,8 +214,6 @@ function Header() {
                             navigate("/login"); // 確認後導向登入頁
                           }
                         });
-                        // console.log(isAuth);
-                        // console.log("未登入");
                         return;
                       }
                       // isAuth 為 true 時，正常導向收藏頁
@@ -263,8 +256,6 @@ function Header() {
                         navigate("/login"); // 確認後導向登入頁
                       }
                     });
-                    // console.log(isAuth);
-                    // console.log("未登入");
                     return;
                   }
                   // isAuth 為 true 時，正常導向收藏頁

@@ -107,7 +107,7 @@ function Home() {
         const hotEquipData = res?.data?.products?.filter(product=>product.category!=="課程" && product.is_hot===true);
         setHotEquip(hotEquipData);
       }catch(error){
-        console.log("error:",error.response);
+        console.error("error:",error.response);
       }
     };
     getProducts();
@@ -131,8 +131,7 @@ const { reset,
         mode:"onTouched"
       });
 
-const onSubmit=(data)=>{
-  console.log(data);
+const onSubmit=()=>{
   reset();
 };
 
