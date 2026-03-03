@@ -12,7 +12,7 @@ function CartStepThree() {
                         right: "-800px", 
                         zIndex: "-100"
                     }}
-                src="../assets/images/index_page/光暈/Ellipse 2.svg"
+                src="https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/9e3f005dfa681ea077f6ee0423e9f1163d0257de/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg"
                 alt="光暈"
             />
             <img
@@ -21,7 +21,7 @@ function CartStepThree() {
                         left: "-800px", 
                         zIndex: "-100"
                     }}
-                src="../assets/images/index_page/光暈/Ellipse 2.svg"
+                src="https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/9e3f005dfa681ea077f6ee0423e9f1163d0257de/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg"
                 alt="光暈"
             />
             {/* 購物車步驟 */}
