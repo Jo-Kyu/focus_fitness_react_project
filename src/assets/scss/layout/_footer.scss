@@ -115,8 +115,16 @@ svg{
     }
 }
 
-.form-mb-40{
+.form-mb-style{
+    margin-top: 20px;
     margin-bottom: 40px;
+}
+
+@media(max-width:992px){
+    .form-mb-style{
+        margin-bottom: 20px;
+        margin-bottom: 0;
+    }
 }
 
 // footer mail輸入框&按鈕

@@ -1,0 +1,21 @@
+.login-bg {
+  background-image: url("../../images/login/login.png");
+  background-size: cover; /* 建議加上 */
+  background-position: center; /* 建議加上 */
+  background-repeat: no-repeat; /* 建議加上 */
+}
+
+.table-bg,
+.table-bg th,
+.table-bg td {
+  background-color: transparent;
+}
+
+.table-color,
+.table-color td {
+  color: $primary-400;
+}
+
+.table-color th {
+  color: $gray-950;
+}

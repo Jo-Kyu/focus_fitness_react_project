@@ -8,8 +8,16 @@
   max-width: 822px;
 }
 
+.max-w-618 {
+  max-width: 618px;
+}
+
 .max-w-346 {
   max-width: 349px;
+}
+
+.max-w-327 {
+  max-width: 327px;
 }
 
 .max-w-312 {
@@ -44,6 +52,10 @@
 
 .max-w-117 {
   max-width: 117px;
+}
+
+.max-w-114 {
+  max-width: 114px;
 }
 
 .max-w-80 {
@@ -121,7 +133,27 @@
   height: 7px;
 }
 
+.h-210 {
+  height: 210px;
+}
+
 // min-width
+
+.min-h-83 {
+  min-height: 83px;
+}
+
+.min-h-95 {
+  min-height: 95px;
+}
+
+.min-h-240 {
+  min-height: 240px;
+}
+
+.min-h-368 {
+  min-height: 368px;
+}
 
 .min-w-111 {
   min-width: 111px;
@@ -139,6 +171,12 @@
 .hover-effect:hover,  // border+outline
 .hover-effect:focus,  // border
 .hover-effect:active {
+  border-color: $primary-400 !important;
+  outline: 2px solid $primary-900;
+}
+
+.selected,
+.selected-size {
   border-color: $primary-400 !important;
   outline: 2px solid $primary-900;
 }
@@ -202,15 +240,28 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+.bg-transparent {
+  background-color: transparent;
+}
+
 .bg-gray-900-20 {
   background-color: rgba(26, 26, 26, 0.2);
 }
 
 .product-main-img {
   background-image: url("../images/product_details_page/Rectangle_58.jpg");
-  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.login-bg-1 {
+  background-image: url("../../images/login/loginBG.png");
+  background-size: cover;
+
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
 }
 
 // blur
@@ -226,6 +277,27 @@ input.placeholder-lg::placeholder {
 
 .input-focus:focus {
   outline: none !important;
+}
+
+.input-placeholder::placeholder {
+  color: #adadad;
+  font-size: 14px;
+}
+
+.input-password.is-invalid {
+  border-color: #808080 !important;
+  box-shadow: none !important;
+}
+
+.input-password.is-invalid:focus {
+  border-color: #e1ff00 !important;
+  outline: none;
+  box-shadow: none;
+}
+.input-password.form-control:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #e1ff00;
 }
 
 // border-radius
@@ -293,6 +365,10 @@ input.placeholder-lg::placeholder {
   z-index: 100;
 }
 
+.z-n100 {
+  z-index: -100;
+}
+
 // 移除 <input type="number"> 右邊的上下箭頭
 .remove-spin::-webkit-inner-spin-button,
 .remove-spin::-webkit-outer-spin-button {
@@ -300,9 +376,66 @@ input.placeholder-lg::placeholder {
   margin: 0;
 }
 
+// 移除數字上下鍵
 .remove-spin {
   appearance: textfield;
   -moz-appearance: textfield;
+}
+
+// handleAddToCart的吐司樣式
+.handleAddToCartToast {
+  background: #31374d !important;
+  font-size: 18px !important;
+  padding: 20px 30px !important;
+  border-radius: 12px !important;
+  border: solid 3px #e1ff00 !important;
+  min-width: 300px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+.handleToast {
+  background: #31374d;
+  font-size: 18px;
+  padding: 20px 30px;
+  border-radius: 12px;
+  border: solid 3px #e1ff00;
+  min-width: 300px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: bold;
+}
+
+.confirmButton {
+  background: #ff514f;
+}
+
+.confirmButton-2 {
+  background: #e1ff00;
+  color: #000000;
+}
+
+.confirmButton-2:hover {
+  background: #ffc107;
+  color: #000000;
+}
+
+.confirmButton:hover {
+  background: #b7273e;
+}
+
+.cancelButton {
+  background: #e1ff00;
+  color: #000000;
+}
+
+.cancelButton:hover {
+  background: #ffc107;
+}
+
+.handleAddToCartToast .swal2-icon {
+  border: none;
 }
 
 // 斷點
@@ -316,16 +449,16 @@ input.placeholder-lg::placeholder {
     max-width: 822px;
   }
 
+  .max-w-md-210 {
+    max-width: 210px;
+  }
+
   .max-w-md-318 {
     max-width: 318px;
   }
 
   .max-w-md-136 {
     max-width: 136px;
-  }
-
-  .max-w-md-40 {
-    max-width: 40px;
   }
 
   .max-w-md-18 {
@@ -350,6 +483,10 @@ input.placeholder-lg::placeholder {
 @media (min-width: 992px) {
   .max-w-lg-160 {
     max-width: 160px;
+  }
+
+  .max-w-lg-182 {
+    max-width: 182px;
   }
 
   .max-h-lg-145 {
