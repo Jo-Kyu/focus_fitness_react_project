@@ -108,6 +108,7 @@ function CartStepOne() {
       .then(() => {
         getCartProducts();
         fetchCartCount(); //購物車數字計算函式
+        console.log("數量增加");
       })
       .catch(() => {});
   }
@@ -716,7 +717,7 @@ function CartStepOne() {
                               <img
                                 className="rounded-3 max-h-73 max-h-lg-145"
                                 src={cartProduct?.product?.imageUrl}
-                                alt="Focus耐磨皮格拉力帶"
+                                alt="商品圖片"
                               />
                             </div>
                             {/*  商品資訊 */}

@@ -202,7 +202,6 @@ function Login() {
                         </button>
                         {/* 立即購物 */}
                         <NavLink
-                          type="button"
                           className="btn btn-danger-dark text-white w-100 pt-3 pb-3 fs-7 fw-bold cancelButton text-black"
                           onClick={() => {}}
                           disabled={loading}
