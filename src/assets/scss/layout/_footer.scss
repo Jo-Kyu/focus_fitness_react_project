@@ -9,13 +9,13 @@ footer{
     padding-left: 12px;
 }
 
-@media (max-width: 992px) {
+@include media-breakpoint-down(lg){
         footer{
         background: radial-gradient(550px at 900px calc(100% - 90px), rgba($primary-400, 0.1) 0%, transparent 100%); 
     }
 }
 
-@media (max-width: 576px) {
+@include media-breakpoint-down(sm){
     .navbar {
         top: 20px;
         left: 0px;
@@ -58,7 +58,7 @@ svg{
     margin-top: 80px;
 }
 
-@media(max-width:992px){
+@include media-breakpoint-down(lg){
     .footer-header{
         margin-top: 20px;
         // 調整手機版間距
@@ -71,7 +71,7 @@ svg{
     color:$white;
 }
 
-@media(max-width:992px){
+@include media-breakpoint-down(lg){
     .page-title{
         font-size: $h6-font-size;
         font-weight: 700;
@@ -82,7 +82,7 @@ svg{
     font-weight: 500;
 }
 
-@media(max-width:992px){
+@include media-breakpoint-down(lg){
     .page-item{
         font-size: $h8-font-size;
         font-weight: 400;
@@ -100,7 +100,7 @@ svg{
 
 // 清除手機版下的102px
 
-@media (max-width: 992px) {
+@include media-breakpoint-down(lg){
   .link-item {
     margin-right: 0;
   }
@@ -108,7 +108,7 @@ svg{
 
 // 調整手機版的logo大小
 
-@media(max-width:992px){
+@include media-breakpoint-down(lg){
     .navbar-brand img{
         width: 157px;
         height: auto;
@@ -120,7 +120,7 @@ svg{
     margin-bottom: 40px;
 }
 
-@media(max-width:992px){
+@include media-breakpoint-down(lg){
     .form-mb-style{
         margin-bottom: 20px;
         margin-bottom: 0;
@@ -150,7 +150,7 @@ svg{
     padding: 8px 24px;
 }
 
-@media(max-width:992px){
+@include media-breakpoint-down(lg){
     .mail-btn-mobile{
         padding: 9px 16px;
     }
@@ -187,7 +187,7 @@ footer .form-control[type="email"] {
     }
 }
 
-@media (max-width: 992px) {
+@include media-breakpoint-down(lg){
   footer .form-control[type="email"] {
     width: 100%; /* 讓輸入框自動填滿可用寬度 */
   }
@@ -212,7 +212,7 @@ footer .form-control[type="email"] {
     border-top: 1px solid rgba(128, 128, 128, 1);
 }
 
-@media(max-width:992px){
+@include media-breakpoint-down(lg){
     .footer-tail{
         flex-direction: column-reverse;
         justify-content: center;
@@ -229,7 +229,7 @@ footer .form-control[type="email"] {
     color: rgba(128, 128, 128, 1);
 }
 
-@media(max-width:992px){
+@include media-breakpoint-down(lg){
     .tail-text{
         font-size: $h8-font-size;
     }
@@ -241,19 +241,19 @@ footer .form-control[type="email"] {
     color: rgba(196, 196, 196, 1);
 }
 
-@media(max-width:992px){
-    .info-text{
+@include media-breakpoint-down(lg){
+  .info-text{
     font-size: 14px;
     font-weight: 400;
-}
+  }
 }
 
 .infon-tell-spacing{
     margin-bottom: none;
 }
 
-@media(max-width:992px){
+@include media-breakpoint-down(lg){
     .infon-tell-spacing{
-        margin-bottom: 12px;
+      margin-bottom: 12px;
     }
 }
