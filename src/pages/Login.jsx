@@ -24,9 +24,7 @@ function Login() {
   const handleLoginSubmit = (data) => {
     Login(data, () =>
       navigate("/product-list", { state: { openCategory: "all" } }),
-    )
-      .then(() => {})
-      .catch(() => {});
+    );
   };
 
   // 表單
