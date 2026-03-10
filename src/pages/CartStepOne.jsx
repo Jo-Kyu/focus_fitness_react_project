@@ -1,5 +1,5 @@
 // 匯入Hook
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router";
 
 // 匯入套件
@@ -48,6 +48,8 @@ function CartStepOne() {
   const [isAllPageLoading, setAllPageLoading] = useState(true);
   // 登入共用狀態解構
   const { isAuth } = useContext(LoginAuthContext);
+  // 載入
+  const [loading, setLoading] = useState(false);
   // 符號
   const cartIcon = (
     <svg
@@ -66,26 +68,29 @@ function CartStepOne() {
   );
 
   // 取得購物車列表(get網路請求)
-  function getCartProducts() {
-    axios
-      .get(`${baseUrl}/v2/api/${path}/cart`)
-      .then((res) => {
-        setCartProducts(res.data.data);
-      })
-      .catch(() => {})
-      .finally(() => {
-        setAllPageLoading(false);
-      });
+  async function getCartProducts() {
+    try {
+      const res = await axios.get(`${baseUrl}/v2/api/${path}/cart`);
+      setCartProducts(res.data.data);
+    } catch (err) {
+      if (err.status === 404) {
+        alert("發生錯誤");
+      }
+    } finally {
+      setAllPageLoading(false);
+    }
   }
 
   // 取得全部商品(get網路請求)
-  function getAllProducts() {
-    axios
-      .get(`${baseUrl}/v2/api/${path}/products/all`)
-      .then((res) => {
-        setallProducts(res.data.products);
-      })
-      .catch(() => {});
+  async function getAllProducts() {
+    try {
+      const res = await axios.get(`${baseUrl}/v2/api/${path}/products/all`);
+      setallProducts(res.data.products);
+    } catch (err) {
+      if (err.status === 404) {
+        alert("發生錯誤");
+      }
+    }
   }
 
   // 呼叫取得購物車列表、呼叫取的所有商品
@@ -95,106 +100,135 @@ function CartStepOne() {
   }, []);
 
   // 在購物車內，增減購商品數量事件處理函式(網路請求API)
-  function handleCartProductNum(cartProductId, productId, productQty) {
+  async function handleCartProductNum(cartProductId, productId, productQty) {
     if (productQty < 1) return;
+    setLoading(true);
+
     const cartProductNum = {
       data: {
         product_id: productId,
         qty: productQty,
       },
     };
-    axios
-      .put(`${baseUrl}/v2/api/${path}/cart/${cartProductId}`, cartProductNum)
-      .then(() => {
-        getCartProducts();
-        fetchCartCount(); //購物車數字計算函式
-        console.log("數量增加");
-      })
-      .catch(() => {});
+
+    try {
+      await axios.put(
+        `${baseUrl}/v2/api/${path}/cart/${cartProductId}`,
+        cartProductNum,
+      );
+
+      getCartProducts();
+      fetchCartCount(); // 購物車數字計算函式
+      toast.success(`購物車數量已更新`, {
+        className: "handleAddToCartToast",
+        icon: cartIcon,
+      });
+    } catch (err) {
+      if (err?.response?.status === 404) {
+        alert("發生錯誤");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   // 刪除購物車單一商品事件處理函式(網路請求API)
-  function handleDelProduct(delProductId) {
-    Swal.fire({
-      title: "你確定要刪除這個商品嗎？",
-      text: "刪除後無法恢復！",
-      iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" className="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
-  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-</svg>`,
-      showCancelButton: true, // 顯示取消按鈕
-      confirmButtonText: "刪除！",
-      cancelButtonText: "取消！",
+  async function handleDelProduct(delProductId) {
+    try {
+      // 等待使用者確認刪除
+      const res = await Swal.fire({
+        title: "你確定要刪除這個商品嗎？",
+        text: "刪除後無法恢復！",
+        iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" className="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+      </svg>`,
+        showCancelButton: true,
+        confirmButtonText: "刪除！",
+        cancelButtonText: "取消！",
+        customClass: {
+          popup: "handleAddToCartToast",
+          confirmButton: "confirmButton",
+          cancelButton: "cancelButton",
+        },
+      });
 
-      customClass: {
-        popup: "handleAddToCartToast",
-        confirmButton: "confirmButton",
-        cancelButton: "cancelButton",
-      },
-    }).then((res) => {
-      if (res.isConfirmed) {
-        axios
-          .delete(`${baseUrl}/v2/api/${path}/cart/${delProductId}`)
-          .then(() => {
-            getCartProducts();
-            fetchCartCount(); //購物車數字計算函式
-            Swal.fire({
-              title: "刪除成功 !",
-              text: "已刪除商品 !",
-              iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" className=="bi bi-check-square-fill" viewBox="0 0 16 16">
-              <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/>
-            </svg>`,
-              showConfirmButton: false,
-              timer: 800,
-              customClass: {
-                popup: "handleAddToCartToast",
-              },
-            });
-          })
-          .catch(() => {});
+      if (!res.isConfirmed) return; // 使用者取消就結束
+
+      // 刪除商品
+      await axios.delete(`${baseUrl}/v2/api/${path}/cart/${delProductId}`);
+
+      // 更新購物車狀態
+      getCartProducts();
+      fetchCartCount();
+
+      // 顯示刪除成功提示
+      await Swal.fire({
+        title: "刪除成功 !",
+        text: "已刪除商品 !",
+        iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" className="bi bi-check-square-fill" viewBox="0 0 16 16">
+        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/>
+      </svg>`,
+        showConfirmButton: false,
+        timer: 800,
+        customClass: {
+          popup: "handleAddToCartToast",
+        },
+      });
+    } catch (err) {
+      // 錯誤判斷用 response.status
+      if (err?.response?.status === 404) {
+        alert("發生錯誤");
       }
-    });
+    }
   }
 
   // 刪除購物車全部商品事件處理函式(網路請求API)
-  function handleDelAllProducts() {
-    Swal.fire({
-      title: "你確定要刪除這個商品嗎？",
-      text: "刪除後無法恢復！",
-      iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" className=="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
-  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-</svg>`,
-      showCancelButton: true, // 顯示取消按鈕
-      confirmButtonText: "刪除！",
-      cancelButtonText: "取消！",
+  async function handleDelAllProducts() {
+    try {
+      // 等待使用者確認刪除
+      const res = await Swal.fire({
+        title: "你確定要刪除所有商品嗎？",
+        text: "刪除後無法恢復！",
+        iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" className="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+      </svg>`,
+        showCancelButton: true,
+        confirmButtonText: "刪除！",
+        cancelButtonText: "取消！",
+        customClass: {
+          popup: "handleAddToCartToast",
+          confirmButton: "confirmButton",
+          cancelButton: "cancelButton",
+        },
+      });
 
-      customClass: {
-        popup: "handleAddToCartToast",
-        confirmButton: "confirmButton",
-        cancelButton: "cancelButton",
-      },
-    }).then((res) => {
-      if (res.isConfirmed) {
-        axios
-          .delete(`${baseUrl}/v2/api/${path}/carts`)
-          .then(() => {
-            getCartProducts();
-            fetchCartCount(); //購物車數字計算函式
-            Swal.fire({
-              title: "刪除成功 !",
-              text: "已刪除商品 !",
-              iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" className=="bi bi-check-square-fill" viewBox="0 0 16 16">
-              <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/>
-            </svg>`,
-              showConfirmButton: false,
-              timer: 800,
-              customClass: {
-                popup: "handleAddToCartToast",
-              },
-            });
-          })
-          .catch(() => {});
+      if (!res.isConfirmed) return; // 使用者取消就結束
+
+      // 刪除全部商品
+      await axios.delete(`${baseUrl}/v2/api/${path}/carts`);
+
+      // 更新購物車狀態
+      getCartProducts();
+      fetchCartCount();
+
+      // 顯示刪除成功提示
+      await Swal.fire({
+        title: "刪除成功 !",
+        text: "已刪除商品 !",
+        iconHtml: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="#e1ff00" className="bi bi-check-square-fill" viewBox="0 0 16 16">
+        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/>
+      </svg>`,
+        showConfirmButton: false,
+        timer: 800,
+        customClass: {
+          popup: "handleAddToCartToast",
+        },
+      });
+    } catch (err) {
+      if (err?.response?.status === 404) {
+        alert("發生錯誤");
       }
-    });
+    }
   }
 
   // 開始結帳事件處理函式
@@ -286,6 +320,21 @@ function CartStepOne() {
 
   // 計算結帳總額
   const checkoutTotal = cartProducts?.final_total + shippingFee;
+
+  // debounce
+
+  function useDebounce(fn, delay = 300) {
+    const timer = useRef(null);
+
+    return (...args) => {
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => {
+        fn(...args);
+      }, delay);
+    };
+  }
+
+  const debouncedHandleCartProductNum = useDebounce(handleCartProductNum, 500);
 
   // JSX
   if (isAllPageLoading) {
@@ -493,47 +542,57 @@ function CartStepOne() {
                                   </h3>
                                 </div>
                                 {/*商品數量增減按鈕*/}
-                                <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 my-3">
-                                  <button
-                                    className="btn p-2 border-0 text-white fs-2"
-                                    disabled={cartProduct?.qty === 1}
-                                    onClick={() => {
-                                      if (cartProduct?.qty === 1) return;
-                                      handleCartProductNum(
-                                        cartProduct?.id,
-                                        cartProduct?.product_id,
-                                        cartProduct?.qty - 1,
-                                      );
-                                      toast.success(`商品數量已減少 1`, {
-                                        className: "handleAddToCartToast",
-                                        icon: cartIcon,
-                                      });
-                                    }}
-                                  >
-                                    -
-                                  </button>
-                                  <input
-                                    className="w-50 fs-5 placeholder-lg text-gray-950 fw-bold lh-sm border-0 bg-transparent input-focus text-cenetr p-2 text-center remove-spin"
-                                    type="number"
-                                    value={cartProduct?.qty}
-                                    readOnly
-                                  />
-                                  <button
-                                    className="btn p-2 border-0 text-white fs-2"
-                                    onClick={() => {
-                                      handleCartProductNum(
-                                        cartProduct?.id,
-                                        cartProduct?.product_id,
-                                        cartProduct?.qty + 1,
-                                      );
-                                      toast.success(`商品數量已增加 1`, {
-                                        className: "handleAddToCartToast",
-                                        icon: cartIcon,
-                                      });
-                                    }}
-                                  >
-                                    +
-                                  </button>
+                                <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 min-w-210  my-3">
+                                  {loading ? (
+                                    <>
+                                      <div className="d-flex justify-content-center align-items-center">
+                                        <div>
+                                          <ThreeCircles
+                                            visible={true}
+                                            height={64}
+                                            width={64}
+                                            color="#e1ff00"
+                                            ariaLabel="three-circles-loading"
+                                          />
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <button
+                                        className="btn p-2 border-0 text-white fs-2"
+                                        disabled={cartProduct?.qty === 1}
+                                        onClick={() => {
+                                          if (cartProduct?.qty === 1) return;
+                                          debouncedHandleCartProductNum(
+                                            cartProduct?.id,
+                                            cartProduct?.product_id,
+                                            cartProduct?.qty - 1,
+                                          );
+                                        }}
+                                      >
+                                        -
+                                      </button>
+                                      <input
+                                        className="w-50 fs-5 placeholder-lg text-gray-950 fw-bold lh-sm border-0 bg-transparent input-focus text-cenetr p-2 text-center remove-spin"
+                                        type="number"
+                                        value={cartProduct?.qty}
+                                        readOnly
+                                      />
+                                      <button
+                                        className="btn p-2 border-0 text-white fs-2"
+                                        onClick={() => {
+                                          debouncedHandleCartProductNum(
+                                            cartProduct?.id,
+                                            cartProduct?.product_id,
+                                            cartProduct?.qty + 1,
+                                          );
+                                        }}
+                                      >
+                                        +
+                                      </button>
+                                    </>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -742,46 +801,57 @@ function CartStepOne() {
                                   </h3>
                                 </div>
                                 {/*商品數量增減按鈕*/}
-                                <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 my-3">
-                                  <button
-                                    className="btn p-2 border-0 text-white fs-2"
-                                    disabled={cartProduct?.qty === 1}
-                                    onClick={() => {
-                                      handleCartProductNum(
-                                        cartProduct?.id,
-                                        cartProduct?.product_id,
-                                        cartProduct?.qty - 1,
-                                      );
-                                      toast.success(`商品數量已減少 1`, {
-                                        className: "handleAddToCartToast",
-                                        icon: cartIcon,
-                                      });
-                                    }}
-                                  >
-                                    -
-                                  </button>
-                                  <input
-                                    className="w-50 fs-5 placeholder-lg text-gray-950 fw-bold lh-sm border-0 bg-transparent input-focus text-cenetr p-2 text-center remove-spin"
-                                    type="number"
-                                    value={cartProduct?.qty}
-                                    readOnly
-                                  />
-                                  <button
-                                    className="btn p-2 border-0 text-white fs-2"
-                                    onClick={() => {
-                                      handleCartProductNum(
-                                        cartProduct?.id,
-                                        cartProduct?.product_id,
-                                        cartProduct?.qty + 1,
-                                      );
-                                      toast.success(`商品數量已增加 1`, {
-                                        className: "handleAddToCartToast",
-                                        icon: cartIcon,
-                                      });
-                                    }}
-                                  >
-                                    +
-                                  </button>
+                                <div className="rounded-pill bg-white-opacity-20 d-flex justify-content-between justify-content-md-center align-items-center max-w-210 min-w-210  my-3">
+                                  {loading ? (
+                                    <>
+                                      <div className="d-flex justify-content-center align-items-center">
+                                        <div>
+                                          <ThreeCircles
+                                            visible={true}
+                                            height={64}
+                                            width={64}
+                                            color="#e1ff00"
+                                            ariaLabel="three-circles-loading"
+                                          />
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <button
+                                        className="btn p-2 border-0 text-white fs-2"
+                                        disabled={cartProduct?.qty === 1}
+                                        onClick={() => {
+                                          if (cartProduct?.qty === 1) return;
+                                          debouncedHandleCartProductNum(
+                                            cartProduct?.id,
+                                            cartProduct?.product_id,
+                                            cartProduct?.qty - 1,
+                                          );
+                                        }}
+                                      >
+                                        -
+                                      </button>
+                                      <input
+                                        className="w-50 fs-5 placeholder-lg text-gray-950 fw-bold lh-sm border-0 bg-transparent input-focus text-cenetr p-2 text-center remove-spin"
+                                        type="number"
+                                        value={cartProduct?.qty}
+                                        readOnly
+                                      />
+                                      <button
+                                        className="btn p-2 border-0 text-white fs-2"
+                                        onClick={() => {
+                                          debouncedHandleCartProductNum(
+                                            cartProduct?.id,
+                                            cartProduct?.product_id,
+                                            cartProduct?.qty + 1,
+                                          );
+                                        }}
+                                      >
+                                        +
+                                      </button>
+                                    </>
+                                  )}
                                 </div>
                               </div>
                             </div>

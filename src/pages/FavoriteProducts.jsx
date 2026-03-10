@@ -40,16 +40,18 @@ function FavoriteProducts() {
   );
 
   // 取得全部商品(get網路請求)
-  function getAllProducts() {
-    axios
-      .get(`${baseUrl}/v2/api/${path}/products/all`)
-      .then((res) => {
-        setallProducts(res.data.products);
-      })
-      .catch(() => {})
-      .finally(() => {
-        setAllPageLoading(false);
-      });
+  async function getAllProducts() {
+    try {
+      const res = await axios.get(`${baseUrl}/v2/api/${path}/products/all`);
+      setallProducts(res.data.products);
+    } catch (err) {
+      // 使用 err.response.status 判斷錯誤，比 err.status 更可靠
+      if (err?.response?.status === 404) {
+        alert("發生錯誤");
+      }
+    } finally {
+      setAllPageLoading(false);
+    }
   }
 
   // 呼叫取得購物車列表、呼叫取的所有商品
