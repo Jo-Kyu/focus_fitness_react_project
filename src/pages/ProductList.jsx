@@ -1,12 +1,5 @@
 // React Hooks
-import {
-  useEffect,
-  useState,
-  useMemo,
-  useRef,
-  useCallback,
-  useContext,
-} from "react";
+import { useEffect,useState,useMemo,useRef,useCallback,useContext,} from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
 
 // 收藏共用狀態
@@ -792,7 +785,7 @@ function ProductList() {
                   aria-labelledby="v-pills-home-tab"
                 >
                   {/* 電腦版＆手機版 產品數量+排列選單 */}
-                  <div className="row d-flex justify-content-between align-items-center mb-2 mb-md-7">
+                  <div className="row justify-content-between align-items-center mb-2 mb-md-7">
                     <div className="col-6">
                       <p className="fw-bold text-gray-950 fs-mg-8 fs-9">
                         共有
