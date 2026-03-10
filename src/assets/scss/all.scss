@@ -14,7 +14,7 @@
 
 // 在這裡引入 utilities 覆寫（因為要影響 bootstrap 的生成）
 @import "./variables/utilities";
-@import "/node_modules/bootstrap/scss/utilities/api";
+@import "bootstrap/scss/utilities/api";
 
 // 你的基礎樣式 & 客製化
 @import "./base/base";
