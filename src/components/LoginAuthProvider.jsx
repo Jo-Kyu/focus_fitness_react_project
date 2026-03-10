@@ -67,6 +67,9 @@ export function LoginAuthProvider({ children }) {
         onSuccess();
       }
     } catch (err) {
+      if (err.status === 404) {
+        alert("發生錯誤");
+      }
       toast.error("登入失敗!", {
         className: "handleAddToCartToast",
         icon: (
