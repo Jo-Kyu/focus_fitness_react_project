@@ -14,7 +14,7 @@
 
 // 在這裡引入 utilities 覆寫（因為要影響 bootstrap 的生成）
 @import "./variables/utilities";
-@import "/node_modules/bootstrap/scss/utilities/api";
+@import "bootstrap/scss/utilities/api";
 
 // 你的基礎樣式 & 客製化
 @import "./base/base";
@@ -23,7 +23,7 @@
 @import "./pages/index";
 @import "./pages/product_details";
 @import "./pages/product_list";
-@import "./pages/cart_step_one";
-@import "./pages/cart_step_two";
-@import "./pages/cart_step_three";
+@import "./pages/cart";
+@import "./pages/order_form";
+@import "./pages/checkout";
 @import "./pages/login";

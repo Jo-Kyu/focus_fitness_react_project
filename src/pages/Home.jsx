@@ -385,10 +385,9 @@ const handleScrollToAboutUs = (e) => {
       <section className="info-about">
         <div className="container">
           {/* About-Us */}
-            <span ref={aboutUsRef}></span>
             <AboutUs></AboutUs>
           {/* Contact-Us */}
-          <div className="contact-us p-7 p-lg-9">
+          <div className="contact-us p-7 p-lg-9" ref={aboutUsRef}>
             <div className="contact-us-head">
               <span className="fs-8 fs-lg-7 text-primary-400 mb-6 mb-lg-3">/  Contact Us  /</span>
               <h5 className="fs-3 fs-lg-1 text-gray-950 mb-7 mb-lg-8">聯絡我們</h5>

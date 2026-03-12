@@ -173,7 +173,7 @@ function ProductDetail() {
   };
 
   // 加入購物車事件處理函式(網路請求API)
-  function handleAddToCart(specificProductId, productQty) {
+  async function handleAddToCart(specificProductId, productQty) {
     const productAddtoCart = {
       data: {
         product_id: specificProductId,
@@ -184,57 +184,69 @@ function ProductDetail() {
         }),
       },
     };
-    return axios
-      .post(`${baseUrl}/v2/api/${path}/cart`, productAddtoCart)
-      .then((res) => {
-        toast.success("加入購物車成功！", {
-          className: "handleAddToCartToast",
-          icon: cartIcon,
-        });
 
-        fetchCartCount(); //購物車數字計算函式
-        return res;
-      })
-      .catch((err) => {
-        toast.error("加入購物車失敗！", {
-          className: "handleAddToCartToast",
-        });
+    try {
+      const res = await axios.post(
+        `${baseUrl}/v2/api/${path}/cart`,
+        productAddtoCart,
+      );
 
-        throw err;
+      toast.success("加入購物車成功！", {
+        className: "handleAddToCartToast",
+        icon: cartIcon,
       });
+
+      fetchCartCount(); // 購物車數字計算函式
+      return res;
+    } catch (err) {
+      toast.error("加入購物車失敗！", {
+        className: "handleAddToCartToast",
+      });
+
+      throw err;
+    }
   }
 
   // 直接購買事件處理函式(網路請求API)
-  function handleDirectBuy() {
-    handleAddToCart(specificProduct.id, productQty)
-      .then(() => {
-        // 加入購物車成功後跳轉
-        navigate("/cart-step-one");
-      })
-      .catch(() => {});
+  async function handleDirectBuy() {
+    try {
+      await handleAddToCart(specificProduct.id, productQty);
+
+      // 加入購物車成功後跳轉
+      navigate("/cart");
+    } catch (err) {
+      if (err.status === 404) {
+        alert("發生錯誤");
+      }
+    }
   }
 
   // 呼叫取得所有商品、呼叫取得特定商品
   useEffect(() => {
-    (() => {
-      axios
-        .get(`${baseUrl}/v2/api/${path}/product/${id}`)
-        .then((res) => {
-          setGetSpecificProduct(res.data.product);
-        })
-        .catch(() => {});
-    })();
+    async function fetchSpecificProduct() {
+      try {
+        const res = await axios.get(`${baseUrl}/v2/api/${path}/product/${id}`);
+        setGetSpecificProduct(res.data.product);
+      } catch (err) {
+        if (err.status === 404) {
+          alert("發生錯誤");
+        }
+      }
+    }
 
-    //
+    async function fetchAllProducts() {
+      try {
+        const res = await axios.get(`${baseUrl}/v2/api/${path}/products/all`);
+        setallProducts(res.data.products);
+      } catch (err) {
+        if (err.status === 404) {
+          alert("發生錯誤");
+        }
+      }
+    }
 
-    (() => {
-      axios
-        .get(`${baseUrl}/v2/api/${path}/products/all`)
-        .then((res) => {
-          setallProducts(res.data.products);
-        })
-        .catch(() => {});
-    })();
+    fetchSpecificProduct();
+    fetchAllProducts();
   }, [id]);
 
   return (

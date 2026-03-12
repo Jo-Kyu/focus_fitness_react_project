@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-function CartStepThree() {
+function Checkout() {
   
   return (
     <>
@@ -167,4 +167,4 @@ function CartStepThree() {
   );
 }
 
-export default CartStepThree;
+export default Checkout;

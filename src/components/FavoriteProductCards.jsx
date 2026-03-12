@@ -160,7 +160,6 @@ function FavoriteProductCards({ product }) {
         {/* 按鈕 */}
         <div>
           <NavLink
-            type="button"
             className="mb-6 mb-md-0 me-md-6 px-8 py-1 py-md-2 fill-btn btn fs-9 fw-bold  flex-fill border-radius-12 w-100"
             to={`/product-detail/${product.id}`}
           >

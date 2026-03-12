@@ -159,6 +159,10 @@
   min-width: 111px;
 }
 
+.min-w-210 {
+  min-width: 210px;
+}
+
 // spacer
 
 // hover
@@ -440,9 +444,9 @@ input.placeholder-lg::placeholder {
 
 // 斷點
 
-@media (min-width: 768px) {
+@include media-breakpoint-up(md) {
   .lh-md-sm {
-    line-height: 1.2; /* md 以上 */
+    line-height: 1.2;
   }
 
   .max-w-md-822 {
@@ -480,7 +484,7 @@ input.placeholder-lg::placeholder {
   }
 }
 
-@media (min-width: 992px) {
+@include media-breakpoint-up(lg) {
   .max-w-lg-160 {
     max-width: 160px;
   }
@@ -500,7 +504,7 @@ input.placeholder-lg::placeholder {
   }
 }
 
-@media (min-width: 1400px) {
+@include media-breakpoint-up(xxl) {
   .top-lg-50 {
     top: 50%;
   }

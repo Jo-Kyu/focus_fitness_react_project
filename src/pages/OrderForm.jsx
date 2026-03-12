@@ -22,7 +22,7 @@ import BackTop from "../components/BackTop";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
-function CartStepTwo() {
+function OrderForm() {
   // 購物車商品輸量狀態撈取
   const { fetchCartCount } = useContext(CartContext);
   // 初始化導航工具
@@ -64,16 +64,17 @@ function CartStepTwo() {
   }, []);
 
   // 取得購物車列表(get網路請求)
-  function getCartProducts() {
-    axios
-      .get(`${baseUrl}/v2/api/${path}/cart`)
-      .then((res) => {
-        setCartProducts(res.data.data);
-      })
-      .catch(() => {})
-      .finally(() => {
-        setAllPageLoading(false);
-      });
+  async function getCartProducts() {
+    try {
+      const res = await axios.get(`${baseUrl}/v2/api/${path}/cart`);
+      setCartProducts(res.data.data);
+    } catch (err) {
+      if (err.status === 404) {
+        alert("發生錯誤");
+      }
+    } finally {
+      setAllPageLoading(false);
+    }
   }
 
   // 篩選須配送商品
@@ -100,7 +101,7 @@ function CartStepTwo() {
   });
 
   // 表單提交事件處理函式、成立訂單 (post網路請求)
-  const handleOnSubmit = (data) => {
+  const handleOnSubmit = async (data) => {
     const userSetOrder = {
       data: {
         user: {
@@ -113,24 +114,34 @@ function CartStepTwo() {
       },
     };
 
-    axios
-      .post(`${baseUrl}/v2/api/${path}/order`, userSetOrder)
-      .then((res) => {
-        reset();
-        getCartProducts();
-        checkout(res.data.orderId);
-      })
-      .catch(() => {});
+    try {
+      const res = await axios.post(
+        `${baseUrl}/v2/api/${path}/order`,
+        userSetOrder,
+      );
+
+      reset();
+      getCartProducts();
+      checkout(res.data.orderId);
+    } catch (err) {
+      // 錯誤判斷使用 err.response.status，比 err.status 穩定
+      if (err?.response?.status === 404) {
+        alert("發生錯誤");
+      }
+    }
   };
 
   // 結帳 (post網路請求)
-  function checkout(orderId) {
-    axios
-      .post(`${baseUrl}/v2/api/${path}/pay/${orderId}`)
-      .then(() => {
-        fetchCartCount();
-      })
-      .catch(() => {});
+  async function checkout(orderId) {
+    try {
+      await axios.post(`${baseUrl}/v2/api/${path}/pay/${orderId}`);
+      fetchCartCount();
+    } catch (err) {
+      // 使用 err.response.status 判斷錯誤，比 err.status 更可靠
+      if (err?.response?.status === 404) {
+        alert("發生錯誤");
+      }
+    }
   }
 
   // 監聽付款方式
@@ -1034,7 +1045,7 @@ function CartStepTwo() {
                     className="mx-auto py-2 px-9 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold flex-fill border-radius-12"
                     disabled={!isValid}
                     onClick={() =>
-                      navigate("/cart-step-three", {
+                      navigate("/checkout", {
                         state: { fromCheckout: true },
                       })
                     }
@@ -1057,4 +1068,4 @@ function CartStepTwo() {
   );
 }
 
-export default CartStepTwo;
+export default OrderForm;
