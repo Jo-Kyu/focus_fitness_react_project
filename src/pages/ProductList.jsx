@@ -321,6 +321,8 @@ function ProductList() {
     (pageNum) => {
       if (pageNum >= 1 && pageNum <= totalPages) {
         setCurrentPage(pageNum);
+        // 點擊分頁後頁面置頂
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
     [totalPages],

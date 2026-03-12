@@ -149,6 +149,17 @@
       cursor: not-allowed;
     }
 
+    // <li class="page-item active">
+    &.page-link .active  {
+      color: black;
+      background-color: #e1ff00;
+      border-color: #e1ff00;
+
+      path {
+        fill: black;
+      }
+    }
+
     // 普通狀態
     .page-link {
       border: 0px;
@@ -172,17 +183,6 @@
         color: black;
         background-color: #e1ff00;
         box-shadow: none; // 移除 BS5 的焦點陰影
-      }
-
-      // Active（已點擊）
-      &.active {
-        color: black;
-        background-color: #e1ff00;
-        border-color: #e1ff00;
-
-        path {
-          fill: black;
-        }
       }
     }
   }
