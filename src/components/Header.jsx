@@ -114,7 +114,7 @@ function Header() {
               {/* 購物車 */}
               <Link
                 className="d-block d-lg-none p-2 text-dark position-relative"
-                to="/cart-step-one"
+                to="/cart"
               >
                 <svg
                   width="24"
@@ -269,7 +269,7 @@ function Header() {
               {/* 購物車 */}
               <Link
                 className="p-2 text-dark position-relative"
-                to="/cart-step-one"
+                to="/cart"
               >
                 <svg
                   width="36"

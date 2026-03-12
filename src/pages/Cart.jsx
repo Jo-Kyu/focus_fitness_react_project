@@ -31,7 +31,7 @@ import { LoginAuthContext } from "../context/LoginAuthContext.js";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
-function CartStepOne() {
+function Cart() {
   // 購物車共用狀態解構
   const { fetchCartCount } = useContext(CartContext);
   // 導向頁面
@@ -282,7 +282,7 @@ function CartStepOne() {
       return;
     }
 
-    navigate("/cart-step-two", { state: { fromCheckout: true } });
+    navigate("/order-form", { state: { fromCheckout: true } });
   }
 
   // 篩選須配送商品
@@ -1220,4 +1220,4 @@ function CartStepOne() {
   );
 }
 
-export default CartStepOne;
+export default Cart;

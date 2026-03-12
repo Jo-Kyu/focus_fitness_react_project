@@ -3,9 +3,9 @@ import FrontLayout from "../layout/FrontLayout";
 import Home from "../pages/Home";
 import ProductList from "../pages/ProductList";
 import ProductDetail from "../pages/ProductDetail";
-import CartStepOne from "../pages/CartStepOne";
-import CartStepTwo from "../pages/CartStepTwo";
-import CartStepThree from "../pages/CartStepThree";
+import Cart from "../pages/Cart";
+import OrderForm from "../pages/OrderForm";
+import Checkout from "../pages/Checkout";
 import Login from "../pages/Login";
 import FavoriteProducts from "../pages/FavoriteProducts";
 import PageNotFound from "../pages/PageNotFound";
@@ -29,22 +29,25 @@ const router = createHashRouter([
         element: <ProductDetail />,
       },
       {
-        path: "/cart-step-one",
-        element: <CartStepOne />,
+        // path: "/cart-step-one",
+        path: "/cart",
+        element: <Cart />,
       },
       {
-        path: "/cart-step-two",
+        // path: "/cart-step-two",
+        path: "/order-form",
         element: (
           <CartStepGuard>
-            <CartStepTwo />
+            <OrderForm />
           </CartStepGuard>
         ),
       },
       {
-        path: "/cart-step-three",
+        // path: "/cart-step-three",
+        path: "/checkout",
         element: (
           <CartStepGuard>
-            <CartStepThree />
+            <Checkout />
           </CartStepGuard>
         ),
       },

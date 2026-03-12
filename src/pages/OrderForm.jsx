@@ -22,7 +22,7 @@ import BackTop from "../components/BackTop";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const path = import.meta.env.VITE_API_PATH;
 
-function CartStepTwo() {
+function OrderForm() {
   // 購物車商品輸量狀態撈取
   const { fetchCartCount } = useContext(CartContext);
   // 初始化導航工具
@@ -1045,7 +1045,7 @@ function CartStepTwo() {
                     className="mx-auto py-2 px-9 py-md-3 btn py-md-3 fill-btn fs-7 fw-bold flex-fill border-radius-12"
                     disabled={!isValid}
                     onClick={() =>
-                      navigate("/cart-step-three", {
+                      navigate("/checkout", {
                         state: { fromCheckout: true },
                       })
                     }
@@ -1068,4 +1068,4 @@ function CartStepTwo() {
   );
 }
 
-export default CartStepTwo;
+export default OrderForm;

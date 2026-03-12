@@ -213,7 +213,7 @@ function ProductDetail() {
       await handleAddToCart(specificProduct.id, productQty);
 
       // 加入購物車成功後跳轉
-      navigate("/cart-step-one");
+      navigate("/cart");
     } catch (err) {
       if (err.status === 404) {
         alert("發生錯誤");
