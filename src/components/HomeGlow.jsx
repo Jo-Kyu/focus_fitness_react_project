@@ -1,3 +1,8 @@
+// 內部資源
+import ellipse2 from "../assets/images/index_page/光暈/Ellipse_2.svg";
+import ellipse3 from "../assets/images/index_page/光暈/Ellipse 3.svg";
+import ellipse4 from "../assets/images/index_page/光暈/Ellipse 4.svg";
+
 function BGLight(){
     // 光暈資料
     const lightData = [
@@ -8,7 +13,7 @@ function BGLight(){
         left: "-900px", 
         zIndex: "-100"
         },
-        lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg",
+        lightImg: ellipse2,
         altText:"光暈"
     },
     {
@@ -18,7 +23,7 @@ function BGLight(){
         right: "-1000px", 
         zIndex: "-100"
         },
-        lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%204.svg",
+        lightImg: ellipse4,
         altText:"光暈"
     },
     {
@@ -28,7 +33,7 @@ function BGLight(){
         right: "-1000px", 
         zIndex: "-100"
         },
-        lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%203.svg",
+        lightImg: ellipse3,
         altText:"光暈"
     },
     {
@@ -38,7 +43,7 @@ function BGLight(){
         left: "-900px", 
         zIndex: "-100"
         },
-        lightImg:"https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/bc9a888e21e0148db11348e3dece3ad6595f8262/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg",
+        lightImg: ellipse2,
         altText:"光暈"
     }
     ];

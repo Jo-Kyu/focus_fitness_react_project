@@ -2,6 +2,15 @@ function Map() {
   return (
     <>
       <div className="map">
+        {/* Ｇoogle Map */}
+        <iframe
+          className="map-iframe"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.7824726800914!2d121.53686367617739!3d25.041455177811592!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442abd798cd4c4d%3A0x148f7ca02784ee76!2zMTA26Ie65YyX5biC5aSn5a6J5Y2A5b-g5a2d5p2x6LevMTk46Jmf!5e0!3m2!1szh-TW!2stw!4v1774158979586!5m2!1szh-TW!2stw"
+          allowFullScreen=""
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        >
+        </iframe>
         {/* 地點說明 */}
         <div className="location p-3 p-lg-9">
           <div className="mb-7 mb-lg-9">
