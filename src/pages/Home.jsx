@@ -186,18 +186,16 @@ const handleScrollToAboutUs = (e) => {
                                 </div>
                                 <div className="d-flex flex-column flex-lg-row row-gap-3 column-gap-lg-3">
                                   <NavLink  className="btn serve-btn text-nowrap" 
-                                            type="button" 
                                             to="/product-list"
                                             state={{ openCategory: "all" }} 
                                   >
                                     立即購物
                                   </NavLink>
-                                  <a  className="btn serve-btn text-nowrap" 
-                                      type="button"
+                                  <button  className="btn serve-btn text-nowrap" 
                                       onClick={handleScrollToAboutUs}
                                   >
                                     預約服務
-                                  </a>
+                                  </button>
                                 </div>
                               </div>
                             </div>

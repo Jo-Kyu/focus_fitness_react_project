@@ -149,7 +149,7 @@ function Checkout() {
             </div>
             {/* 繼續購物&查看訂單 */}
             <section className="order-buy d-flex justify-content-center">
-                <Link type="button" className="btn order-buy-btn me-6 me-lg-3" to="/product-list" state={{ openCategory: "all" }}>繼續購物</Link>
+                <Link className="btn order-buy-btn me-6 me-lg-3" to="/product-list" state={{ openCategory: "all" }}>繼續購物</Link>
                 {/* <a type="button" className="btn order-buy-btn">查看訂單</a> */}
             </section>
         </main>
