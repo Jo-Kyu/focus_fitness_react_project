@@ -1,5 +1,5 @@
 @mixin pad {
-  @media (max-width: 768px) {
+  @include media-breakpoint-down(md) {
     @content;
   }
 }
@@ -11,8 +11,8 @@
 }
 
 .accordion {
-  --bs-accordion-btn-icon: url("https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/dee4b84316581b9f30b5b0711577d1a2ef5a883d/assets/images/icons/ic_Chevron_down.svg");
-  --bs-accordion-btn-active-icon: url("https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/dee4b84316581b9f30b5b0711577d1a2ef5a883d/assets/images/icons/ic_Chevron_down.svg");
+  --bs-accordion-btn-icon: url("../../images/icons/ic_Chevron_down.svg");
+  --bs-accordion-btn-active-icon: url("../../images/icons/ic_Chevron_down.svg");
 }
 
 .accordion-item {

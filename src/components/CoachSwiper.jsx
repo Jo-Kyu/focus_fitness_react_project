@@ -1,8 +1,18 @@
 // 第三方套件
 import { Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from "swiper/react";
+
 // 樣式
 import "swiper/css";
+
+// 內部資源
+import coachImgFirst from "../assets/images/index_page/教練團隊/Team member card (1).png";
+import coachImgSecond from "../assets/images/index_page/教練團隊/Team member card (2).png";
+import coachImgThird from "../assets/images/index_page/教練團隊/Team member card (3).png";
+import coachImgFourth from "../assets/images/index_page/教練團隊/Team member card (4).png";
+import coachImgFifth from "../assets/images/index_page/教練團隊/Team member card (5).png";
+import coachImgSixth from "../assets/images/index_page/教練團隊/Team member card (6).png";
+import coachImgSeventh from "../assets/images/index_page/教練團隊/Team member card (7).png";  
 
 // 教練團隊資料
 const coachData=[
@@ -10,43 +20,43 @@ const coachData=[
     coachId:1,
     coachName:"Hank",
     location:"復興店｜運動按摩師",
-    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(1).png?raw=true"
+    imgUrl: coachImgFirst
   },
   {
     coachId:2,
     coachName:"Max",
     location:"忠孝店｜飛輪教練",
-    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(2).png?raw=true" 
+    imgUrl: coachImgSecond
   },
   {
     coachId:3,
     coachName:"Sam",
     location:"忠孝店｜有氧教練",
-    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(3).png?raw=true"
+    imgUrl: coachImgThird
   },
   {
     coachId:4,
     coachName:"Sandy",
     location:"中山店｜啞鈴教練",
-    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(4).png?raw=true"
+    imgUrl: coachImgFourth
   },
   {
     coachId:5,
     coachName:"Cindy",
     location:"光復店｜核心訓練師",
-    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(5).png?raw=true"
+    imgUrl: coachImgFifth
   },
   {
     coachId:6,
     coachName:"Tiffany",
     location:"忠孝店｜拳擊教練",
-    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%20(6).png?raw=true" 
+    imgUrl: coachImgSixth
   },
   {
     coachId:7,
     coachName:"Mandy",
     location:"忠孝店｜瑜伽平衡教練",
-    imgUrl:"https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/index_page/%E6%95%99%E7%B7%B4%E5%9C%98%E9%9A%8A/Team%20member%20card%EF%BC%887%EF%BC%89.png?raw=true" 
+    imgUrl: coachImgSeventh
   }
 ];
 

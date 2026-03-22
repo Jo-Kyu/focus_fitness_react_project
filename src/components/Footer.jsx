@@ -2,6 +2,12 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 
+// 內部資源
+import logoLarge from "../assets/images/logos/FOCUS-FITNESS-logo-3-long-big.png";
+import facebookIcon from "../assets/images/icons/facebook.svg";
+import instagramIcon from "../assets/images/icons/instagram_1384015 1.svg";
+import lineIcon from "../assets/images/icons/Group 14.svg";
+
 function Footer() {
 
 // 定義表單狀態
@@ -30,22 +36,22 @@ const onSubmit=()=>{
                 {/* FOCUS區塊 */}
                 <div>
                     <Link className="navbar-brand mb-7 mb-lg-4" to="/">
-                        <img src="https://github.com/Jo-Kyu/focuss_fitness_project/blob/dev/assets/images/logos/FOCUS-FITNESS-logo-3-long-big.png?raw=true" alt="FOCUS-FITNESS-LOGO"/>
+                        <img src={logoLarge} alt="FOCUS-FITNESS-LOGO"/>
                     </Link>
                     <ul className="navbar-nav d-none d-lg-flex">
                         <li className="navbar-item">
                             <span className="nav-link">
-                                <img src="https://raw.githubusercontent.com/Jo-Kyu/focuss_fitness_project/7f94786e38623580353ac5c7298e7cc8146a3465/assets/images/icons/facebook.svg" alt="facebook"/>
+                                <img src={facebookIcon} alt="facebook"/>
                             </span>
                         </li>
                         <li className="navbar-item">
                             <span className="nav-link">
-                                <img src="https://raw.githubusercontent.com/Jo-Kyu/focuss_fitness_project/7f94786e38623580353ac5c7298e7cc8146a3465/assets/images/icons/instagram_1384015%201.svg" alt="instagram"/>
+                                <img src={instagramIcon} alt="instagram"/>
                             </span>
                         </li>
                         <li className="navbar-item">
                             <span className="nav-link">
-                                <img src="https://raw.githubusercontent.com/Jo-Kyu/focuss_fitness_project/7f94786e38623580353ac5c7298e7cc8146a3465/assets/images/icons/Group%2014.svg" alt="line"/>
+                                <img src={lineIcon} alt="line"/>
                             </span>
                         </li>
                     </ul>
@@ -127,17 +133,17 @@ const onSubmit=()=>{
                 <ul className="navbar-nav d-flex flex-row d-lg-none gap-4">
                     <li className="navbar-item">
                         <span className="nav-link">
-                            <img src="https://raw.githubusercontent.com/Jo-Kyu/focuss_fitness_project/7f94786e38623580353ac5c7298e7cc8146a3465/assets/images/icons/facebook.svg" alt="facebook"/>
+                            <img src={facebookIcon} alt="facebook"/>
                         </span>
                     </li>
                     <li className="navbar-item">
                         <span className="nav-link">
-                            <img src="https://raw.githubusercontent.com/Jo-Kyu/focuss_fitness_project/7f94786e38623580353ac5c7298e7cc8146a3465/assets/images/icons/instagram_1384015%201.svg" alt="instagram"/>
+                            <img src={instagramIcon} alt="instagram"/>
                         </span>
                     </li>
                     <li className="navbar-item">
                         <span className="nav-link">
-                            <img src="https://raw.githubusercontent.com/Jo-Kyu/focuss_fitness_project/7f94786e38623580353ac5c7298e7cc8146a3465/assets/images/icons/Group%2014.svg" alt="line"/>
+                            <img src={lineIcon} alt="line"/>
                         </span>
                     </li>
                 </ul>

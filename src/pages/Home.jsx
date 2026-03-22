@@ -246,7 +246,7 @@ const handleScrollToAboutUs = (e) => {
 
               return (
                       <div className="card d-flex flex-column flex-lg-row justify-content-between bg-transparent border-0" key={serviceCard.cardNumber}>
-                        <div className={`card-body order-1 order-lg-${isReverse ? "0" : "1"} p-0`}>
+                        <div className={`card-body order-1 order-lg-${isReverse ? "0" : "1"} p-0 p-lg-3`}>
                           <h5 className="card-title fs-5 fs-lg-10 fw-bold text-primary-400 mb-6 mb-lg-8">{serviceCard.title}</h5>
                           <p className="card-text fs-8 fs-lg-5 fw-normal text-gray-950 mb-6 mb-lg-8">{serviceCard.description}</p>
                             <NavLink  className="btn card-btn text-nowrap" 

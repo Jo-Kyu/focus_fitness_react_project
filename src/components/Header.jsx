@@ -11,6 +11,10 @@ import { LoginAuthContext } from "../context/LoginAuthContext";
 import customer_5 from "../assets/images/icons/customer_5.png";
 import { CartContext } from "../context/CartContext";
 
+// 內部資源
+import logoLarge from "../assets/images/logos/FOCUS-FITNESS-logo-3-long-big.png";
+import logoSmall from "../assets/images/logos/FOCUS-FITNESS-logo-3-long-small.png";
+
 function Header() {
   // 購物車數字狀態
   const { cartCount, fetchCartCount } = useContext(CartContext);
@@ -97,13 +101,13 @@ function Header() {
             {/* Logo */}
             <Link className="navbar-brand fw-bold" to="/">
               <img
-                src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/logos/FOCUS-FITNESS-logo-3-long-big.png?raw=true"
+                src={logoLarge}
                 alt="Logo-Focus"
                 style={{ width: "137px", height: "60px" }}
                 className="d-none d-lg-block"
               />
               <img
-                src="https://github.com/Jo-Kyu/focus_fitness_project/blob/dev/assets/images/logos/FOCUS-FITNESS-logo-3-long-small.png?raw=true"
+                src={logoSmall}
                 alt="Logo"
                 style={{ width: "36px", height: "40px" }}
                 className="d-block d-lg-none"
