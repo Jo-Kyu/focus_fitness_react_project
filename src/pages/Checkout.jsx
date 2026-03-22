@@ -1,4 +1,8 @@
+// React Hooks
 import { Link } from "react-router";
+
+// 內部資源
+import ellipse2 from "../assets/images/index_page/光暈/Ellipse_2.svg";
 
 function Checkout() {
   
@@ -12,7 +16,7 @@ function Checkout() {
                         right: "-800px", 
                         zIndex: "-100"
                     }}
-                src="https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/9e3f005dfa681ea077f6ee0423e9f1163d0257de/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg"
+                src={ellipse2}
                 alt="光暈"
             />
             <img
@@ -21,7 +25,7 @@ function Checkout() {
                         left: "-800px", 
                         zIndex: "-100"
                     }}
-                src="https://raw.githubusercontent.com/Jo-Kyu/focus_fitness_project/9e3f005dfa681ea077f6ee0423e9f1163d0257de/assets/images/index_page/%E5%85%89%E6%9A%88/Ellipse%202.svg"
+                src={ellipse2}
                 alt="光暈"
             />
             {/* 購物車步驟 */}
