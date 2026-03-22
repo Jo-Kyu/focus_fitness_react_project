@@ -97,7 +97,7 @@ const onSubmit=()=>{
                                 <Link className="nav-link p-0" to="/login"><span className="page-item text-nowrap">登入</span></Link>
                             </li>
                             <li className="nav-item mb-0 mb-lg-3">
-                                <Link className="nav-link p-0" to="/cart-step-one"><span className="page-item text-nowrap">購物車</span></Link>
+                                <Link className="nav-link p-0" to="/cart"><span className="page-item text-nowrap">購物車</span></Link>
                             </li>
                         </ul>
                     </div>
