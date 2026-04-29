@@ -21,7 +21,7 @@
 
 ## 💻 程式專題作者
 
--   [Joseph_Kyuu]()
+-   Joseph_Kyuu： [個人練習使用 GitHub](https://github.com/l106000060)、 [飽寶專案 GitHub](https://github.com/picpicno4-ops)、[專注健身專案 GitHub](https://github.com/)。
 -   [KOMATSU PEI](https://github.com/KOMATSUPEI)
 
 ## 🎨 專題設計稿作者
