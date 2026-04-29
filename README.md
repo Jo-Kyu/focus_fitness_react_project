@@ -1,4 +1,5 @@
 # React 專案【FOCUS FITNESS 專注健身】
+![封面](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Focus_Fitness_React.webp)
 
 ## 💪專題動機
 - 根據體育署的調查，台灣在2014年，有參加健身房會員的人數45 萬人，到了2024年人數上升到  110萬人，翻了一倍。而台灣有運動習慣的人數是 1,564 萬人，所以在這樣的人口基數上，台灣的健身產業在整體運動市場，還有很大的成長空間。
