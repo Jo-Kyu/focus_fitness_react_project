@@ -1,34 +1,34 @@
 # React 專案【FOCUS FITNESS 專注健身】
 ![封面](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Focus_Fitness_React.webp)
 
-## 💪專題動機
+## 💪 專題動機
 - 根據體育署的調查，台灣在2014年，有參加健身房會員的人數45 萬人，到了2024年人數上升到  110萬人，翻了一倍。而台灣有運動習慣的人數是 1,564 萬人，所以在這樣的人口基數上，台灣的健身產業在整體運動市場，還有很大的成長空間。
 
 - 而之所以健身房會員人數會持續上升，主要原因是消費模式的改變，以往消費者覺得只要有簡單器材，在家裡、在公園、在操場都可以運動，我幹嘛要進健身房，但現在消費者更注重的是專業的教練、器材與課程，再有人引導的狀態下，也可以避免受傷風險、健身效果也更好。
 
-## 💡專題理念
+## 💡 專題理念
 - 專注健身網站，不只是一個線上購物網站，而是一個整合了線上購物商城、線下實體健身房的健身品牌。販售的商品包含健身相關的用品、課程、入場方案等等。讓消費者可以透過我們的網站，就可以購買符合他們需求的課程、用品，也可以來到我們的健身房來訓練。
 
-## 🎯解決痛點
+## 🎯 解決痛點
 - 多數健身房必須直接綁年約，導致消費者無法依據他們的需求，更彈性的選擇健身方案，所以我們提供多元的的入場方案，免綁約、免入會費，消費者可依據他們的需求，來決定自己的健身方案。
 - 多數健身房價格並不透明，消費者必須到現場才能了解有那些健身方案，價格又是多少。而我們將所有健身相關服務、價格，都直接公開透明在商城中，消費者可以直接透過線上下單，完成之後，就可以到我們健身房開始健身。
 - 多數健身房只提供訓練服務，沒有提供健身相關的用品，但不管對於健身新手或是老手，訓練過程中可能會需要用一些護具或者是輔助用品，在我們的商城中，消費者也可以買到符合他們需求的用品。
 
-## 🔧專案路徑
+## 🔧 專案路徑
 
 -   [GitHub Repository](https://github.com/Jo-Kyu/focus_fitness_react_project/tree/dev)
 -   [GitHub Pages](https://jo-kyu.github.io/focus_fitness_react_project/#/)
 
-## 💻程式專題作者
+## 💻 程式專題作者
 
 -   [Joseph_Kyuu]()
 -   [KOMATSU PEI](https://github.com/KOMATSUPEI)
 
-## 🎨專題設計稿作者
+## 🎨 專題設計稿作者
 -   [Huang Eagle](https://github.com/EagleHuang1029)
 -   設計稿由六角學院設計師團隊協作設計
 
-## 🛠開發技術
+## 🛠 開發技術
 
 ### 前端技術
 
@@ -65,7 +65,7 @@
 ![sweetalert2](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)
 
 ---
-## 🌍網站導覽
+## 🌍 網站導覽
 
 ### 首頁
 -   網站設計以深色系為主，表達專業＆質感，並以科技感的螢光色為強調色
@@ -152,7 +152,7 @@
 
 ---
 
-## 🏨特別感謝 - 專案指導
+## 🏨 特別感謝 - 專案指導
 
 -   六角學院 / 洧杰校長 & 卡斯伯老師
 -   專案教練 / Aya
@@ -160,7 +160,7 @@
 
 ---
 
-## 📊圖片素材來源
+## 📊 圖片素材來源
 
 -   [Unsplash](https://unsplash.com/)
 -   [Adobe Firefly](https://www.adobe.com/tw/products/firefly/features/ai-painting-generator.html)
