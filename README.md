@@ -68,7 +68,7 @@
 -   網站設計以深色系為主，表達專業＆質感，並以科技感的螢光色為強調色
 -   以 Slogan「你的健身全配站訓練與裝備一次到位」和醒目的卡片，提示使用者我們有提供什麼服務
 
-![首頁]([https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Home01.webp](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Home01.webp?raw=true))
+![首頁](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Home01.webp?raw=true)
 
 -   卡片旁都有按鈕可導向至FOCUS商城
 -   提供有興趣了解服務的使用者表單諮詢的服務
@@ -88,7 +88,7 @@
 -   登入後才能使用商城的商品收藏功能
 -   點Banner上的商品收藏清單按鈕，可以查看已收藏商品
 
-![商品收藏](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Log%20In03.webp)
+![商品收藏](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Log%20In03.webp?raw=true)
 
 ---
 
@@ -97,8 +97,8 @@
 -   左側有商品的大項目分類，二級菜單展開則有商品細項
 -   提供依類別篩選＆四種排序篩選
 
-![商城](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Mall01.webp)
-![篩選](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Mall02.webp)
+![商城](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Mall01.webp?raw=true)
+![篩選](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Mall02.webp?raw=true)
 
 ---
 
@@ -107,11 +107,11 @@
 -   商城中點擊商品卡片，即可進入商品詳情頁介紹
 -   提供尺寸、數量、顏色、收藏，並可以加入購物車或直接購買
 
-![產品詳情頁](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Product%20Details01.webp)
+![產品詳情頁](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Product%20Details01.webp?raw=true)
 
 -   商品詳情頁下方提供，「商品評價＆你可能也喜歡」做商品推薦
 
-![產品加購](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Product%20Details02.webp)
+![產品加購](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Product%20Details02.webp?raw=true)
 
 ---
 
@@ -119,11 +119,11 @@
 
 - 第一步：確認「加入購物車」的商品，是否已經在購物車內
 
-![加入購物車](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Product%20Details02.webp)
+![加入購物車](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Shopping%20Cart01.webp?raw=true)
 
 - 第二步：商品確認無誤後，勾選左側購物須知，才能填寫訂購資料
 
-![填寫資料](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Shopping%20Cart02.webp)
+![填寫資料](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Shopping%20Cart02.webp?raw=true)
 
 ---
 
@@ -131,13 +131,13 @@
 
 - 第三步：填寫收件人資料＆付款方式
 
-![開始結帳](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Checkout01.webp)
+![開始結帳](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Checkout01.webp?raw=true)
 
 - 填寫訊息缺漏，會貼心挑出提示提醒使用表單項目需要補充的內容
 -「完成結帳」按鈕防呆機制，待資料填寫完整後才能啟用
 
-![表單驗證01](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Checkout02.webp)
-![表單驗證02](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Checkout03.webp)
+![表單驗證01](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Checkout02.webp?raw=true)
+![表單驗證02](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Checkout03.webp?raw=true)
 
 ---
 
@@ -145,7 +145,7 @@
 
 - 網址連結防呆機制：使用者無法未為登入的情況下，直接從網址列輸入order-form強行轉址至「填寫訂購資料」，或輸入checkout至「完成結帳」
 
-![其他功能](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Checkout04.webp)
+![其他功能](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Checkout04.webp?raw=true)
 
 ---
 
