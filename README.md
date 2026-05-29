@@ -73,8 +73,8 @@
 -   卡片旁都有按鈕可導向至FOCUS商城
 -   提供有興趣了解服務的使用者表單諮詢的服務
 
-![首頁卡片]([https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Home02.webp](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Home02.webp?raw=true))
-![聯絡我們](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Home03.webp)
+![首頁卡片](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Home02.webp?raw=true)
+![聯絡我們](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Home03.webp?raw=true)
 
 ---
 
@@ -82,8 +82,8 @@
 
 -   點擊右上角登入按鈕，切換至會員登入頁面
 
-![登入頁面](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Log%20In01.webp)
-![登入完成](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Log%20In02.webp)
+![登入頁面](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Log%20In01.webp?raw=true)
+![登入完成](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Log%20In02.webp?raw=true)
 
 -   登入後才能使用商城的商品收藏功能
 -   點Banner上的商品收藏清單按鈕，可以查看已收藏商品
