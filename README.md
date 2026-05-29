@@ -1,5 +1,5 @@
 # React 專案【FOCUS FITNESS 專注健身】
-![封面](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Focus_Fitness_React.webp)
+![封面](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Focus_Fitness_React.webp?raw=true)
 
 ## 💪 專題動機
 - 根據體育署的調查，台灣在2014年，有參加健身房會員的人數45 萬人，到了2024年人數上升到  110萬人，翻了一倍。而台灣有運動習慣的人數是 1,564 萬人，所以在這樣的人口基數上，台灣的健身產業在整體運動市場，還有很大的成長空間。
@@ -61,9 +61,6 @@
 ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
 ![Notion](https://img.shields.io/badge/Notion-gray?style=for-the-badge&logo=notion&logoColor=white)
 
-### 圖床
-![sweetalert2](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)
-
 ---
 ## 🌍 網站導覽
 
@@ -71,12 +68,12 @@
 -   網站設計以深色系為主，表達專業＆質感，並以科技感的螢光色為強調色
 -   以 Slogan「你的健身全配站訓練與裝備一次到位」和醒目的卡片，提示使用者我們有提供什麼服務
 
-![首頁](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Home01.webp)
+![首頁]([https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Home01.webp](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Home01.webp?raw=true))
 
 -   卡片旁都有按鈕可導向至FOCUS商城
 -   提供有興趣了解服務的使用者表單諮詢的服務
 
-![首頁卡片](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Home02.webp)
+![首頁卡片]([https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Home02.webp](https://github.com/KOMATSUPEI2026/FOCUS-FITNESS-DATA/blob/main/%E5%B0%88%E6%B3%A8%E5%81%A5README/README-WebP/Home02.webp?raw=true))
 ![聯絡我們](https://urposqgullwbwfytbqtx.supabase.co/storage/v1/object/public/FocusFitness/README-WebP/Home03.webp)
 
 ---
